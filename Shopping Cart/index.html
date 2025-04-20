@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/Cart.css" />
+    <script src="./js/all.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        // Array to store all products data
+        let cartItems = [];
+
+        // Process all cart items
+        document.querySelectorAll(".cart-item").forEach((item) => {
+          const img = item.querySelector("img[product-image]");
+          img.src = img.getAttribute("product-image");
+
+          // Get product data
+          const product = {
+            name: img.getAttribute("product-name"),
+            id: img.getAttribute("product-id"),
+            color: img.getAttribute("product-color"),
+            price: parseFloat(img.getAttribute("product-price").split(" ")[0]),
+            quantity: parseInt(img.getAttribute("product-quantity-in-cart")),
+            maxQuantity: parseInt(img.getAttribute("product-max-quantity")),
+            element: item,
+            total: 0,
+          };
+
+          // Calculate initial total
+          product.total = product.price * product.quantity;
+          cartItems.push(product);
+
+          // Update product info
+          item
+            .querySelectorAll(".product-name")
+            .forEach((el) => (el.textContent = product.name));
+          item
+            .querySelectorAll(".product-id")
+            .forEach((el) => (el.textContent = `ID: ${product.id}`));
+          item
+            .querySelectorAll(".product-color")
+            .forEach((el) => (el.textContent = `Color: ${product.color}`));
+          item
+            .querySelectorAll(".product-price")
+            .forEach(
+              (el) => (el.textContent = `${product.price.toFixed(2)} $`)
+            );
+
+          // Initialize quantity controls
+          const quantityDisplays = item.querySelectorAll(".quantity-value");
+          const minusBtns = item.querySelectorAll(".quantity-minus");
+          const plusBtns = item.querySelectorAll(".quantity-plus");
+
+          quantityDisplays.forEach(
+            (display) => (display.textContent = product.quantity)
+          );
+
+          // Add event listeners
+          minusBtns.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const display =
+                this.closest(".quantity-controls").querySelector(
+                  ".quantity-value"
+                );
+              let currentQty = parseInt(display.textContent);
+              if (currentQty > 1) {
+                currentQty--;
+                display.textContent = currentQty;
+                product.quantity = currentQty;
+                product.total = product.price * currentQty;
+                updateItemTotal(item, product.total);
+                updateCartTotals();
+              }
+            });
+          });
+
+          plusBtns.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const display =
+                this.closest(".quantity-controls").querySelector(
+                  ".quantity-value"
+                );
+              let currentQty = parseInt(display.textContent);
+              if (currentQty < product.maxQuantity) {
+                currentQty++;
+                if (currentQty == product.maxQuantity) {
+                  document.querySelector(".warning-max").innerHTML = `
+                    <div class="container mt-3">
+                      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Warning</strong> You reached the maximum quantity.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    </div>`;
+                }
+                display.textContent = currentQty;
+                product.quantity = currentQty;
+                product.total = product.price * currentQty;
+                updateItemTotal(item, product.total);
+                updateCartTotals();
+              }
+            });
+          });
+
+          // Set initial total
+          updateItemTotal(item, product.total);
+        });
+
+        // Shipping mode selection
+        const shippingModes = document.querySelectorAll(".shipping-mode");
+        shippingModes.forEach((mode) => {
+          mode.addEventListener("change", function () {
+            updateCartTotals();
+          });
+        });
+
+        // Helper function to update item total display
+        function updateItemTotal(item, total) {
+          const totalDisplay = `${total.toFixed(2)} $`;
+          item
+            .querySelectorAll(".product-total")
+            .forEach((el) => (el.textContent = totalDisplay));
+        }
+
+        // Calculate and update all cart totals
+        function updateCartTotals() {
+          // Calculate subtotal
+          const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+
+          // Get shipping cost
+          let shippingCost = 0;
+          const shippingMode2 = document.getElementById("shipping-mode-2");
+          if (shippingMode2.checked) {
+            shippingCost = 9.9;
+          }
+
+          // Calculate grand total
+          const grandTotal = subtotal + shippingCost;
+
+          // Update DOM
+          document.querySelector(
+            ".subtotal-amount"
+          ).textContent = `${subtotal.toFixed(2)} $`;
+          document.querySelector(".shipping-amount").textContent =
+            shippingCost > 0 ? `${shippingCost.toFixed(2)} $` : "FREE";
+          document.querySelector(
+            ".grand-total-amount"
+          ).textContent = `${grandTotal.toFixed(2)} $`;
+        }
+
+        // Initialize cart totals
+        updateCartTotals();
+
+        // Set default shipping mode
+        document.getElementById("shipping-mode-1").checked = true;
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid Cart-Special-BG">
+      <div
+        class="container-fluid border rounded bg-light d-flex flex-column p-2"
+      >
+        <!-- Header -->
+        <div class="container mt-2">
+          <div class="row align-items-center">
+            <div class="col-12 col-sm-6 text-center text-sm-start">
+              <img
+                src="./img/logo.png"
+                alt="logo"
+                class="img-fluid"
+                style="max-width: 120px"
+              />
+            </div>
+            <div
+              class="col-12 col-sm-6 d-flex justify-content-md-end justify-content-center"
+            >
+              <button class="btn btn-outline-secondary btn-sm rounded">
+                <i class="fa-solid fa-arrow-left me-1"></i> Continue Shopping
+              </button>
+            </div>
+          </div>
+        </div>
+        <!--End Header-->
+
+        <!-- warning message -->
+        <div class="warning-max"></div>
+        <!-- End warning message -->
+
+        <!-- Desktop Table (shown above 480px) -->
+        <div class="cart-item-desktop">
+          <div class="container mt-3">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th class="text-uppercase text-black-50">Product</th>
+                  <th class="text-uppercase text-black-50 text-center">
+                    Price
+                  </th>
+                  <th class="text-uppercase text-black-50 text-center">
+                    Quantity
+                  </th>
+                  <th class="text-uppercase text-black-50 text-center">
+                    Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Item 1 -->
+                <tr class="cart-item">
+                  <td class="d-flex align-items-center">
+                    <img
+                      src=""
+                      alt="watch"
+                      class="img-fluid me-3"
+                      style="max-width: 60px"
+                      product-name="Smart Watch"
+                      product-id="#12345"
+                      product-color="Black"
+                      product-image="./img/watch1.png"
+                      product-price="10.90 $"
+                      product-quantity-in-cart="2"
+                      product-max-quantity="5"
+                    />
+                    <div>
+                      <p class="product-name mb-1 fw-bold"></p>
+                      <p class="product-id mb-1 small text-muted"></p>
+                      <p class="product-color small text-muted"></p>
+                    </div>
+                  </td>
+                  <td class="product-price text-center"></td>
+                  <td class="text-center">
+                    <div
+                      class="d-flex justify-content-center quantity-controls"
+                    >
+                      <button class="btn btn-sm quantity-minus">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <span class="mx-2 quantity-value fw-bold"></span>
+                      <button class="btn btn-sm quantity-plus">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td class="product-total text-center fw-bold"></td>
+                </tr>
+
+                <!-- Item 2 -->
+                <tr class="cart-item">
+                  <td class="d-flex align-items-center">
+                    <img
+                      src=""
+                      alt="watch"
+                      class="img-fluid me-3"
+                      style="max-width: 60px"
+                      product-name="Class Watch"
+                      product-id="#67890"
+                      product-color="Silver"
+                      product-image="./img/watch2.png"
+                      product-price="18.90 $"
+                      product-quantity-in-cart="1"
+                      product-max-quantity="5"
+                    />
+                    <div>
+                      <p class="product-name mb-1 fw-bold"></p>
+                      <p class="product-id mb-1 small text-muted"></p>
+                      <p class="product-color small text-muted"></p>
+                    </div>
+                  </td>
+                  <td class="product-price text-center"></td>
+                  <td class="text-center">
+                    <div
+                      class="d-flex justify-content-center quantity-controls"
+                    >
+                      <button class="btn btn-sm quantity-minus">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <span class="mx-2 quantity-value fw-bold"></span>
+                      <button class="btn btn-sm quantity-plus">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td class="product-total text-center fw-bold"></td>
+                </tr>
+                <!-- Item 3 -->
+                <tr class="cart-item">
+                  <td class="d-flex align-items-center">
+                    <img
+                      src=""
+                      alt="watch"
+                      class="img-fluid me-3"
+                      style="max-width: 60px"
+                      product-name="Class Watch"
+                      product-id="#67890"
+                      product-color="Silver"
+                      product-image="./img/watch3.png"
+                      product-price="18.90 $"
+                      product-quantity-in-cart="1"
+                      product-max-quantity="5"
+                    />
+                    <div>
+                      <p class="product-name mb-1 fw-bold"></p>
+                      <p class="product-id mb-1 small text-muted"></p>
+                      <p class="product-color small text-muted"></p>
+                    </div>
+                  </td>
+                  <td class="product-price text-center"></td>
+                  <td class="text-center">
+                    <div
+                      class="d-flex justify-content-center quantity-controls"
+                    >
+                      <button class="btn btn-sm quantity-minus">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <span class="mx-2 quantity-value fw-bold"></span>
+                      <button class="btn btn-sm quantity-plus">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td class="product-total text-center fw-bold"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- End Desktop Table -->
+
+        <!-- Mobile List (shown below 480px) -->
+        <div class="cart-item-mobile">
+          <div class="container mt-3">
+            <!-- Item 1 -->
+            <div class="card mb-3 cart-item">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-4">
+                    <img
+                      src=""
+                      alt="watch"
+                      class="product-img-mobile img-fluid"
+                      product-name="Smart Watch"
+                      product-id="#12345"
+                      product-color="Black"
+                      product-image="./img/watch1.png"
+                      product-price="10.90 $"
+                      product-quantity-in-cart="2"
+                      product-max-quantity="5"
+                    />
+                  </div>
+                  <div class="col-8">
+                    <p class="product-name mb-1 fw-bold"></p>
+                    <p class="product-id mb-1 small text-muted"></p>
+                    <p class="product-color small text-muted mb-2"></p>
+
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <div class="d-flex align-items-center quantity-controls">
+                        <button class="btn btn-sm quantity-minus">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <span class="mx-2 quantity-value fw-bold"></span>
+                        <button class="btn btn-sm quantity-plus">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                      </div>
+                      <span class="product-price fw-bold"></span>
+                    </div>
+
+                    <div
+                      class="d-flex justify-content-between align-items-center mt-2"
+                    >
+                      <span class="text-muted">Total:</span>
+                      <span class="product-total fw-bold"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="card mb-3 cart-item">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-4">
+                    <img
+                      src=""
+                      alt="watch"
+                      class="product-img-mobile img-fluid"
+                      product-name="Class Watch"
+                      product-id="#67890"
+                      product-color="Silver"
+                      product-image="./img/watch2.png"
+                      product-price="18.90 $"
+                      product-quantity-in-cart="1"
+                      product-max-quantity="5"
+                    />
+                  </div>
+                  <div class="col-8">
+                    <p class="product-name mb-1 fw-bold"></p>
+                    <p class="product-id mb-1 small text-muted"></p>
+                    <p class="product-color small text-muted mb-2"></p>
+
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <div class="d-flex align-items-center quantity-controls">
+                        <button class="btn btn-sm quantity-minus">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <span class="mx-2 quantity-value fw-bold"></span>
+                        <button class="btn btn-sm quantity-plus">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                      </div>
+                      <span class="product-price fw-bold"></span>
+                    </div>
+
+                    <div
+                      class="d-flex justify-content-between align-items-center mt-2"
+                    >
+                      <span class="text-muted">Total:</span>
+                      <span class="product-total fw-bold"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="card mb-3 cart-item">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-4">
+                    <img
+                      src=""
+                      alt="watch"
+                      class="product-img-mobile img-fluid"
+                      product-name="Class Watch"
+                      product-id="#67890"
+                      product-color="brown"
+                      product-image="./img/watch3.png"
+                      product-price="18.90 $"
+                      product-quantity-in-cart="1"
+                      product-max-quantity="5"
+                    />
+                  </div>
+                  <div class="col-8">
+                    <p class="product-name mb-1 fw-bold"></p>
+                    <p class="product-id mb-1 small text-muted"></p>
+                    <p class="product-color small text-muted mb-2"></p>
+
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <div class="d-flex align-items-center quantity-controls">
+                        <button class="btn btn-sm quantity-minus">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <span class="mx-2 quantity-value fw-bold"></span>
+                        <button class="btn btn-sm quantity-plus">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                      </div>
+                      <span class="product-price fw-bold"></span>
+                    </div>
+
+                    <div
+                      class="d-flex justify-content-between align-items-center mt-2"
+                    >
+                      <span class="text-muted">Total:</span>
+                      <span class="product-total fw-bold"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Mobile List -->
+
+        <!-- Footer of Cart Page -->
+        <div class="container my-3 p-3 rounded-3 bg-Cart-Footer border">
+          <div class="row">
+            <!-- shipping-mode -->
+            <div class="col-12 col-md-8">
+              <h4 class="fw-bold">Choose shipping mode:</h4>
+              <div class="mt-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input shipping-mode"
+                    type="radio"
+                    name="shipping-mode"
+                    id="shipping-mode-1"
+                    checked
+                  />
+                  <label class="form-check-label" for="shipping-mode-1">
+                    Store pickup (In 20 min) • FREE
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input shipping-mode"
+                    type="radio"
+                    name="shipping-mode"
+                    id="shipping-mode-2"
+                  />
+                  <label class="form-check-label" for="shipping-mode-2">
+                    Delivery at home • 9.90$
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- End shipping-mode -->
+
+            <div class="col-12 col-md-4 mt-3 mt-md-0">
+              <!-- subtotal -->
+              <div class="d-flex justify-content-between">
+                <p class="text-black-50 text-uppercase mb-2">Subtotal:</p>
+                <span class="fw-bold subtotal-amount">0.00 $</span>
+              </div>
+
+              <!-- shipping fees -->
+              <div class="d-flex justify-content-between">
+                <p class="text-black-50 text-uppercase mb-2">Shipping:</p>
+                <span class="fw-bold shipping-amount">FREE</span>
+              </div>
+
+              <!-- line break -->
+              <hr class="my-2" />
+
+              <!-- total -->
+              <div class="d-flex justify-content-between">
+                <p class="text-black-50 text-uppercase mb-2">Total:</p>
+                <span class="fw-bold fs-5 grand-total-amount">0.00 $</span>
+              </div>
+
+              <!-- checkout button -->
+              <button class="btn btn-danger w-100 mt-3 text-uppercase py-2">
+                Proceed to Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- End Footer of Cart Page -->
+      </div>
+    </div>
+  </body>
+</html>
