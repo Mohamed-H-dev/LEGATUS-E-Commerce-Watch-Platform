@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <!-- remix icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"rel="stylesheet"/>
+    
+     <!-- remix icon -->
+      <!-- FontAwesome -->
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+       <!--FontAwesome  -->
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root{
+          --filter_color : #90a5b9;
+          --card_color : #00305f6f;
+          --nav_color : #002f5f;
+        }
+        
+        .accordion{
+          --bs-accordion-btn-bg: var(--filter_color);
+          --bs-accordion-color: #000000;
+          --bs-accordion-bg: var(--filter_color);
+          --bs-accordion-transition: var(--filter_color);
+          --bs-accordion-active-bg: var(--filter_color);
+          --bs-accordion-btn-focus-box-shadow:none;
+          --bs-accordion-border-color:none;
+          --bs--accordion-active-color:#000000;
+          
+          --bs-accordion-btn-padding-y: 10px;
+          --bs-accordion-btn-padding-x:10px
+          
+        }
+
+        .navbar{
+          background-color:var(--nav_color) ;
+          color: white !important;
+        }
+        .navbar-brand{
+          color: white !important;
+          font-size: 50px;
+        }
+        .nav-link{
+          
+          color: white !important;
+        }
+
+        .banner_img{
+          width: 100%;
+          height: 400px;
+          background-image: url(images/1.jpg);
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          position: relative;
+          z-index: 1; 
+        }
+        .banner_img::before{
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 47, 95, 0.5); /* Use rgba for transparency */
+            backdrop-filter: blur(4px);
+        }
+        
+        .carousel-inner{
+          height: 400px;
+          position: relative;
+          z-index: 1; 
+        }
+        .carousel-item{
+          width: 100%;
+          position: relative;
+          bottom: 300px;
+        }
+        .carsl_img{
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: top;
+        }
+         .carousel-item::before{
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 48, 95, 0.279); /* Use rgba for transparency */
+          /*   backdrop-filter: blur(4px); */
+        } 
+
+        .accordion-button:not(.collapsed) {
+          color: #000000;
+        }
+        .accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23212529' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='m2 5 6 6 6-6'/%3e%3c/svg%3e")
+        }
+        .filter{
+          background-color: var(--filter_color);
+/*           min-width: 125px;
+ */        }
+        .check_style{
+          border: 1px solid black !important;
+          box-shadow: none !important;
+        }
+        .check_style:checked{
+          background-color: #000000 ;
+          
+        }
+        .radio_style{
+          border: 1px solid black !important;
+          box-shadow: none !important;
+          accent-color: #232323 !important;
+        }
+        .radio_style:checked{
+          background-color: #000000 ;
+          
+        }
+        #watch_img{
+          width: 70%;
+          height: 70%;
+          object-fit: cover;
+          transition: all 1s;
+        }
+        .card{
+          align-items: center;
+          border: none;
+          transition: all 1s;
+          width: 250px;
+          
+        }
+        .card:hover{
+          cursor: pointer;
+          background-color: var(--card_color);
+          
+        #watch_img{
+            transform: scale(1.2);
+          }
+          
+        }
+    </style>
+  </head>
+  <body>
+    
+    <!-- Start Nav Bar -->
+    <nav class="navbar navbar-expand-lg ">
+      <div class="container-fluid">
+        <a class="navbar-brand h1  fw-bolder ps-5" href="#">Legatus</a>
+        
+        <div class="icon d-flex gap-3 px-3 d-sm-none">
+          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+          <i class="fa-solid fa-user fs-4 me-2 "></i>
+        </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse  " id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Shop</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact Us</a>
+            </li>
+            
+          </ul>
+          <form class="d-flex flex-grow-1" role="search">
+            <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-light " type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+          
+        </div>
+        <div class="icon d-flex gap-3 px-3 d-lg-none ">
+          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+          <i class="fa-solid fa-user fs-4 me-2 "></i>
+        </div>
+      </div>
+    </nav>
+    <!-- End Nav Bar -->
+
+    <!-- Start Banner -->
+     <!-- <div class="banner_img container-fluid "> -->
+
+
+
+      <div id="carouselExampleIndicators" class="carousel slide fixed-caruosel ">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner ">
+          <div class="carousel-item active">
+            <img src="images/1.jpg" class="carsl_img d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item ">
+            <img src="images/2.jpg" class="carsl_img d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item">
+            <img src="images/3.jpg" class="carsl_img d-block w-100" alt="...">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <!-- <img class="banner_img" src="images/1.jpg" alt=""> -->
+     </div>
+     <!-- End Banner -->
+
+     <!-- Start Product Catalog -->
+      <div class="container p-4" >
+        <h2 class="h1 mt-4 text-center">Watches</h2>
+        <div class="row mt-5 g-5 ">
+          <!-- Start Filter -->
+          <div class="filter col-2 p-2 rounded">
+            
+            <div class="accordion " id="accordionPanelsStayOpenExample">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                    Ctegory
+                  </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                  <div class="accordion-body">
+                    <div class="form-check">
+                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault2" checked>
+                      <label class="form-check-label" for="radioDefault2">
+                        All
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1">
+                      <label class="form-check-label" for="radioDefault1">
+                        Men
+                      </label>
+                    </div>
+                    <div class="form-check ">
+                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1">
+                      <label class="form-check-label" for="radioDefault1">
+                        Women
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item mt-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+                    Brand
+                  </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+            
+                  <div class="accordion-body">
+                    <div class="form-check mt-2">
+                      <input class="form-check-input check_style" type="checkbox" value="" id="checkRolex" >
+                      <label class="form-check-label" for="checkRolex">
+                        Rolex
+                      </label>
+                    </div>
+                    <div class="form-check mt-2">
+                      <input class="form-check-input check_style" type="checkbox" value="" id="checkRado">
+                      <label class="form-check-label" for="checkRado">
+                        Rado
+                      </label>
+                    </div>
+                    <div class="form-check mt-2">
+                      <input class="form-check-input check_style" type="checkbox" value="" id="checkCasio">
+                      <label class="form-check-label" for="checkCasio">
+                        Casio 
+                      </label>
+                    </div>
+                    <div class="form-check mt-2">
+                      <input class="form-check-input check_style" type="checkbox" value="" id="checkMontbalnc">
+                      <label class="form-check-label" for="checkMontbalnc">
+                        Montblanc 
+                      </label>
+                    </div>
+                   
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item mt-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">
+                    Preice
+                  </button>
+                </h2>
+                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
+            
+                  <div class="accordion-body">
+                    <div class="form-check">
+                      <input class="form-check-input check_style" type="checkbox" value="" id="checkChecked" >
+                      <label class="form-check-label" for="checkChecked">
+                        Men
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input check_style" type="checkbox" value="" id="checkDefault">
+                      <label class="form-check-label" for="checkDefault">
+                        Default checkbox
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Filter -->
+
+
+          <!-- Start Products -->
+           <div class="products col-10">
+            <div class="row row-cols-1 gap-3" id="cardswrapper">
+            <!-- Start Product Card -->
+           
+             <!-- End Product Card -->
+            </div>
+            
+           
+           </div>
+          <!-- End Products -->
+        </div>
+      </div>
+     <!-- End Product Catalog -->
+
+      <script src="Products.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+  </body>
+</html>
