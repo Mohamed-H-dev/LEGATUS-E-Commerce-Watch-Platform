@@ -4,110 +4,255 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shopping Cart</title>
+    <link rel="stylesheet" href="./css/all.min.css" />
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
-    <link rel="stylesheet" href="./css/Cart.css" />
+    <link rel="stylesheet" href="./css/Cart.css " />
     <script src="./js/all.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
+
     <script>
       window.addEventListener("load", function () {
-        // Array to store all products data
-        let cartItems = [];
+        // JSON.parse(localStorage.getItem("Cart"));
+        // Get cart data from localStorage
+        let cartData = JSON.parse(localStorage.getItem("Cart")) || [];
+        const cartTableBody = document.getElementById("cart-table-body");
+        const cartMobileList = document.getElementById("cart-mobile-list");
 
-        // Process all cart items
-        document.querySelectorAll(".cart-item").forEach((item) => {
-          const img = item.querySelector("img[product-image]");
-          img.src = img.getAttribute("product-image");
+        // Function to render cart items
+        function renderCartItems() {
+          // Clear any existing rows/cards
+          cartTableBody.innerHTML = "";
+          cartMobileList.innerHTML = "";
 
-          // Get product data
-          const product = {
-            name: img.getAttribute("product-name"),
-            id: img.getAttribute("product-id"),
-            color: img.getAttribute("product-color"),
-            price: parseFloat(img.getAttribute("product-price").split(" ")[0]),
-            quantity: parseInt(img.getAttribute("product-quantity-in-cart")),
-            maxQuantity: parseInt(img.getAttribute("product-max-quantity")),
-            element: item,
-            total: 0,
-          };
+          // Array to store all products data for calculations
+          let cartItems = [];
 
-          // Calculate initial total
-          product.total = product.price * product.quantity;
-          cartItems.push(product);
+          // Create a row/card for each item in the cart
+          cartData.forEach((item, index) => {
+            const product = item.product;
+            const priceValue = parseFloat(product.price.split(" ")[0]);
+            const quantity = product.quantity_in_cart;
+            const total = (priceValue * quantity).toFixed(2);
 
-          // Update product info
-          item
-            .querySelectorAll(".product-name")
-            .forEach((el) => (el.textContent = product.name));
-          item
-            .querySelectorAll(".product-id")
-            .forEach((el) => (el.textContent = `ID: ${product.id}`));
-          item
-            .querySelectorAll(".product-color")
-            .forEach((el) => (el.textContent = `Color: ${product.color}`));
-          item
-            .querySelectorAll(".product-price")
-            .forEach(
-              (el) => (el.textContent = `${product.price.toFixed(2)} $`)
+            // Store product data for calculations
+            cartItems.push({
+              name: product.name,
+              id: product.id,
+              color: product.color,
+              image: product.image,
+              price: priceValue,
+              quantity: quantity,
+              maxQuantity: product.max_quantity,
+              total: parseFloat(total),
+              index: index,
+            });
+
+            // Desktop table row
+            const row = document.createElement("tr");
+            row.className = "cart-item";
+            row.dataset.index = index;
+
+            row.innerHTML = `
+              <td class="d-flex align-items-center">
+                <img
+                  src="${product.image}"
+                  alt="${product.name}"
+                  class="img-fluid me-3"
+                  style="max-width: 60px"
+                  product-name="${product.name}"
+                  product-id="${product.id}"
+                  product-color="${product.color}"
+                  product-image="${product.image}"
+                  product-price="${product.price}"
+                  product-quantity-in-cart="${product.quantity_in_cart}"
+                  product-max-quantity="${product.max_quantity}"
+                />
+                <div>
+                  <p class="product-name mb-1 fw-bold">${product.name}</p>
+                  <p class="product-id mb-1 small text-muted">ID: ${product.id}</p>
+                  <p class="product-color small text-muted">Color: ${product.color}</p>
+                </div>
+              </td>
+              <td class="product-price text-center">${product.price}</td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center quantity-controls">
+                  <button class="btn btn-sm quantity-minus">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <span class="mx-2 quantity-value fw-bold">${product.quantity_in_cart}</span>
+                  <button class="btn btn-sm quantity-plus">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </td>
+              <td class="product-total text-center fw-bold">${total} $</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-danger delete-item" data-index="${index}">
+                  <i class="fa-solid fa-xmark"></i>               
+                </button>
+              </td>
+            `;
+
+            cartTableBody.appendChild(row);
+
+            // Mobile card
+            const card = document.createElement("div");
+            card.className = "card mb-3 cart-item";
+            card.dataset.index = index;
+
+            card.innerHTML = `
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-4">
+                    <img
+                      src="${product.image}"
+                      alt="${product.name}"
+                      class="product-img-mobile img-fluid"
+                      product-name="${product.name}"
+                      product-id="${product.id}"
+                      product-color="${product.color}"
+                      product-image="${product.image}"
+                      product-price="${product.price}"
+                      product-quantity-in-cart="${product.quantity_in_cart}"
+                      product-max-quantity="${product.max_quantity}"
+                    />
+                  </div>
+                  <div class="col-8">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <p class="product-name mb-1 fw-bold">${product.name}</p>
+                        <p class="product-id mb-1 small text-muted">ID: ${product.id}</p>
+                        <p class="product-color small text-muted mb-2">Color: ${product.color}</p>
+                      </div>
+                      <button class="btn btn-sm btn-danger delete-item align-self-start" data-index="${index}">
+                        <i class="fa-solid fa-xmark"></i>       
+                      </button>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center quantity-controls">
+                        <button class="btn btn-sm quantity-minus">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <span class="mx-2 quantity-value fw-bold">${product.quantity_in_cart}</span>
+                        <button class="btn btn-sm quantity-plus">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                      </div>
+                      <span class="product-price fw-bold">${product.price}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                      <span class="text-muted">Total:</span>
+                      <span class="product-total fw-bold">${total} $</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            cartMobileList.appendChild(card);
+          });
+
+          // Initialize quantity controls for all items
+          document.querySelectorAll(".cart-item").forEach((item) => {
+            const img = item.querySelector("img[product-image]");
+            img.src = img.getAttribute("product-image");
+
+            // Get product data
+            const product = {
+              name: img.getAttribute("product-name"),
+              id: img.getAttribute("product-id"),
+              color: img.getAttribute("product-color"),
+              price: parseFloat(
+                img.getAttribute("product-price").split(" ")[0]
+              ),
+              quantity: parseInt(img.getAttribute("product-quantity-in-cart")),
+              maxQuantity: parseInt(img.getAttribute("product-max-quantity")),
+              element: item,
+              total: 0,
+            };
+
+            // Calculate initial total
+            product.total = product.price * product.quantity;
+
+            // Initialize quantity controls
+            const quantityDisplays = item.querySelectorAll(".quantity-value");
+            const minusBtns = item.querySelectorAll(".quantity-minus");
+            const plusBtns = item.querySelectorAll(".quantity-plus");
+
+            quantityDisplays.forEach(
+              (display) => (display.textContent = product.quantity)
             );
 
-          // Initialize quantity controls
-          const quantityDisplays = item.querySelectorAll(".quantity-value");
-          const minusBtns = item.querySelectorAll(".quantity-minus");
-          const plusBtns = item.querySelectorAll(".quantity-plus");
-
-          quantityDisplays.forEach(
-            (display) => (display.textContent = product.quantity)
-          );
-
-          // Add event listeners
-          minusBtns.forEach((btn) => {
-            btn.addEventListener("click", function () {
-              const display =
-                this.closest(".quantity-controls").querySelector(
-                  ".quantity-value"
-                );
-              let currentQty = parseInt(display.textContent);
-              if (currentQty > 1) {
-                currentQty--;
-                display.textContent = currentQty;
-                product.quantity = currentQty;
-                product.total = product.price * currentQty;
-                updateItemTotal(item, product.total);
-                updateCartTotals();
-              }
-            });
-          });
-
-          plusBtns.forEach((btn) => {
-            btn.addEventListener("click", function () {
-              const display =
-                this.closest(".quantity-controls").querySelector(
-                  ".quantity-value"
-                );
-              let currentQty = parseInt(display.textContent);
-              if (currentQty < product.maxQuantity) {
-                currentQty++;
-                if (currentQty == product.maxQuantity) {
-                  document.querySelector(".warning-max").innerHTML = `
-                    <div class="container mt-3">
-                      <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Warning</strong> You reached the maximum quantity.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>
-                    </div>`;
+            // Add event listeners
+            minusBtns.forEach((btn) => {
+              btn.addEventListener("click", function () {
+                const display =
+                  this.closest(".quantity-controls").querySelector(
+                    ".quantity-value"
+                  );
+                let currentQty = parseInt(display.textContent);
+                if (currentQty > 1) {
+                  currentQty--;
+                  display.textContent = currentQty;
+                  product.quantity = currentQty;
+                  product.total = product.price * currentQty;
+                  updateItemTotal(item, product.total);
+                  updateCartTotals();
                 }
-                display.textContent = currentQty;
-                product.quantity = currentQty;
-                product.total = product.price * currentQty;
-                updateItemTotal(item, product.total);
-                updateCartTotals();
-              }
+              });
+            });
+
+            plusBtns.forEach((btn) => {
+              btn.addEventListener("click", function () {
+                const display =
+                  this.closest(".quantity-controls").querySelector(
+                    ".quantity-value"
+                  );
+                let currentQty = parseInt(display.textContent);
+                if (currentQty < product.maxQuantity) {
+                  currentQty++;
+                  if (currentQty == product.maxQuantity) {
+                    document.querySelector(".warning-max").innerHTML = `
+                      <div class="container mt-3">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                          <strong>Warning</strong> You reached the maximum quantity.
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                      </div>`;
+                  }
+                  display.textContent = currentQty;
+                  product.quantity = currentQty;
+                  product.total = product.price * currentQty;
+                  updateItemTotal(item, product.total);
+                  updateCartTotals();
+                }
+              });
             });
           });
 
-          // Set initial total
-          updateItemTotal(item, product.total);
-        });
+          // Add delete event listeners
+          document.querySelectorAll(".delete-item").forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const index = parseInt(this.dataset.index);
+              // Remove item from cartData
+              cartData.splice(index, 1);
+              // Update localStorage
+              localStorage.setItem("Cart", JSON.stringify(cartData));
+              // Re-render cart
+              renderCartItems();
+              // Update totals
+              updateCartTotals();
+            });
+          });
+
+          // Update totals
+          updateCartTotals();
+        }
+
+        // Initial render
+        renderCartItems();
 
         // Shipping mode selection
         const shippingModes = document.querySelectorAll(".shipping-mode");
@@ -128,7 +273,16 @@
         // Calculate and update all cart totals
         function updateCartTotals() {
           // Calculate subtotal
-          const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+          let subtotal = 0;
+          document.querySelectorAll(".cart-item").forEach((item) => {
+            const price = parseFloat(
+              item.querySelector(".product-price").textContent.split(" ")[0]
+            );
+            const quantity = parseInt(
+              item.querySelector(".quantity-value").textContent
+            );
+            subtotal += price * quantity;
+          });
 
           // Get shipping cost
           let shippingCost = 0;
@@ -150,9 +304,6 @@
             ".grand-total-amount"
           ).textContent = `${grandTotal.toFixed(2)} $`;
         }
-
-        // Initialize cart totals
-        updateCartTotals();
 
         // Set default shipping mode
         document.getElementById("shipping-mode-1").checked = true;
@@ -206,124 +357,13 @@
                   <th class="text-uppercase text-black-50 text-center">
                     Total
                   </th>
+                  <th class="text-uppercase text-black-50 text-center">
+                    Action
+                  </th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- Item 1 -->
-                <tr class="cart-item">
-                  <td class="d-flex align-items-center">
-                    <img
-                      src=""
-                      alt="watch"
-                      class="img-fluid me-3"
-                      style="max-width: 60px"
-                      product-name="Smart Watch"
-                      product-id="#12345"
-                      product-color="Black"
-                      product-image="./img/watch1.png"
-                      product-price="10.90 $"
-                      product-quantity-in-cart="2"
-                      product-max-quantity="5"
-                    />
-                    <div>
-                      <p class="product-name mb-1 fw-bold"></p>
-                      <p class="product-id mb-1 small text-muted"></p>
-                      <p class="product-color small text-muted"></p>
-                    </div>
-                  </td>
-                  <td class="product-price text-center"></td>
-                  <td class="text-center">
-                    <div
-                      class="d-flex justify-content-center quantity-controls"
-                    >
-                      <button class="btn btn-sm quantity-minus">
-                        <i class="fas fa-minus"></i>
-                      </button>
-                      <span class="mx-2 quantity-value fw-bold"></span>
-                      <button class="btn btn-sm quantity-plus">
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td class="product-total text-center fw-bold"></td>
-                </tr>
-
-                <!-- Item 2 -->
-                <tr class="cart-item">
-                  <td class="d-flex align-items-center">
-                    <img
-                      src=""
-                      alt="watch"
-                      class="img-fluid me-3"
-                      style="max-width: 60px"
-                      product-name="Class Watch"
-                      product-id="#67890"
-                      product-color="Silver"
-                      product-image="./img/watch2.png"
-                      product-price="18.90 $"
-                      product-quantity-in-cart="1"
-                      product-max-quantity="5"
-                    />
-                    <div>
-                      <p class="product-name mb-1 fw-bold"></p>
-                      <p class="product-id mb-1 small text-muted"></p>
-                      <p class="product-color small text-muted"></p>
-                    </div>
-                  </td>
-                  <td class="product-price text-center"></td>
-                  <td class="text-center">
-                    <div
-                      class="d-flex justify-content-center quantity-controls"
-                    >
-                      <button class="btn btn-sm quantity-minus">
-                        <i class="fas fa-minus"></i>
-                      </button>
-                      <span class="mx-2 quantity-value fw-bold"></span>
-                      <button class="btn btn-sm quantity-plus">
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td class="product-total text-center fw-bold"></td>
-                </tr>
-                <!-- Item 3 -->
-                <tr class="cart-item">
-                  <td class="d-flex align-items-center">
-                    <img
-                      src=""
-                      alt="watch"
-                      class="img-fluid me-3"
-                      style="max-width: 60px"
-                      product-name="Class Watch"
-                      product-id="#67890"
-                      product-color="Silver"
-                      product-image="./img/watch3.png"
-                      product-price="18.90 $"
-                      product-quantity-in-cart="1"
-                      product-max-quantity="5"
-                    />
-                    <div>
-                      <p class="product-name mb-1 fw-bold"></p>
-                      <p class="product-id mb-1 small text-muted"></p>
-                      <p class="product-color small text-muted"></p>
-                    </div>
-                  </td>
-                  <td class="product-price text-center"></td>
-                  <td class="text-center">
-                    <div
-                      class="d-flex justify-content-center quantity-controls"
-                    >
-                      <button class="btn btn-sm quantity-minus">
-                        <i class="fas fa-minus"></i>
-                      </button>
-                      <span class="mx-2 quantity-value fw-bold"></span>
-                      <button class="btn btn-sm quantity-plus">
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td class="product-total text-center fw-bold"></td>
-                </tr>
+              <tbody id="cart-table-body">
+                <!-- Cart items will be dynamically inserted here -->
               </tbody>
             </table>
           </div>
@@ -332,153 +372,8 @@
 
         <!-- Mobile List (shown below 480px) -->
         <div class="cart-item-mobile">
-          <div class="container mt-3">
-            <!-- Item 1 -->
-            <div class="card mb-3 cart-item">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-4">
-                    <img
-                      src=""
-                      alt="watch"
-                      class="product-img-mobile img-fluid"
-                      product-name="Smart Watch"
-                      product-id="#12345"
-                      product-color="Black"
-                      product-image="./img/watch1.png"
-                      product-price="10.90 $"
-                      product-quantity-in-cart="2"
-                      product-max-quantity="5"
-                    />
-                  </div>
-                  <div class="col-8">
-                    <p class="product-name mb-1 fw-bold"></p>
-                    <p class="product-id mb-1 small text-muted"></p>
-                    <p class="product-color small text-muted mb-2"></p>
-
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <div class="d-flex align-items-center quantity-controls">
-                        <button class="btn btn-sm quantity-minus">
-                          <i class="fas fa-minus"></i>
-                        </button>
-                        <span class="mx-2 quantity-value fw-bold"></span>
-                        <button class="btn btn-sm quantity-plus">
-                          <i class="fas fa-plus"></i>
-                        </button>
-                      </div>
-                      <span class="product-price fw-bold"></span>
-                    </div>
-
-                    <div
-                      class="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <span class="text-muted">Total:</span>
-                      <span class="product-total fw-bold"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="card mb-3 cart-item">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-4">
-                    <img
-                      src=""
-                      alt="watch"
-                      class="product-img-mobile img-fluid"
-                      product-name="Class Watch"
-                      product-id="#67890"
-                      product-color="Silver"
-                      product-image="./img/watch2.png"
-                      product-price="18.90 $"
-                      product-quantity-in-cart="1"
-                      product-max-quantity="5"
-                    />
-                  </div>
-                  <div class="col-8">
-                    <p class="product-name mb-1 fw-bold"></p>
-                    <p class="product-id mb-1 small text-muted"></p>
-                    <p class="product-color small text-muted mb-2"></p>
-
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <div class="d-flex align-items-center quantity-controls">
-                        <button class="btn btn-sm quantity-minus">
-                          <i class="fas fa-minus"></i>
-                        </button>
-                        <span class="mx-2 quantity-value fw-bold"></span>
-                        <button class="btn btn-sm quantity-plus">
-                          <i class="fas fa-plus"></i>
-                        </button>
-                      </div>
-                      <span class="product-price fw-bold"></span>
-                    </div>
-
-                    <div
-                      class="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <span class="text-muted">Total:</span>
-                      <span class="product-total fw-bold"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="card mb-3 cart-item">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-4">
-                    <img
-                      src=""
-                      alt="watch"
-                      class="product-img-mobile img-fluid"
-                      product-name="Class Watch"
-                      product-id="#67890"
-                      product-color="brown"
-                      product-image="./img/watch3.png"
-                      product-price="18.90 $"
-                      product-quantity-in-cart="1"
-                      product-max-quantity="5"
-                    />
-                  </div>
-                  <div class="col-8">
-                    <p class="product-name mb-1 fw-bold"></p>
-                    <p class="product-id mb-1 small text-muted"></p>
-                    <p class="product-color small text-muted mb-2"></p>
-
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <div class="d-flex align-items-center quantity-controls">
-                        <button class="btn btn-sm quantity-minus">
-                          <i class="fas fa-minus"></i>
-                        </button>
-                        <span class="mx-2 quantity-value fw-bold"></span>
-                        <button class="btn btn-sm quantity-plus">
-                          <i class="fas fa-plus"></i>
-                        </button>
-                      </div>
-                      <span class="product-price fw-bold"></span>
-                    </div>
-
-                    <div
-                      class="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <span class="text-muted">Total:</span>
-                      <span class="product-total fw-bold"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="container mt-3" id="cart-mobile-list">
+            <!-- Cart items will be dynamically inserted here -->
           </div>
         </div>
         <!-- End Mobile List -->

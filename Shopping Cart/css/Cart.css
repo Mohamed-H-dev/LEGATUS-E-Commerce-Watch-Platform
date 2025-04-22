@@ -5,7 +5,7 @@
 .cart-item-mobile {
   display: none;
 }
-@media (max-width: 480px) {
+@media (max-width: 525px) {
   .cart-item-desktop {
     display: none;
   }
