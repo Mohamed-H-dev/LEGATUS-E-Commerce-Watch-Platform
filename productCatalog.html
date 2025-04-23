@@ -19,8 +19,8 @@
             box-sizing: border-box;
         }
         :root{
-          --filter_color : #90a5b9;
-          --card_color : #00305f6f;
+          --filter_color : #dae5ef;
+          --card_color : #dae5ef;
           --nav_color : #002f5f;
         }
         
@@ -38,7 +38,11 @@
           --bs-accordion-btn-padding-x:10px
           
         }
-
+      .top-bar {
+      background-color: #dae5ef;
+      color: #002f5f;
+      font-size: 0.9rem;
+    }
         .navbar{
           background-color:var(--nav_color) ;
           color: white !important;
@@ -100,6 +104,13 @@
           /*   backdrop-filter: blur(4px); */
         } 
 
+        .watchstxt_bg{
+          height: 80px;
+          background: #dae5ef;
+          
+          
+        }
+
         .accordion-button:not(.collapsed) {
           color: #000000;
         }
@@ -108,8 +119,9 @@
         }
         .filter{
           background-color: var(--filter_color);
-/*           min-width: 125px;
- */        }
+          min-width: 150px;
+          height: 900px;
+        }
         .check_style{
           border: 1px solid black !important;
           box-shadow: none !important;
@@ -127,6 +139,7 @@
           background-color: #000000 ;
           
         }
+       
         #watch_img{
           width: 70%;
           height: 70%;
@@ -137,7 +150,7 @@
           align-items: center;
           border: none;
           transition: all 1s;
-          width: 250px;
+          width: 300px;
           
         }
         .card:hover{
@@ -152,7 +165,12 @@
     </style>
   </head>
   <body>
-    
+     <!-- Top Bar -->
+  <div class="top-bar py-1">
+    <div class="container d-flex justify-content-center">
+      <div>Fast & Secure Shopping | Professional Packaging</div>
+    </div>
+  </div>
     <!-- Start Nav Bar -->
     <nav class="navbar navbar-expand-lg ">
       <div class="container-fluid">
@@ -197,7 +215,7 @@
 
 
 
-      <div id="carouselExampleIndicators" class="carousel slide fixed-caruosel ">
+      <div id="carouselExampleAutoplaying" class="carousel slide fixed-caruosel p-0 m-0" data-bs-ride="carousel">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -214,11 +232,11 @@
             <img src="images/3.jpg" class="carsl_img d-block w-100" alt="...">
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
@@ -228,11 +246,15 @@
      <!-- End Banner -->
 
      <!-- Start Product Catalog -->
-      <div class="container-fluid t p-4" >
-        <h2 class="h1 mt-4 text-center">Watches</h2>
-        <div class="row mt-5 g-5 ">
+     
+      <div class="container-fluid p-0" >
+        <div class="container-fluid d-flex align-items-center justify-content-center watchstxt_bg position-sticky top-0 z-1">
+          <h2 class="h1 text-center ">Legatus Watches</h2>
+        </div>
+        
+        <div class="row mx-auto flex-nowrap g-5 ">
           <!-- Start Filter -->
-          <div class="filter col-2 p-2 rounded">
+          <div class="filter position-sticky top-0 z-1 col-2 p-2 rounded">
             
             <div class="accordion " id="accordionPanelsStayOpenExample">
               <div class="accordion-item">
@@ -331,8 +353,8 @@
 
 
           <!-- Start Products -->
-           <div class="products col-10">
-            <div class="row row-cols-1 gap-3" id="cardswrapper">
+           <div class="products col-10 d-flex justify-content-center p-0">
+            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-center mt-5 p-0 m-0 w-100" id="cardswrapper">
             <!-- Start Product Card -->
            
              <!-- End Product Card -->
