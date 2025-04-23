@@ -19,9 +19,9 @@
             box-sizing: border-box;
         }
         :root{
-          --filter_color : #dae5ef;
-          --card_color : #dae5ef;
-          --nav_color : #002f5f;
+          --filter_color : #11487f;
+          --card_color : #11487f;
+          --nav_color : #11487f;
         }
         
         .accordion{
@@ -106,13 +106,15 @@
 
         .watchstxt_bg{
           height: 80px;
-          background: #dae5ef;
-          
+          background: #11487f;
+          color: white;
           
         }
-
+        .form-check-label{
+          color:white;
+        }
         .accordion-button:not(.collapsed) {
-          color: #000000;
+          color: white;
         }
         .accordion-button:not(.collapsed)::after {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23212529' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='m2 5 6 6 6-6'/%3e%3c/svg%3e")
@@ -121,6 +123,7 @@
           background-color: var(--filter_color);
           min-width: 150px;
           height: 900px;
+          color: white;
         }
         .check_style{
           border: 1px solid black !important;
@@ -145,6 +148,7 @@
           height: 70%;
           object-fit: cover;
           transition: all 1s;
+           transform: rotate(-90deg); 
         }
         .card{
           align-items: center;
@@ -152,13 +156,14 @@
           transition: all 1s;
           width: 300px;
           
+          
         }
         .card:hover{
           cursor: pointer;
-          background-color: var(--card_color);
-          
+          background-color: #11487f;
+          color: white;
         #watch_img{
-            transform: scale(1.2);
+            transform: scale(1.2) translateY(-10px) rotate(0deg);
           }
           
         }
@@ -254,7 +259,7 @@
         
         <div class="row mx-auto flex-nowrap g-5 ">
           <!-- Start Filter -->
-          <div class="filter position-sticky top-0 z-1 col-2 p-2 rounded">
+          <div class="filter position-sticky top-0 z-1 col-2 p-2 ">
             
             <div class="accordion " id="accordionPanelsStayOpenExample">
               <div class="accordion-item">
