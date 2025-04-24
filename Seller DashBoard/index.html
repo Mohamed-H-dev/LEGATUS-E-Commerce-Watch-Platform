@@ -1,0 +1,975 @@
+<!-- i need the Products link to be always closeed untill the user open it  -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Document</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <!-- Latest Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- JS -->
+    <script src="./js/all.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- <script src="./js/bootstrap.bundle.min.js"></script> -->
+    <!-- In your head section -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        // Get all navigation links (both desktop and mobile)
+        const navLinks = document.querySelectorAll(
+          ".navbar-nav .nav-link:not(.dropdown-item)"
+        );
+        const mobileNavLinks = document.querySelectorAll(
+          "#navbarNavDropdown .nav-link"
+        );
+
+        // Get the mobile navbar toggler
+        const mobileNavToggler = document.querySelector(".navbar-toggler");
+        const mobileNavMenu = document.getElementById("navbarNavDropdown");
+
+        // Get all page sections for both desktop and mobile
+        const desktopPages = {
+          dashboard: document.querySelector(
+            ".dashboard-item-desktop .dashboard-page"
+          ),
+          orders: document.querySelector(
+            ".dashboard-item-desktop .orders-page"
+          ),
+          products: document.querySelector(
+            ".dashboard-item-desktop .Products-page"
+          ),
+          analytics: document.querySelector(
+            ".dashboard-item-desktop .Analytics-page"
+          ),
+        };
+
+        const mobilePages = {
+          dashboard: document.querySelector(
+            ".dashboard-item-mobile .dashboard-page"
+          ),
+          orders: document.querySelector(".dashboard-item-mobile .orders-page"),
+          products: document.querySelector(
+            ".dashboard-item-mobile .Products-page"
+          ),
+          analytics: document.querySelector(
+            ".dashboard-item-mobile .Analytics-page"
+          ),
+        };
+
+        // Initially hide all pages except dashboard
+        function initializePages(pages) {
+          Object.values(pages).forEach((page) => {
+            if (page && page !== pages.dashboard) {
+              page.classList.add("d-none");
+            }
+          });
+        }
+
+        initializePages(desktopPages);
+        initializePages(mobilePages);
+
+        // Function to handle page switching
+        function showPage(pageToShow, pages) {
+          if (!pages) return;
+
+          // Hide all pages first
+          Object.values(pages).forEach((page) => {
+            if (page) page.classList.add("d-none");
+          });
+
+          // Show the requested page
+          if (pages[pageToShow.toLowerCase()]) {
+            pages[pageToShow.toLowerCase()].classList.remove("d-none");
+          }
+        }
+
+        // Function to collapse mobile menu
+        function collapseMobileMenu() {
+          if (mobileNavMenu.classList.contains("show")) {
+            // Use Bootstrap's collapse method to properly close the menu
+            const bsCollapse = new bootstrap.Collapse(mobileNavMenu, {
+              toggle: false,
+            });
+            bsCollapse.hide();
+          }
+        }
+
+        // Add click event listeners to desktop navigation links
+        navLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const pageName = this.id || this.textContent.trim();
+            showPage(pageName, desktopPages);
+          });
+        });
+
+        // Add click event listeners to mobile navigation links
+        mobileNavLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const linkText = this.textContent.trim();
+
+            // Map mobile link text to page names
+            if (linkText.includes("Dashboard"))
+              showPage("dashboard", mobilePages);
+            else if (linkText.includes("Orders"))
+              showPage("orders", mobilePages);
+            else if (linkText.includes("Products"))
+              showPage("products", mobilePages);
+            else if (linkText.includes("Analytics"))
+              showPage("analytics", mobilePages);
+
+            // Collapse the mobile menu after selection
+            collapseMobileMenu();
+          });
+        });
+
+        // Handle Products sub-menu items
+        const productSubLinks = document.querySelectorAll(
+          ".sub-menu .nav-link"
+        );
+        productSubLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            // Show products page in both desktop and mobile
+            showPage("products", desktopPages);
+            showPage("products", mobilePages);
+            // Collapse the mobile menu after selection
+            collapseMobileMenu();
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <!-- Desctop Design -->
+    <div class="m-0 p-0 dashboard-item-desktop">
+      <div class="row fixed-top">
+        <!-- dashboard section -->
+        <div class="col-2 dashboard-Desctop-style">
+          <div class="d-flex flex-column">
+            <!--Logo Img-->
+            <div class="box">
+              <a href="#" class="text-decoration-none d-flex align-items-end">
+                <img
+                  src="./img/logo.png"
+                  class="img-fluid w-100 mx-auto"
+                  alt=""
+                />
+              </a>
+            </div>
+            <!--End Logo Img-->
+            <!-- Dashboard content -->
+            <div class="mx-2">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    aria-current="page"
+                    href="#"
+                    id="Dashboard"
+                    ><i class="fa-solid fa-gear dashboard-icon-style me-1"></i>
+                    Dashboard</a
+                  >
+                </li>
+
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    href="#"
+                    id="Orders"
+                  >
+                    <i class="fa-solid fa-boxes-packing me-1"></i>
+                    <span>Orders</span>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    data-bs-toggle="collapse"
+                    href="#ui-basic"
+                    aria-expanded="false"
+                    aria-controls="ui-basic"
+                    id="Products"
+                  >
+                    <i class="fa-solid fa-tags me-1"></i>
+                    <span class="menu-title">Products </span>
+                    <i class="fas fa-chevron-down float-end mt-1"></i>
+                  </a>
+                  <div class="collapse" id="ui-basic">
+                    <ul class="nav flex-column sub-menu">
+                      <li class="nav-item">
+                        <a class="nav-link text-light" href="#">
+                          <i class="fa-solid fa-pen-to-square"></i>
+                          <span>Edit</span></a
+                        >
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link text-light" href="#">
+                          <i class="fa-solid fa-plus"></i>
+                          <span>Add</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    href="#"
+                  >
+                    <i class="fa-solid fa-signal"></i>
+                    <span>Analytics</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dashboard content -->
+          </div>
+        </div>
+        <!-- end dashboard section  -->
+        <!-- Desctop body Design -->
+        <!-- body color -->
+        <div class="col-10 dashboard-bg-color p-0 m-0 sticky-top">
+          <div class="header-Dashboard-style py-2">
+            <div class="row">
+              <div class="col-8 px-5">
+                <form class="d-flex" role="search">
+                  <input
+                    class="form-control me-2"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                  />
+                  <button
+                    class="btn btn-outline-secondary rounded-4"
+                    type="submit"
+                  >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </form>
+              </div>
+              <div class="col-4">
+                <div class="d-flex justify-content-end">
+                  <div class="dropdown pe-4">
+                    <button
+                      class="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                      <li><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container Dashboard-contaner">
+            <!-- body Header -->
+            <div class="my-3 fw-bold">
+              <h1>Seller Dashboard</h1>
+            </div>
+
+            <!-- dashboard-body-page -->
+            <div class="dashboard-page">
+              <!-- body four (4) content -->
+              <div class="row d-flex justify-content-evenly">
+                <!-- Total Sales -->
+                <div
+                  class="col-2 mx-1 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+                >
+                  <p class="fs-4 fw-bold mt-3">
+                    <i class="fa-solid fa-dollar-sign"></i><span> num</span>
+                  </p>
+                  <p>Total Sales</p>
+                </div>
+                <!-- Orders Today -->
+                <div
+                  class="col-2 mx-1 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+                >
+                  <p class="fs-4 fw-bold mt-3">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span> num</span>
+                  </p>
+                  <p>Orders Today</p>
+                </div>
+                <!-- Active Customers -->
+                <div
+                  class="col-2 mx-1 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+                >
+                  <p class="fs-4 fw-bold mt-3">
+                    <i class="fa-solid fa-user"></i> <span> num</span>
+                  </p>
+                  <p>Active Customers</p>
+                </div>
+                <!--Inventory Alerts  -->
+                <div
+                  class="col-2 mx-1 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+                >
+                  <p class="fs-4 fw-bold mt-3">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span> num</span>
+                  </p>
+                  <p>Inventory Alerts</p>
+                </div>
+              </div>
+              <!-- End body four (4) content -->
+
+              <!-- body two (2) content -->
+              <div class="row d-flex justify-content-evenly my-5">
+                <div class="col-6">
+                  <div
+                    class="row d-flex justify-content-between bg-light rounded-2"
+                  >
+                    <h5 class="fw-bold">Top Selling Products</h5>
+                    <table class="table table-hover bg-light">
+                      <tr>
+                        <td></td>
+                        <td>Product</td>
+                        <td class="text-end">Quantity (units)</td>
+                      </tr>
+                      <tr>
+                        <td><i class="fa-solid fa-basket-shopping"></i></td>
+                        <td>Product-A</td>
+                        <td class="text-end">350 units</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <!-- Low Stock Products -->
+                  <div
+                    class="row d-flex justify-content-between bg-light rounded-2 my-5"
+                  >
+                    <h5 class="fw-bold">Low Stock Products</h5>
+                    <table class="table table-hover bg-light">
+                      <tr>
+                        <td></td>
+                        <td>Product</td>
+                        <td class="text-end">
+                          <i class="fa-solid fa-sort-down"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><i class="fa-solid fa-arrow-trend-down"></i></td>
+                        <td>Product-A</td>
+                        <td class="text-end">3</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <!-- Recent Orders -->
+                  <div
+                    class="row d-flex justify-content-between bg-light rounded-2"
+                  >
+                    <h5 class="fw-bold">Recent Orders</h5>
+                    <table class="table table-hover bg-light">
+                      <tr>
+                        <td>Order ID</td>
+                        <td>Customer</td>
+                        <td class="text-end">Total</td>
+                      </tr>
+                      <tr>
+                        <td>#123</td>
+                        <td>Altex Brown</td>
+                        <td class="text-end">
+                          <span>999</span>
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <!-- Low Stock -->
+                  <div
+                    class="row d-flex justify-content-between bg-light rounded-2 my-5"
+                  >
+                    <table class="table table-hover bg-light mt-1">
+                      <tr>
+                        <td>Low Stock</td>
+                        <td class="text-end">Restock</td>
+                      </tr>
+                      <tr>
+                        <td>Product X</td>
+                        <td class="text-end">
+                          <span>num</span>
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <!-- Restock -->
+                  <div
+                    class="row d-flex justify-content-between bg-light rounded-2 my-5"
+                  >
+                    <table class="table table-hover bg-light mt-1">
+                      <tr>
+                        <td>Low Stock</td>
+                        <td class="text-end">Restock</td>
+                      </tr>
+                      <tr>
+                        <td>Product X</td>
+                        <td class="text-end">
+                          <button class="btn btn-outline-secondary">
+                            Restock
+                          </button>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End dashboard-body-page -->
+
+            <!-- orders-body-page -->
+            <div class="orders-page">
+              <div class="container">
+                <table class="table table-hover table-striped">
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Customer Name</th>
+                    <th>Order Status</th>
+                    <th>Payment Status</th>
+                    <th class="text-end">Total</th>
+                  </tr>
+                  <tr>
+                    <td>#ORD12345</td>
+                    <td>01-01-2023</td>
+                    <td>Ahmed</td>
+                    <td>Pending</td>
+                    <td>PAID</td>
+                    <td class="text-end">
+                      <span>199</span> <i class="fa-solid fa-dollar-sign"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>#ORD12345</td>
+                    <td>01-01-2023</td>
+                    <td>Ahmed</td>
+                    <td>Pending</td>
+                    <td>PAID</td>
+                    <td class="text-end">
+                      <span>199</span> <i class="fa-solid fa-dollar-sign"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>#ORD12345</td>
+                    <td>01-01-2023</td>
+                    <td>Ahmed</td>
+                    <td>Pending</td>
+                    <td>PAID</td>
+                    <td class="text-end">
+                      <span>199</span> <i class="fa-solid fa-dollar-sign"></i>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <!-- ENd orders-body-page -->
+
+            <!-- Products-body-page -->
+            <div class="Products-page">Products-page</div>
+            <!-- ENd Products-body-page -->
+
+            <!-- Analytics-body-page -->
+            <div class="Analytics-page">Analytics-page</div>
+            <!-- ENd Analytics-body-page -->
+          </div>
+        </div>
+        <!--  End Desctop body Design -->
+      </div>
+    </div>
+
+    <!--End Desctop Design -->
+
+    <!-- Mobile Design -->
+    <div class="dashboard-item-mobile">
+      <nav class="navbar navbar-expand-lg dashboard-Mobile-style fixed-top">
+        <div class="container-fluid">
+          <div class="row w-100">
+            <!-- Logo Img -->
+            <div class="col-3">
+              <a href="#" class="d-flex align-items-end">
+                <img src="./img/logo.png" class="img-fluid" alt="" />
+              </a>
+            </div>
+            <!-- search bar for mobile -->
+            <div class="col-7 d-flex align-items-center justify-content-center">
+              <form class="d-flex w-100" role="search">
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button
+                  class="btn btn-outline-secondary rounded-4"
+                  type="submit"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </form>
+            </div>
+            <!-- End search bar for mobile -->
+
+            <!-- button for the drop down list -->
+            <div class="col-2 d-flex align-items-center">
+              <button
+                class="col-1 border-0 navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                style="outline: none; box-shadow: none"
+              >
+                <!-- bar icon -->
+                <i class="fa-solid fa-bars fa-2x dashboard-icon-style me-2"></i>
+              </button>
+            </div>
+            <!-- button for the drop down list -->
+
+            <!-- dropdownlist Mobile -->
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    aria-current="page"
+                    href="#"
+                    ><i class="fa-solid fa-gear dashboard-icon-style me-1"></i>
+                    Dashboard</a
+                  >
+                </li>
+
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    href="#"
+                  >
+                    <i class="fa-solid fa-boxes-packing me-1"></i>
+                    <span>Orders</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1 collapsed"
+                    data-bs-toggle="collapse"
+                    href="#ui-basic"
+                    aria-expanded="false"
+                  >
+                    <i class="fa-solid fa-tags me-1"></i>
+                    <span class="menu-title">Products</span>
+                    <i class="fas fa-chevron-down float-end mt-1"></i>
+                  </a>
+                  <div class="collapse" id="ui-basic">
+                    <ul class="nav flex-column sub-menu">
+                      <li class="nav-item">
+                        <a class="nav-link text-light" href="#">
+                          <i class="fa-solid fa-pen-to-square"></i>
+                          <span>Edit</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link text-light" href="#">
+                          <i class="fa-solid fa-plus"></i>
+                          <span>Add</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    href="#"
+                  >
+                    <i class="fa-solid fa-signal"></i>
+                    <span>Analytics</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link dashboard-active" href="#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- dropdownlist Mobile -->
+          </div>
+        </div>
+      </nav>
+      <!--   Mobile body Design -->
+      <div class="mobile-layout w-100" style="padding-top: 70px">
+        <div class="container Dashboard-contaner">
+          <!-- body Header -->
+          <div class="custom-margin h-50"></div>
+          <div class="mt-5">
+            <div class="mt-3 fw-bold">
+              <h1 class="mt-5 fw-bold">Seller Dashboard</h1>
+            </div>
+          </div>
+
+          <div class="dashboard-page">
+            <!-- Mobile body four (2) content -->
+            <div class="row d-flex justify-content-evenly">
+              <!-- Total Sales -->
+              <div
+                class="col-4 mx-1 my-3 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+              >
+                <p class="fs-4 fw-bold mt-3">
+                  <i class="fa-solid fa-dollar-sign"></i><span> num</span>
+                </p>
+                <p>Total Sales</p>
+              </div>
+              <!-- Orders Today -->
+              <div
+                class="col-4 mx-1 my-3 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+              >
+                <p class="fs-4 fw-bold mt-3">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                  <span> num</span>
+                </p>
+                <p>Orders Today</p>
+              </div>
+              <!-- Active Customers -->
+              <div
+                class="col-4 mx-1 my-3 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+              >
+                <p class="fs-4 fw-bold mt-3">
+                  <i class="fa-solid fa-user"></i> <span> num</span>
+                </p>
+                <p class="mx-auto">Active Customers</p>
+              </div>
+              <!--Inventory Alerts  -->
+              <div
+                class="col-4 mx-1 my-3 d-flex flex-column align-items-center justify-content-center bg-light rounded-4 Dashboard-class-hovor"
+              >
+                <p class="fs-4 fw-bold mt-3">
+                  <i class="fa-solid fa-circle-exclamation"></i>
+                  <span> num</span>
+                </p>
+                <p>Inventory Alerts</p>
+              </div>
+            </div>
+            <!-- End Mobile body four (2) content -->
+
+            <!--  Mobile body two (1) content -->
+            <div class="row d-flex justify-content-evenly my-5">
+              <div class="col-10">
+                <div
+                  class="row d-flex justify-content-between bg-light rounded-2"
+                >
+                  <h5 class="fw-bold">Top Selling Products</h5>
+                  <table class="table table-hover bg-light">
+                    <tr>
+                      <td></td>
+                      <td>Product</td>
+                      <td class="text-end">Quantity (units)</td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa-solid fa-basket-shopping"></i></td>
+                      <td>Product-A</td>
+                      <td class="text-end">350 units</td>
+                    </tr>
+                  </table>
+                </div>
+                <!-- Low Stock Products -->
+                <div
+                  class="row d-flex justify-content-between bg-light rounded-2 my-5"
+                >
+                  <h5 class="fw-bold">Low Stock Products</h5>
+                  <table class="table table-hover bg-light">
+                    <tr>
+                      <td></td>
+                      <td>Product</td>
+                      <td class="text-end">
+                        <i class="fa-solid fa-sort-down"></i>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa-solid fa-arrow-trend-down"></i></td>
+                      <td>Product-A</td>
+                      <td class="text-end">3</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="col-10">
+                <!-- Recent Orders -->
+                <div
+                  class="row d-flex justify-content-between bg-light rounded-2"
+                >
+                  <h5 class="fw-bold">Recent Orders</h5>
+                  <table class="table table-hover bg-light">
+                    <tr>
+                      <td>Order ID</td>
+                      <td>Customer</td>
+                      <td class="text-end">Total</td>
+                    </tr>
+                    <tr>
+                      <td>#123</td>
+                      <td>Altex Brown</td>
+                      <td class="text-end">
+                        <span>999</span> <i class="fa-solid fa-dollar-sign"></i>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!-- Low Stock -->
+                <div
+                  class="row d-flex justify-content-between bg-light rounded-2 my-5"
+                >
+                  <table class="table table-hover bg-light mt-1">
+                    <tr>
+                      <td>Low Stock</td>
+                      <td class="text-end">Restock</td>
+                    </tr>
+                    <tr>
+                      <td>Product X</td>
+                      <td class="text-end">
+                        <span>num</span> <i class="fa-solid fa-dollar-sign"></i>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!-- Restock -->
+                <div
+                  class="row d-flex justify-content-between bg-light rounded-2 my-5"
+                >
+                  <table class="table table-hover bg-light mt-1">
+                    <tr>
+                      <td>Low Stock</td>
+                      <td class="text-end">Restock</td>
+                    </tr>
+                    <tr>
+                      <td>Product X</td>
+                      <td class="text-end">
+                        <button class="btn btn-outline-secondary">
+                          Restock
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- End  Mobile body two (1) content -->
+          </div>
+          <!-- orders-body-page -->
+          <div class="orders-page">
+            <div class="container">
+              <!-- Search and Filter -->
+              <div class="row mb-3">
+                <div class="col-8 pe-1">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="Search orders..."
+                  />
+                </div>
+                <div class="col-4 ps-1">
+                  <button class="btn btn-outline-secondary btn-sm w-100">
+                    <i class="fas fa-filter"></i> Filter
+                  </button>
+                </div>
+              </div>
+
+              <!-- Order Card 1 -->
+              <div class="card mb-2 border-secondary">
+                <div
+                  class="card-header bg-light p-2 d-flex justify-content-between align-items-center"
+                  data-bs-toggle="collapse"
+                  href="#orderDetails1"
+                >
+                  <div>
+                    <span class="fw-bold">#ORD12345</span>
+                    <span class="badge text-bg-warning ms-1">Pending</span>
+                    <span class="badge text-bg-success ms-1">PAID</span>
+                  </div>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapse" id="orderDetails1">
+                  <div class="card-body p-2">
+                    <div class="row small">
+                      <div class="col-6">
+                        <div>
+                          <span class="text-muted">Date:</span> 01-01-2023
+                        </div>
+                        <div>
+                          <span class="text-muted">Customer:</span> Ahmed
+                        </div>
+                      </div>
+                      <div class="col-6 text-end">
+                        <div>
+                          <span class="text-muted">Total:</span> 199
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-2">
+                      <button
+                        class="btn btn-sm btn-outline-primary me-1 py-0 px-2"
+                      >
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-secondary py-0 px-2"
+                      >
+                        <i class="fas fa-print"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Order Card 2 -->
+              <div class="card mb-2 border-secondary">
+                <div
+                  class="card-header bg-light p-2 d-flex justify-content-between align-items-center"
+                  data-bs-toggle="collapse"
+                  href="#orderDetails2"
+                >
+                  <div>
+                    <span class="fw-bold">#ORD12346</span>
+                    <span class="badge text-bg-success ms-1">Completed</span>
+                    <span class="badge text-bg-success ms-1">PAID</span>
+                  </div>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapse" id="orderDetails2">
+                  <div class="card-body p-2">
+                    <div class="row small">
+                      <div class="col-6">
+                        <div>
+                          <span class="text-muted">Date:</span> 02-01-2023
+                        </div>
+                        <div>
+                          <span class="text-muted">Customer:</span> Mohamed
+                        </div>
+                      </div>
+                      <div class="col-6 text-end">
+                        <div>
+                          <span class="text-muted">Total:</span> 250
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-2">
+                      <button
+                        class="btn btn-sm btn-outline-primary me-1 py-0 px-2"
+                      >
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-secondary py-0 px-2"
+                      >
+                        <i class="fas fa-print"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Order Card 3 -->
+              <div class="card mb-2 border-secondary">
+                <div
+                  class="card-header bg-light p-2 d-flex justify-content-between align-items-center"
+                  data-bs-toggle="collapse"
+                  href="#orderDetails3"
+                >
+                  <div>
+                    <span class="fw-bold">#ORD12347</span>
+                    <span class="badge text-bg-danger ms-1">Cancelled</span>
+                    <span class="badge text-bg-secondary ms-1">REFUNDED</span>
+                  </div>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapse" id="orderDetails3">
+                  <div class="card-body p-2">
+                    <div class="row small">
+                      <div class="col-6">
+                        <div>
+                          <span class="text-muted">Date:</span> 03-01-2023
+                        </div>
+                        <div><span class="text-muted">Customer:</span> Ali</div>
+                      </div>
+                      <div class="col-6 text-end">
+                        <div>
+                          <span class="text-muted">Total:</span> 175
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-2">
+                      <button
+                        class="btn btn-sm btn-outline-primary me-1 py-0 px-2"
+                      >
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-secondary py-0 px-2"
+                      >
+                        <i class="fas fa-print"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <nav class="mt-3">
+                <ul class="pagination pagination-sm justify-content-center">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">&laquo;</a>
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">&raquo;</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <!-- ENd orders-body-page -->
+
+          <!-- Products-body-page -->
+          <div class="Products-page">Products-page</div>
+          <!-- ENd Products-body-page -->
+
+          <!-- Analytics-body-page -->
+          <div class="Analytics-page">Analytics-page</div>
+          <!-- ENd Analytics-body-page -->
+        </div>
+      </div>
+      <!--  End Mobile body Design -->
+    </div>
+    <!-- End Mobile Design -->
+  </body>
+</html>
