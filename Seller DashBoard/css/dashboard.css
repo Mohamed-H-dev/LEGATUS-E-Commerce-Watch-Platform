@@ -76,3 +76,28 @@ body {
     display: block;
   }
 }
+
+/* Search not found message styles */
+.not-found-message {
+  padding: 2rem;
+  text-align: center;
+}
+
+.not-found-message i {
+  font-size: 3rem;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.not-found-message h4 {
+  color: #343a40;
+  margin-bottom: 0.5rem;
+}
+
+.not-found-message p {
+  color: #6c757d;
+}
+
+.clear-search-btn {
+  margin-top: 1rem;
+}

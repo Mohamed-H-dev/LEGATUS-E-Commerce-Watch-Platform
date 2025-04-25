@@ -28,6 +28,366 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // Pagination variables
+        let currentPage = 1;
+        const productsPerPage = 4;
+
+        // Add this near your other DOM element declarations
+        const desktopSearchInput = document.querySelector(
+          '.header-Dashboard-style input[type="search"]'
+        );
+        const mobileSearchInput = document.querySelector(
+          '.mobile-layout input[type="search"]'
+        );
+        const desktopSearchForm = document.querySelector(
+          ".header-Dashboard-style form"
+        );
+        const mobileSearchForm = document.querySelector(".mobile-layout form");
+
+        // Add this function to handle product searching
+        function searchProducts(searchTerm) {
+          const products = JSON.parse(localStorage.getItem("products"));
+          const sellerProducts = products.filter(
+            (p) => p.sellerId === sellerId
+          );
+
+          if (!searchTerm || searchTerm.trim() === "") {
+            // If search is empty, show all products
+            currentPage = 1;
+            loadProducts();
+            return;
+          }
+
+          // Filter products by name (case insensitive)
+          const filteredProducts = sellerProducts.filter((product) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+
+          if (filteredProducts.length === 0) {
+            // Show "not found" message
+            showNotFoundMessage(searchTerm);
+          } else {
+            // Display filtered products
+            displaySearchResults(filteredProducts);
+          }
+        }
+
+        // Add this function to show "not found" message
+        function showNotFoundMessage(searchTerm) {
+          // Clear existing content
+          productsTableBody.innerHTML = "";
+          mobileProductsList.innerHTML = "";
+
+          // Hide pagination
+          document.getElementById("desktopPagination").innerHTML = "";
+          document.getElementById("mobilePagination").innerHTML = "";
+
+          // Create "not found" message for desktop
+          const desktopMessage = document.createElement("tr");
+          desktopMessage.innerHTML = `
+    <td colspan="7" class="text-center py-4">
+      <div class="d-flex flex-column align-items-center">
+        <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+        <h4>No products found for "${searchTerm}"</h4>
+        <p class="text-muted">Try a different search term</p>
+        <button class="btn btn-outline-primary mt-2 clear-search-btn">
+          Clear Search
+        </button>
+      </div>
+    </td>
+  `;
+          productsTableBody.appendChild(desktopMessage);
+
+          // Create "not found" message for mobile
+          const mobileMessage = document.createElement("div");
+          mobileMessage.className = "list-group-item text-center py-4";
+          mobileMessage.innerHTML = `
+    <div class="d-flex flex-column align-items-center">
+      <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+      <h4>No products found for "${searchTerm}"</h4>
+      <p class="text-muted">Try a different search term</p>
+      <button class="btn btn-outline-primary mt-2 clear-search-btn">
+        Clear Search
+      </button>
+    </div>
+  `;
+          mobileProductsList.appendChild(mobileMessage);
+
+          // Add event listeners to clear search buttons
+          document.querySelectorAll(".clear-search-btn").forEach((btn) => {
+            btn.addEventListener("click", function (e) {
+              e.preventDefault();
+              desktopSearchInput.value = "";
+              mobileSearchInput.value = "";
+              currentPage = 1;
+              loadProducts();
+            });
+          });
+        }
+
+        // Add this function to display search results
+        function displaySearchResults(filteredProducts) {
+          // Reset to first page when showing search results
+          currentPage = 1;
+
+          // Update pagination controls
+          updatePaginationControls(filteredProducts.length);
+
+          // Clear existing rows
+          productsTableBody.innerHTML = "";
+          mobileProductsList.innerHTML = "";
+
+          // Get paginated results
+          const paginatedResults = paginateProducts(filteredProducts);
+
+          // Add search results to desktop table
+          paginatedResults.forEach((product) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+      <td><img src="${
+        product.image || "https://via.placeholder.com/50"
+      }" class="img-thumbnail" alt="${product.name}" width="50"></td>
+      <td>${product.name}</td>
+      <td>${product.brand}</td>
+      <td>${product.gender || "Unspecified"}</td>
+      <td>$${product.price.toFixed(2)}</td>
+      <td>
+        <span class="badge ${
+          product.stock > 10
+            ? "bg-success"
+            : product.stock > 0
+            ? "bg-warning text-dark"
+            : "bg-danger"
+        }">
+          ${product.stock > 0 ? `In Stock (${product.stock})` : "Out of Stock"}
+        </span>
+      </td>
+      <td class="text-end">
+        <a href="#" class="btn btn-sm btn-outline-primary edit-product-btn" data-id="${
+          product.id
+        }">
+          <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="#" class="btn btn-sm btn-outline-danger delete-product-btn" data-id="${
+          product.id
+        }">
+          <i class="fas fa-trash"></i> Delete
+        </a>
+      </td>
+    `;
+            productsTableBody.appendChild(row);
+          });
+
+          // Add search results to mobile list
+          paginatedResults.forEach((product) => {
+            const item = document.createElement("div");
+            item.className = "list-group-item";
+            item.innerHTML = `
+      <div class="d-flex align-items-center">
+        <img src="${
+          product.image || "https://via.placeholder.com/50"
+        }" class="img-thumbnail me-3" width="50" alt="${product.name}">
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between">
+            <h6 class="mb-1">${product.name}</h6>
+            <small>$${product.price.toFixed(2)}</small>
+          </div>
+          <div class="d-flex justify-content-between">
+            <small class="text-muted">${product.brand}</small>
+            <small class="text-muted">${product.gender || "Unspecified"}</small>
+            <span class="badge ${
+              product.stock > 10
+                ? "bg-success"
+                : product.stock > 0
+                ? "bg-warning text-dark"
+                : "bg-danger"
+            }">
+              ${product.stock > 0 ? "In Stock" : "Out of Stock"}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <a href="#" class="btn btn-sm btn-outline-primary me-1 edit-product-btn-mobile" data-id="${
+          product.id
+        }">
+          <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="#" class="btn btn-sm btn-outline-danger delete-product-btn-mobile" data-id="${
+          product.id
+        }">
+          <i class="fas fa-trash"></i> Delete
+        </a>
+      </div>
+    `;
+            mobileProductsList.appendChild(item);
+          });
+
+          // Reattach event listeners to edit/delete buttons
+          attachProductButtonListeners();
+        }
+
+        // Add this function to reattach button listeners
+        function attachProductButtonListeners() {
+          document.querySelectorAll(".edit-product-btn").forEach((btn) => {
+            btn.addEventListener("click", function (e) {
+              e.preventDefault();
+              const productId = this.getAttribute("data-id");
+              editProduct(productId);
+            });
+          });
+
+          document.querySelectorAll(".delete-product-btn").forEach((btn) => {
+            btn.addEventListener("click", function (e) {
+              e.preventDefault();
+              const productId = this.getAttribute("data-id");
+              deleteProduct(productId);
+            });
+          });
+
+          document
+            .querySelectorAll(".edit-product-btn-mobile")
+            .forEach((btn) => {
+              btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const productId = this.getAttribute("data-id");
+                editProduct(productId);
+              });
+            });
+
+          document
+            .querySelectorAll(".delete-product-btn-mobile")
+            .forEach((btn) => {
+              btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const productId = this.getAttribute("data-id");
+                deleteProduct(productId);
+              });
+            });
+        }
+
+        // Add these event listeners for search functionality
+        if (desktopSearchForm) {
+          desktopSearchForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            searchProducts(desktopSearchInput.value.trim());
+          });
+        }
+
+        if (mobileSearchForm) {
+          mobileSearchForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            searchProducts(mobileSearchInput.value.trim());
+          });
+        }
+
+        // Optional: Add real-time search as user types
+        if (desktopSearchInput) {
+          desktopSearchInput.addEventListener("input", function () {
+            searchProducts(this.value.trim());
+          });
+        }
+
+        if (mobileSearchInput) {
+          mobileSearchInput.addEventListener("input", function () {
+            searchProducts(this.value.trim());
+          });
+        }
+        // Function to paginate products
+        function paginateProducts(products) {
+          const startIndex = (currentPage - 1) * productsPerPage;
+          const endIndex = startIndex + productsPerPage;
+          return products.slice(startIndex, endIndex);
+        }
+
+        // Function to update pagination controls
+        function updatePaginationControls(totalProducts) {
+          const totalPages = Math.ceil(totalProducts / productsPerPage);
+
+          // Desktop pagination
+          const desktopPagination =
+            document.getElementById("desktopPagination");
+          if (desktopPagination) {
+            desktopPagination.innerHTML = "";
+
+            if (totalPages > 1) {
+              // Previous button
+              desktopPagination.innerHTML += `
+        <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+          <a class="page-link" href="#" data-page="${
+            currentPage - 1
+          }">&laquo;</a>
+        </li>
+      `;
+
+              // Page numbers
+              for (let i = 1; i <= totalPages; i++) {
+                desktopPagination.innerHTML += `
+          <li class="page-item ${i === currentPage ? "active" : ""}">
+            <a class="page-link" href="#" data-page="${i}">${i}</a>
+          </li>
+        `;
+              }
+
+              // Next button
+              desktopPagination.innerHTML += `
+        <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+          <a class="page-link" href="#" data-page="${
+            currentPage + 1
+          }">&raquo;</a>
+        </li>
+      `;
+            }
+          }
+
+          // Mobile pagination
+          const mobilePagination = document.getElementById("mobilePagination");
+          if (mobilePagination) {
+            mobilePagination.innerHTML = "";
+
+            if (totalPages > 1) {
+              // Previous button
+              mobilePagination.innerHTML += `
+        <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+          <a class="page-link" href="#" data-page="${
+            currentPage - 1
+          }">&laquo;</a>
+        </li>
+      `;
+
+              // Page numbers
+              for (let i = 1; i <= totalPages; i++) {
+                mobilePagination.innerHTML += `
+          <li class="page-item ${i === currentPage ? "active" : ""}">
+            <a class="page-link" href="#" data-page="${i}">${i}</a>
+          </li>
+        `;
+              }
+
+              // Next button
+              mobilePagination.innerHTML += `
+        <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+          <a class="page-link" href="#" data-page="${
+            currentPage + 1
+          }">&raquo;</a>
+        </li>
+      `;
+            }
+          }
+        }
+
+        // Event delegation for pagination clicks
+        document.addEventListener("click", function (e) {
+          if (e.target.classList.contains("page-link")) {
+            e.preventDefault();
+            const page = parseInt(e.target.getAttribute("data-page"));
+            if (!isNaN(page)) {
+              currentPage = page;
+              loadProducts();
+            }
+          }
+        });
+
         // Initialize page navigation
         const navLinks = document.querySelectorAll(
           ".navbar-nav .nav-link:not(.dropdown-item)"
@@ -291,103 +651,101 @@
         // Load products from local storage
         function loadProducts() {
           const products = JSON.parse(localStorage.getItem("products"));
+          const sellerProducts = products.filter(
+            (p) => p.sellerId === sellerId
+          );
+          const paginatedProducts = paginateProducts(sellerProducts);
+
+          // Update pagination controls
+          updatePaginationControls(sellerProducts.length);
 
           // Clear existing rows
           productsTableBody.innerHTML = "";
           mobileProductsList.innerHTML = "";
 
-          // Add products to desktop table
-          products.forEach((product) => {
-            if (product.sellerId === sellerId) {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td><img src="${
-                  product.image || "https://via.placeholder.com/50"
-                }" class="img-thumbnail" alt="${product.name}" width="50"></td>
-                <td>${product.name}</td>
-                <td>${product.brand}</td>
-                <td>$${product.price.toFixed(2)}</td>
-                <td>
-                  <span class="badge ${
-                    product.stock > 10
-                      ? "bg-success"
-                      : product.stock > 0
-                      ? "bg-warning text-dark"
-                      : "bg-danger"
-                  }">
-                    ${
-                      product.stock > 0
-                        ? `In Stock (${product.stock})`
-                        : "Out of Stock"
-                    }
-                  </span>
-                </td>
-                <td class="text-end">
-                  <a href="#" class="btn btn-sm btn-outline-primary edit-product-btn" data-id="${
-                    product.id
-                  }">
-                    <i class="fas fa-edit"></i> Edit
-                  </a>
-                  <a href="#" class="btn btn-sm btn-outline-danger delete-product-btn" data-id="${
-                    product.id
-                  }">
-                    <i class="fas fa-trash"></i> Delete
-                  </a>
-                </td>
-              `;
-              productsTableBody.appendChild(row);
-            }
+          // Add paginated products to desktop table
+          paginatedProducts.forEach((product) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+      <td><img src="${
+        product.image || "https://via.placeholder.com/50"
+      }" class="img-thumbnail" alt="${product.name}" width="50"></td>
+      <td>${product.name}</td>
+      <td>${product.brand}</td>
+      <td>${product.gender || "Unspecified"}</td>
+      <td>$${product.price.toFixed(2)}</td>
+      <td>
+        <span class="badge ${
+          product.stock > 10
+            ? "bg-success"
+            : product.stock > 0
+            ? "bg-warning text-dark"
+            : "bg-danger"
+        }">
+          ${product.stock > 0 ? `In Stock (${product.stock})` : "Out of Stock"}
+        </span>
+      </td>
+      <td class="text-end">
+        <a href="#" class="btn btn-sm btn-outline-primary edit-product-btn" data-id="${
+          product.id
+        }">
+          <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="#" class="btn btn-sm btn-outline-danger delete-product-btn" data-id="${
+          product.id
+        }">
+          <i class="fas fa-trash"></i> Delete
+        </a>
+      </td>
+    `;
+            productsTableBody.appendChild(row);
           });
 
-          // Add products to mobile list
-          products.forEach((product) => {
-            if (product.sellerId === sellerId) {
-              const item = document.createElement("div");
-              item.className = "list-group-item";
-              item.innerHTML = `
-                <div class="d-flex align-items-center">
-                  <img src="${
-                    product.image || "https://via.placeholder.com/50"
-                  }" class="img-thumbnail me-3" width="50" alt="${
-                product.name
-              }">
-                  <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between">
-                      <h6 class="mb-1">${product.name}</h6>
-                      <small>$${product.price.toFixed(2)}</small>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <small class="text-muted">${product.brand}</small>
-                      <span class="badge ${
-                        product.stock > 10
-                          ? "bg-success"
-                          : product.stock > 0
-                          ? "bg-warning text-dark"
-                          : "bg-danger"
-                      }">
-                        ${product.stock > 0 ? "In Stock" : "Out of Stock"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex justify-content-end mt-2">
-                  <a href="#" class="btn btn-sm btn-outline-primary me-1 edit-product-btn-mobile" data-id="${
-                    product.id
-                  }">
-                    <i class="fas fa-edit"></i> Edit
-                  </a>
-                  <a href="#" class="btn btn-sm btn-outline-danger delete-product-btn-mobile" data-id="${
-                    product.id
-                  }">
-                    <i class="fas fa-trash"></i> Delete
-                  </a>
-                </div>
-              `;
-              mobileProductsList.appendChild(item);
-            }
+          // Add paginated products to mobile list
+          paginatedProducts.forEach((product) => {
+            const item = document.createElement("div");
+            item.className = "list-group-item";
+            item.innerHTML = `
+      <div class="d-flex align-items-center">
+        <img src="${
+          product.image || "https://via.placeholder.com/50"
+        }" class="img-thumbnail me-3" width="50" alt="${product.name}">
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between">
+            <h6 class="mb-1">${product.name}</h6>
+            <small>$${product.price.toFixed(2)}</small>
+          </div>
+          <div class="d-flex justify-content-between">
+            <small class="text-muted">${product.brand}</small>
+            <small class="text-muted">${product.gender || "Unspecified"}</small>
+            <span class="badge ${
+              product.stock > 10
+                ? "bg-success"
+                : product.stock > 0
+                ? "bg-warning text-dark"
+                : "bg-danger"
+            }">
+              ${product.stock > 0 ? "In Stock" : "Out of Stock"}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <a href="#" class="btn btn-sm btn-outline-primary me-1 edit-product-btn-mobile" data-id="${
+          product.id
+        }">
+          <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="#" class="btn btn-sm btn-outline-danger delete-product-btn-mobile" data-id="${
+          product.id
+        }">
+          <i class="fas fa-trash"></i> Delete
+        </a>
+      </div>
+    `;
+            mobileProductsList.appendChild(item);
           });
 
-          // Add event listeners to edit and delete buttons
           document.querySelectorAll(".edit-product-btn").forEach((btn) => {
             btn.addEventListener("click", function (e) {
               e.preventDefault();
@@ -424,7 +782,6 @@
               });
             });
         }
-
         // Add a new product
         function addProduct(productData) {
           const products = JSON.parse(localStorage.getItem("products"));
@@ -443,6 +800,8 @@
             document.getElementById("editProductId").value = product.id;
             document.getElementById("editProductName").value = product.name;
             document.getElementById("editProductBrand").value = product.brand;
+            document.getElementById("editProductGender").value =
+              product.gender || "";
             document.getElementById("editProductPrice").value = product.price;
             document.getElementById("editProductStock").value = product.stock;
             document.getElementById("editProductImage").value =
@@ -465,6 +824,8 @@
               product.name;
             document.getElementById("editProductBrandMobile").value =
               product.brand;
+            document.getElementById("editProductGenderMobile").value =
+              product.gender || "";
             document.getElementById("editProductPriceMobile").value =
               product.price;
             document.getElementById("editProductStockMobile").value =
@@ -548,9 +909,10 @@
             e.preventDefault();
 
             const newProduct = {
-              id: "prod-" + Date.now(),
+              id: "#prod-" + Date.now(),
               name: document.getElementById("productName").value,
               brand: document.getElementById("productBrand").value,
+              gender: document.getElementById("productGender").value,
               price: parseFloat(document.getElementById("productPrice").value),
               stock: parseInt(document.getElementById("productStock").value),
               image: document.getElementById("productImage").value,
@@ -567,9 +929,10 @@
             e.preventDefault();
 
             const newProduct = {
-              id: "prod-" + Date.now(),
+              id: "#prod-" + Date.now(),
               name: document.getElementById("productNameMobile").value,
               brand: document.getElementById("productBrandMobile").value,
+              gender: document.getElementById("productGenderMobile").value,
               price: parseFloat(
                 document.getElementById("productPriceMobile").value
               ),
@@ -594,6 +957,7 @@
               id: document.getElementById("editProductId").value,
               name: document.getElementById("editProductName").value,
               brand: document.getElementById("editProductBrand").value,
+              gender: document.getElementById("editProductGender").value,
               price: parseFloat(
                 document.getElementById("editProductPrice").value
               ),
@@ -618,6 +982,7 @@
               id: document.getElementById("editProductIdMobile").value,
               name: document.getElementById("editProductNameMobile").value,
               brand: document.getElementById("editProductBrandMobile").value,
+              gender: document.getElementById("editProductGenderMobile").value,
               price: parseFloat(
                 document.getElementById("editProductPriceMobile").value
               ),
@@ -693,24 +1058,7 @@
                   >
                     <i class="fa-solid fa-tags me-1"></i>
                     <span class="menu-title">Products </span>
-                    <i class="fas fa-chevron-down float-end mt-1"></i>
                   </a>
-                  <div class="collapse" id="ui-basic">
-                    <ul class="nav flex-column sub-menu">
-                      <li class="nav-item">
-                        <a class="nav-link text-light" href="#">
-                          <i class="fa-solid fa-pen-to-square"></i>
-                          <span>Edit</span></a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link text-light" href="#">
-                          <i class="fa-solid fa-plus"></i>
-                          <span>Add</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
                 </li>
                 <li class="nav-item">
                   <a
@@ -972,15 +1320,18 @@
             <!-- ENd orders-body-page -->
 
             <!-- Products-body-page -->
-            <!-- Products-body-page -->
-            <div class="Products-page">
+            <div class="Products-page mb-auto">
               <!-- Products List View -->
               <div class="products-list-view">
                 <div
                   class="d-flex justify-content-between align-items-center mb-3"
                 >
                   <h2>Products</h2>
-                  <a href="#" class="btn btn-primary" id="addNewProductBtn">
+                  <a
+                    href="#"
+                    class="btn btn-outline-primary me-2"
+                    id="addNewProductBtn"
+                  >
                     <i class="fas fa-plus me-1"></i> Add New
                   </a>
                 </div>
@@ -992,6 +1343,7 @@
                         <th>Image</th>
                         <th>Name</th>
                         <th>Brand</th>
+                        <th>Gender</th>
                         <th>Price</th>
                         <th>Stock</th>
                         <th class="text-end">Actions</th>
@@ -1001,6 +1353,12 @@
                       <!-- Products will be loaded here -->
                     </tbody>
                   </table>
+                  <nav aria-label="Product pagination">
+                    <ul
+                      class="pagination justify-content-center"
+                      id="desktopPagination"
+                    ></ul>
+                  </nav>
                 </div>
               </div>
 
@@ -1018,9 +1376,19 @@
                   </a>
                 </div>
 
-                <div class="card">
+                <div
+                  class="card"
+                  style="max-height: calc(100vh - 200px); overflow-y: auto"
+                >
                   <div class="card-body">
-                    <form id="addProductForm">
+                    <form
+                      id="addProductForm"
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        min-height: 100%;
+                      "
+                    >
                       <div class="row mb-3">
                         <div class="col-md-6">
                           <label class="form-label">Product Name</label>
@@ -1044,6 +1412,18 @@
 
                       <div class="row mb-3">
                         <div class="col-md-4">
+                          <label class="form-label">Gender</label>
+                          <select
+                            class="form-select"
+                            id="productGender"
+                            required
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
                           <label class="form-label">Price</label>
                           <div class="input-group">
                             <span class="input-group-text">$</span>
@@ -1065,7 +1445,10 @@
                             required
                           />
                         </div>
-                        <div class="col-md-4">
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
                           <label class="form-label">Product Image</label>
                           <div class="input-group">
                             <input
@@ -1108,17 +1491,18 @@
                           rows="3"
                         ></textarea>
                       </div>
-
-                      <div class="d-flex justify-content-end">
-                        <a
-                          href="#"
-                          class="btn btn-outline-secondary me-2 back-to-products-btn"
-                        >
-                          Cancel
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                          <i class="fas fa-save me-1"></i> Save Product
-                        </button>
+                      <div style="margin-top: auto; padding-top: 20px">
+                        <div class="d-flex justify-content-end">
+                          <a
+                            href="#"
+                            class="btn btn-outline-secondary me-2 back-to-products-btn"
+                          >
+                            Cancel
+                          </a>
+                          <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Save Product
+                          </button>
+                        </div>
                       </div>
                     </form>
                   </div>
@@ -1139,9 +1523,19 @@
                   </a>
                 </div>
 
-                <div class="card">
+                <div
+                  class="card"
+                  style="max-height: calc(100vh - 200px); overflow-y: auto"
+                >
                   <div class="card-body">
-                    <form id="editProductForm">
+                    <form
+                      id="editProductForm"
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        min-height: 100%;
+                      "
+                    >
                       <input type="hidden" id="editProductId" />
                       <div class="row mb-3">
                         <div class="col-md-6">
@@ -1166,6 +1560,18 @@
 
                       <div class="row mb-3">
                         <div class="col-md-4">
+                          <label class="form-label">Gender</label>
+                          <select
+                            class="form-select"
+                            id="editProductGender"
+                            required
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
                           <label class="form-label">Price</label>
                           <div class="input-group">
                             <span class="input-group-text">$</span>
@@ -1187,7 +1593,10 @@
                             required
                           />
                         </div>
-                        <div class="col-md-4">
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
                           <label class="form-label">Product Image</label>
                           <div class="input-group">
                             <input
@@ -1227,16 +1636,18 @@
                         ></textarea>
                       </div>
 
-                      <div class="d-flex justify-content-end">
-                        <a
-                          href="#"
-                          class="btn btn-outline-secondary me-2 back-to-products-btn"
-                        >
-                          Cancel
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                          <i class="fas fa-save me-1"></i> Update Product
-                        </button>
+                      <div style="margin-top: auto; padding-top: 20px">
+                        <div class="d-flex justify-content-end">
+                          <a
+                            href="#"
+                            class="btn btn-outline-secondary me-2 back-to-products-btn"
+                          >
+                            Cancel
+                          </a>
+                          <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Update Product
+                          </button>
+                        </div>
                       </div>
                     </form>
                   </div>
@@ -1335,24 +1746,7 @@
                   >
                     <i class="fa-solid fa-tags me-1"></i>
                     <span class="menu-title">Products</span>
-                    <i class="fas fa-chevron-down float-end mt-1"></i>
                   </a>
-                  <div class="collapse" id="ui-basic">
-                    <ul class="nav flex-column sub-menu">
-                      <li class="nav-item">
-                        <a class="nav-link text-light" href="#">
-                          <i class="fa-solid fa-pen-to-square"></i>
-                          <span>Edit</span>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link text-light" href="#">
-                          <i class="fa-solid fa-plus"></i>
-                          <span>Add</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
                 </li>
                 <li class="nav-item">
                   <a
@@ -1723,7 +2117,7 @@
                 <h2>Products</h2>
                 <a
                   href="#"
-                  class="btn btn-primary btn-sm"
+                  class="btn btn-outline-primary btn-sm"
                   id="addNewProductBtnMobile"
                 >
                   <i class="fas fa-plus me-1"></i> Add
@@ -1733,6 +2127,12 @@
               <div class="list-group" id="mobileProductsList">
                 <!-- Products will be loaded here -->
               </div>
+              <nav aria-label="Product pagination">
+                <ul
+                  class="pagination pagination-sm justify-content-center mt-3"
+                  id="mobilePagination"
+                ></ul>
+              </nav>
             </div>
 
             <!-- Add Product Form -->
@@ -1770,6 +2170,19 @@
                         id="productBrandMobile"
                         required
                       />
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Gender</label>
+                      <select
+                        class="form-select form-select-sm"
+                        id="productGenderMobile"
+                        required
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
                     </div>
 
                     <div class="mb-3">
@@ -1891,6 +2304,19 @@
                         id="editProductBrandMobile"
                         required
                       />
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Gender</label>
+                      <select
+                        class="form-select form-select-sm"
+                        id="editProductGenderMobile"
+                        required
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
                     </div>
 
                     <div class="mb-3">
