@@ -3,42 +3,25 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <title>Swamp Time - Create Account</title>
-
+    <title>Swamp Time - Sign In</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         :root {
-
             --bg-color: #d3d3d3;
-
             --card-bg: #fcf8e8;
-
             --primary-color: #ffd24c;
-            
             --secondry-color: #fee8a7;
-
             --dark-color: #2a2a2a;
-
             --light-color: #ffffff;
-            
             --SwampTime-color: #044a28;
-            
             --text-color: #333333;
-
             --muted-color: #cccccc;
-
             --border-color: #dddddd;
-
             --translucent-bg: rgba(255, 255, 255, 0.1);
-
         }
 
         body {
@@ -67,6 +50,31 @@
             position: relative;
         }
 
+
+
+        .position-relative {
+            position: relative;
+        }
+
+        .password-visability-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .error-message {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            position: relative;
+            z-index: 1;
+        }
+
+
+
         .logo {
             font-weight: bold;
             display: inline-block;
@@ -75,68 +83,6 @@
             background-color: var(--SwampTime-color);
             color: var(--light-color);
             margin-bottom: 30px;
-        }
-
-        .task-card {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            border-radius: 10px;
-            padding: 8px 15px;
-            font-size: 14px;
-            position: absolute;
-            top: 10%;
-            right: 10%;
-            width: auto;
-        }
-
-        .calendar-box {
-            background-color: var(--translucent-bg);
-            border-radius: 10px;
-            padding: 10px;
-            position: absolute;
-            bottom: 30%;
-            right: 15%;
-        }
-
-        .calendar-day {
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .calendar-day.active {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-        }
-
-        .meeting-card {
-            background-color: var(--light-color);
-            color: var(--text-color);
-            border-radius: 10px;
-            padding: 10px;
-            position: absolute;
-            bottom: 15%;
-            left: 15%;
-            width: 200px;
-        }
-
-        .avatar-group {
-            position: absolute;
-            right: 10%;
-            bottom: 60%;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--muted-color);
-            display: inline-block;
-            margin-left: -10px;
-            border: 2px solid var(--light-color);
         }
 
         .btn-submit {
@@ -151,6 +97,7 @@
             border-radius: 25px;
             padding: 10px;
             background-color: transparent;
+            margin: 0 5px;
         }
 
         .password-visability-toggle {
@@ -166,109 +113,79 @@
             overflow: hidden;
         }
 
-        .account-type-container {
+        .divider {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .account-type-option {
-            flex: 1;
-            position: relative;
-        }
-
-        .account-type-option input[type="radio"] {
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .account-type-label {
-            display: block;
+            align-items: center;
             text-align: center;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            margin: 20px 0;
         }
 
-        .account-type-option input[type="radio"]:checked+.account-type-label {
-            background-color: var(--secondry-color);
-            border-color: var(--secondry-color);
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .divider span {
+            padding: 0 10px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .remember-me-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body>
-
     <div class="container">
         <div class="main-card row mx-auto">
-
-            <!-- <div class="position-absolute end-0 top-0 m-3">
-                <button class="btn btn-sm btn-light rounded-circle" aria-label="Close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div> -->
-
-
             <div class="col-md-5 form-side">
                 <div class="d-flex align-items-center">
                     <div class="logo">Swamp Time</div>
-                    <!-- <i class="fas fa-clock fa-2x ms-2 text-success"></i> -->
                 </div>
-                <h2 class="mb-2">Create an account</h2>
+                <h2 class="mb-4">Welcome Back!</h2>
+                <p class="text-muted mb-4">Sign in to continue to your account</p>
 
-                <form>
+                <form id="loginForm">
                     <div class="mb-3">
-                        <label for="fullName" class="form-label">Full name</label>
-                        <input type="text" class="form-control rounded-pill" id="fullName">
+                        <label for="loginEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control rounded-pill" id="loginEmail" placeholder="Enter your email">
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control rounded-pill" id="email"
-                            >
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="password" class="form-label">Password</label>
+                        <label for="loginPassword" class="form-label">Password</label>
                         <div class="position-relative">
-                            <input type="password" class="form-control rounded-pill" id="password"
-                                >
-                            <span class="password-visability-toggle">
-                                <i class="far fa-eye"></i>
-                            </span>
+                            <input type="password" class="form-control rounded-pill" id="loginPassword" placeholder="Enter your password">
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label">Account type</label>
-                        <div class="account-type-container">
-                            <div class="account-type-option">
-                                <input type="radio" name="accountType" id="seller" value="seller">
-                                <label for="seller" class="account-type-label">
-                                    <i class="fas fa-store me-2"></i>Seller
-                                </label>
-                            </div>
-                            <div class="account-type-option">
-                                <input type="radio" name="accountType" id="customer" value="customer" checked>
-                                <label for="customer" class="account-type-label">
-                                    <i class="fas fa-user me-2"></i>Customer
-                                </label>
-                            </div>
+                    <div id="loginError" class="error-message text-danger mb-3" style="display: none;"></div>
+
+                    <div class="remember-me-container">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
                         </div>
+                        <a href="#" class="text-decoration-none">Forgot Password?</a>
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-submit w-100">Submit</button>
+                        <button type="submit" class="btn btn-submit w-100">Sign In</button>
                     </div>
                 </form>
 
+              
+
                 <div class="mt-4 text-center">
-                    <small>Have any account? <a href="#" class="text-decoration-none">Sign in</a></small>
+                    <small>Don't have an account? <a href="SignUp.html" class="text-decoration-none">Sign up</a></small>
                 </div>
 
                 <div class="mt-5 text-center">
@@ -276,64 +193,18 @@
                 </div>
             </div>
 
-
-            <div class="col-md-7 p-0 preview-side  d-none d-md-block">
+            <div class="col-md-7 p-0 preview-side d-none d-md-block">
                 <div class="team-preview">
                     <img src="1.webp" alt="Team working together" class="img-fluid w-100 h-100 object-fit-cover"
                         style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;">
                 </div>
-
-<!-- 
-                <div class="task-card">
-                    <div class="fw-bold">Task Review With Team</div>
-                    <div class="small">09:30am-10:00am</div>
-                </div> -->
-
-
-                <div class="calendar-box">
-                    <!-- <div class="d-flex justify-content-around mb-2 text-center">
-                        <div class="px-2">Sun</div>
-                        <div class="px-2">Mon</div>
-                        <div class="px-2">Tue</div>
-                        <div class="px-2">Wed</div>
-                        <div class="px-2">Thu</div>
-                        <div class="px-2">Fri</div>
-                        <div class="px-2">Sat</div>
-                    </div> -->
-
-                    <!-- <div class="d-flex justify-content-around text-center">
-                        <div class="calendar-day">22</div>
-                        <div class="calendar-day">23</div>
-                        <div class="calendar-day">24</div>
-                        <div class="calendar-day active">25</div>
-                        <div class="calendar-day">26</div>
-                        <div class="calendar-day">27</div>
-                        <div class="calendar-day">28</div>
-                    </div> -->
-
-                </div>
-
-
-                <!-- <div class="meeting-card d-none d-md-block">
-                    <div class="fw-bold">Daily Meeting</div>
-                    <div class="small text-muted mb-2 ">12:00pm-01:00pm</div>
-
-                </div> -->
-
-
-                <!-- <div class="avatar-group   d-none d-md-block ">
-                    <div class="avatar"></div>
-                    <div class="avatar"></div>
-                    <div class="avatar"></div>
-                </div> -->
             </div>
         </div>
     </div>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
     <script type="module" src="SignIn.js"></script>
+    
+    <script type="module" src="Initialize.js"></script>
+    
 </body>
-
-
 </html>
