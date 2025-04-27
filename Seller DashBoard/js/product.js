@@ -24,7 +24,7 @@ export class LocalStorageManager {
   }
 
   ClearCurrentUser(products) {
-    localStorage.setItem("currentUser", "");
+    localStorage.setItem("currentUser","");
   }
   addProduct(productData) {
     const products = this.getProducts();
