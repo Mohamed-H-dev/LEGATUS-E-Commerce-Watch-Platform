@@ -133,7 +133,7 @@
                 name:productData.name,
                 price:productData.price,
                 quantity:quantity,
-                image:document.getElementById("mainImg"),
+                image:document.getElementById("mainImg").src,
                 totalPrice:productData.price*quantity
             };
             //check if the product already in the cart
@@ -156,7 +156,7 @@
                 name:productData.name,
                 price:productData.price,
                 quantity:quantity,
-                image:document.getElementById("mainImg"),
+                image:document.getElementById("mainImg").src,
                 totalPrice:productData.price*quantity
             };
             localStorage.setItem("checkout",JSON.stringify(checkoutItem));
