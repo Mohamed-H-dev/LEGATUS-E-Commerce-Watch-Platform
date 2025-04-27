@@ -84,9 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = result.user;
         
         if (user.role === 'seller') {
-          window.location.href = 'testpageseller.html';
+          window.location.href = '../Seller DashBoard/SellerDashboard.html';
         } else if (user.role === 'customer') {
-          window.location.href = 'testpage.html';
+          window.location.href = '../index.html';
         } else if (user.role === 'admin') {
           window.location.href = 'testpage.html';
         }

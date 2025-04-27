@@ -16,7 +16,7 @@ export class AccessControl {
                     "/index.html",
                     "/Sign.html",
                     "/SignUp.html",
-                    "/testpage.html",
+                    "../index.html",
                     "/checkout.html",
                     "/add-to-cart.html"
                 ],
@@ -24,7 +24,7 @@ export class AccessControl {
                     "/index.html",
                     "/Sign.html",
                     "/SignUp.html",
-                    "/testpageseller.html"
+                    "../Seller DashBoard/SellerDashboard.html"
                 ],
                 admin: [
                     "/index.html",
@@ -58,9 +58,9 @@ export class AccessControl {
                 if (!isAllowed) {
                     // Redirect to appropriate page based on role here 
                     if (userRole === "customer") {
-                        window.location.href = "testpage.html";
+                        window.location.href = "../index.html";
                     } else if (userRole === "seller") {
-                        window.location.href = "testpageseller.html";
+                        window.location.href = "../Seller DashBoard/SellerDashboard.html";
                     } else if (userRole === "admin") {
                         window.location.href = "admin.html";
                     
