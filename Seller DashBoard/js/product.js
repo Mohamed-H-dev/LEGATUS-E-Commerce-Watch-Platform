@@ -12,11 +12,20 @@ export class LocalStorageManager {
   getProducts() {
     return JSON.parse(localStorage.getItem("products"));
   }
+  getUserAuthentication(){
+    return JSON.parse(localStorage.getItem("users"));
+  }
+  getCurrentUser(){
+    return JSON.parse(localStorage.getItem("currentUser"));
+  }
 
   setProducts(products) {
     localStorage.setItem("products", JSON.stringify(products));
   }
 
+  ClearCurrentUser(products) {
+    localStorage.setItem("currentUser", "");
+  }
   addProduct(productData) {
     const products = this.getProducts();
     products.push(productData);
