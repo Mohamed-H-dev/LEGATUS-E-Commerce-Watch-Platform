@@ -54,10 +54,14 @@ export class LocalStorageManager {
         const allProducts = this.storageManager.getProducts();
       
         // Filter products that belong to current user
-        const userProducts = allProducts.filter(product => {
-          return product.username === currentUser?.name;
+        const userProducts = allProducts.filter(item => {
+          return item.userId === currentUser?.id;
         });
-      
+
+
+        
+
+
     
         userProducts.forEach((item, index) => {
           this.renderDesktopItem(item, index);
@@ -89,7 +93,6 @@ export class LocalStorageManager {
             style="max-width: 60px"
             product-name="${product.name}"
             product-id="${product.id}"
-            product-color="${product.color}"
             product-image="${product.image}"
             product-price="${product.price}"
             product-quantity-in-cart="${product.quantity_in_cart}"
@@ -98,7 +101,6 @@ export class LocalStorageManager {
           <div>
             <p class="product-name mb-1 fw-bold">${product.name}</p>
             <p class="product-id mb-1 small text-muted">ID: ${product.id}</p>
-            <p class="product-color small text-muted">Color: ${product.color}</p>
           </div>
         </td>
         <td class="product-price text-center">${product.price}</td>
@@ -144,7 +146,6 @@ export class LocalStorageManager {
                 class="product-img-mobile img-fluid"
                 product-name="${product.name}"
                 product-id="${product.id}"
-                product-color="${product.color}"
                 product-image="${product.image}"
                 product-price="${product.price}"
                 product-quantity-in-cart="${product.quantity_in_cart}"
@@ -156,7 +157,6 @@ export class LocalStorageManager {
                 <div>
                   <p class="product-name mb-1 fw-bold">${product.name}</p>
                   <p class="product-id mb-1 small text-muted">ID: ${product.id}</p>
-                  <p class="product-color small text-muted mb-2">Color: ${product.color}</p>
                 </div>
                 <button class="btn btn-sm btn-danger delete-item align-self-start" data-index="${index}">
                   <i class="fa-solid fa-xmark"></i>       
@@ -196,7 +196,6 @@ export class LocalStorageManager {
         const product = {
           name: img.getAttribute('product-name'),
           id: img.getAttribute('product-id'),
-          color: img.getAttribute('product-color'),
           price: parseFloat(img.getAttribute('product-price').split(' ')[0]),
           quantity: parseInt(img.getAttribute('product-quantity-in-cart')),
           maxQuantity: parseInt(img.getAttribute('product-max-quantity')),
