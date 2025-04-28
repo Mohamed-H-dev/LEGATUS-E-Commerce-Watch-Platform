@@ -7,7 +7,7 @@ window.addEventListener('load', ()=>{
   const allProducts = JSON.parse(loadProd);  */
 
  const storageManager = new LocalStorageManager();
- const sampleProducts = [{
+/*  const sampleProducts = [{
   "id": 1,
   "name": "Analog Watch International",
   "image": "watches images/Analog watch International Watch.png",
@@ -128,7 +128,7 @@ window.addEventListener('load', ()=>{
   "description": "Mechanical automatic movement with exhibition caseback. Skeletonized dial showing the intricate movement."
 }];
 
-storageManager.setProducts(sampleProducts)
+storageManager.setProducts(sampleProducts) */
   let allprod = storageManager.getProducts();
     console.log(allprod)
     allprod.forEach(data =>{
