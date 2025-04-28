@@ -99,6 +99,7 @@
             </div>
         </div>
     </div> 
+    <div id="messageBox" style="color: red; margin-top: 10px; font-weight: bold;"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script> 
 
     <script>
@@ -140,39 +141,52 @@
             document.querySelectorAll('.thumb-img').forEach(img => img.classList.remove('active'));
             el.classList.add('active');
         }
-            function addToCart() {
-        const quantity = parseInt(document.getElementById("quantity").value);
-        let cart = JSON.parse(localStorage.getItem("Cart")) || [];
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        let currentUserId = users.Length> 0 ? users[0].id:null;
-        if (!currentUserId) {
-        alert("No user found. Please log in first.");
-        return;
-    }
-    console.log(currentUserId)
-        let item = {
-        "userId":currentUserId,
-        "product":{
-            name: productData.name,
-            id: productData.id,
-            image: document.getElementById("mainImg").src,
-            price: productData.price,
-            quantity_in_cart: quantity,
-            max_quantity:4
-           }
-        };
-        const existingItemIndex = cart.findIndex(cartItem => cartItem.id === item.id);
-        if (existingItemIndex !== -1) {
-            cart[existingItemIndex].quantity += quantity;
-            cart[existingItemIndex].totalPrice = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
-        } else {
-            cart.push(item);
+        function addToCart() {
+            const quantity = parseInt(document.getElementById("quantity").value);
+
+            // Get cart and current user from localStorage
+            let cart = JSON.parse(localStorage.getItem("Cart")) || [];
+            let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+
+            // Check if a user is logged in
+            if (!currentUser || !currentUser.id) {
+                const messageBox = document.getElementById("messageBox");
+                messageBox.innerText = "⚠️ Please log in to add items to your cart.";
+                messageBox.style.display = "block";
+                return;
+            }
+
+            let currentUserId = currentUser.id; // Get the id directly
+
+            console.log(currentUserId); // Good for checking in Console
+
+            let item = {
+                userId: currentUserId,
+                product: {
+                    name: productData.name,
+                    id: productData.id,
+                    image: document.getElementById("mainImg").src,
+                    price: productData.price,
+                    quantity_in_cart: quantity,
+                    max_quantity: 4
+                }
+            };
+
+            // Find if the same product already exists in cart for the same user
+            const existingItemIndex = cart.findIndex(cartItem => 
+                cartItem.userId === item.userId && cartItem.product.id === item.product.id
+            );
+
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex].product.quantity_in_cart += quantity;
+            } else {
+                cart.push(item);
+            }
+
+            localStorage.setItem("Cart", JSON.stringify(cart));
+            window.location.href = '../Shopping Cart/index.html';
         }
 
-        localStorage.setItem("Cart", JSON.stringify(cart));
-        window.location.href = '../Shopping Cart/index.html';
-
-    }
 
         function BuyNow(){
             const quantity=parseInt(document.getElementById("quantity").value);
