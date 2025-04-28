@@ -1,204 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProductDetails</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
     <style>
-        :root {
-            --primary-color: #1a1a1a;
-            --accent-color: #c4a47c;
-            --light-gray: #f8f9fa;
-            --medium-gray: #e9ecef;
-            --dark-gray: #495057;
-        }
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            color: var(--primary-color);
-            background-color: #ffffff;
-        }
-        .thumb-img{
-            width: 70px;
-            height: 70px;
-            margin-right: 20px;
-            object-fit: cover;
-            margin-top: 10px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 0.5rem;
-        }
-        .thumb-img.active {
-            border: 2px solid black;
-            transform: scale(1.05);
-        }
-        .main-image {
-            max-width: 400px;
-            max-height: 400px;
-            object-fit: contain;
-            border-radius: 0.5rem;
-        }
-        .btn-outline-black{
-            border: 2px solid black;
-            background-color: transparent;
-            color: black;
-            font-weight: 500 ;
-            width: 200px;
-            transition: 0.3s;
-            padding: 10px 30px;
-        }
-        .btn-outline-black:hover{
-            background-color: black;
-            color: white;
-        }
-        .btn-black{
-            background-color: black;
-            color: white;
-            font-weight: 500 ;
-            width: 200px;
-            transition: 0.3s;
-            padding: 10px 30px;
-        }
-        .btn-black:hover{
-            background-color: transparent;
-            color: black;
-            border: 2px solid black;
-        }
+      :root {
+        --primary-color: #1a1a1a;
+        --accent-color: #c4a47c;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+        --dark-gray: #495057;
+      }
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        color: var(--primary-color);
+        background-color: #ffffff;
+      }
+      .thumb-img {
+        width: 70px;
+        height: 70px;
+        margin-right: 20px;
+        object-fit: cover;
+        margin-top: 10px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 0.5rem;
+      }
+      .thumb-img.active {
+        border: 2px solid black;
+        transform: scale(1.05);
+      }
+      .main-image {
+        max-width: 400px;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 0.5rem;
+      }
+      .btn-outline-black {
+        border: 2px solid black;
+        background-color: transparent;
+        color: black;
+        font-weight: 500;
+        width: 200px;
+        transition: 0.3s;
+        padding: 10px 30px;
+      }
+      .btn-outline-black:hover {
+        background-color: black;
+        color: white;
+      }
+      .btn-black {
+        background-color: black;
+        color: white;
+        font-weight: 500;
+        width: 200px;
+        transition: 0.3s;
+        padding: 10px 30px;
+      }
+      .btn-black:hover {
+        background-color: transparent;
+        color: black;
+        border: 2px solid black;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <div class=" py-5 mt-lg-5">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="text-center">
-                    <img id="mainImg" src="OIP (6).jpg" class="img-fluid main-image" alt="mian">
-                </div>
-                <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
-                    <img src="OIP (6).jpg" class="thumb-img active" alt="main" onclick="changeImage(this)">
-                    <img src="2c64210fc043d183b992ac5a74b436d3--good-watches-watches-for-men.jpg" class="thumb-img" alt="" onclick="changeImage(this)">
-                    <img src="9TnyPfWjmo1NoljU4gqBHR0sPlQ2b9nq81k5ezYKa_c.webp" class="thumb-img" alt="..." onclick="changeImage(this)">
-                    <img src="AB011011-C788-375A-8640.jpg" class="thumb-img" alt="..." onclick="changeImage(this)">                    
-                </div>
-            </div>
-            <div class="col-md-6">
-                <h1 id="watch_name">Watch1</h1>
-                <h3 id="watch_price" class="text-danger mb-3">$20.000</h3>
-                <h6>Description</h6>
-                <p id="watch_description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima sint, velit illum tempora molestiae rerum exercitationem aperiam quidem sequi eligendi officiis suscipit nam dignissimos eum quod, consequatur ratione eveniet fuga!</p>
-                <div class="mt-5 d-flex gap-3 ">
-                    <button class="btn btn-outline-black" onclick="addToCart()">ADD TO CART</button>
-                    <button class="btn btn-black" onclick="BuyNow()">Buy Now</button>
-                </div>
-                <label for="quantity">Quantity:</label>
-                <div class="input-group w-50">
-                    <button class="btn btn-outline-secondary" type="button" onclick="minus()">-</button>
-                    <input type="text" class="form-control text-center" id="quantity" value="5">
-                    <button class="btn btn-outline-secondary"  type="button" onclick="plus()">+</button>
-                </div>
-            </div>
+  <body>
+    <div class="py-5 mt-lg-5">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="text-center">
+            <img
+              id="mainImg"
+              src="OIP (6).jpg"
+              class="img-fluid main-image"
+              alt="mian"
+            />
+          </div>
+          <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
+            <img
+              src="OIP (6).jpg"
+              class="thumb-img active"
+              alt="main"
+              onclick="changeImage(this)"
+            />
+            <img
+              src="2c64210fc043d183b992ac5a74b436d3--good-watches-watches-for-men.jpg"
+              class="thumb-img"
+              alt=""
+              onclick="changeImage(this)"
+            />
+            <img
+              src="9TnyPfWjmo1NoljU4gqBHR0sPlQ2b9nq81k5ezYKa_c.webp"
+              class="thumb-img"
+              alt="..."
+              onclick="changeImage(this)"
+            />
+            <img
+              src="AB011011-C788-375A-8640.jpg"
+              class="thumb-img"
+              alt="..."
+              onclick="changeImage(this)"
+            />
+          </div>
         </div>
-    </div> 
-    <div id="messageBox" style="color: red; margin-top: 10px; font-weight: bold;"></div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script> 
+        <div class="col-md-6">
+          <h1 id="watch_name">Watch1</h1>
+          <h3 id="watch_price" class="text-danger mb-3">$20.000</h3>
+          <h6>Description</h6>
+          <p id="watch_description">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima
+            sint, velit illum tempora molestiae rerum exercitationem aperiam
+            quidem sequi eligendi officiis suscipit nam dignissimos eum quod,
+            consequatur ratione eveniet fuga!
+          </p>
+          <div class="mt-5 d-flex gap-3">
+            <button class="btn btn-outline-black" onclick="addToCart()">
+              ADD TO CART
+            </button>
+            <button class="btn btn-black" onclick="BuyNow()">Buy Now</button>
+          </div>
+          <label for="quantity">Quantity:</label>
+          <div class="input-group w-50">
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="minus()"
+            >
+              -
+            </button>
+            <input
+              type="text"
+              class="form-control text-center"
+              id="quantity"
+              value="5"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="plus()"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="messageBox"
+      style="color: red; margin-top: 10px; font-weight: bold"
+    ></div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+      crossorigin="anonymous"
+    ></script>
 
     <script>
-        const productData={
-            id:"WTC-001",
-            name:"Watch1",
-            price:20.000,
-            image:"OIP (6).jpg"
+      const productData = {
+        id: "WTC-001",
+        name: "Watch1",
+        price: 20.0,
+        image: "OIP (6).jpg",
+      };
+
+      //get curnt [product data]
+      const productId = localStorage.getItem("currentProduct");
+      //Find that product in your list
+      const allProducts = JSON.parse(localStorage.getItem("products"));
+      const product = allProducts.find((p) => p.id == productId);
+      console.log("Image path:", product.image);
+      document.getElementById("mainImg").src = product.image;
+      document.getElementById("watch_name").textContent = product.name;
+      document.getElementById("watch_price").textContent = product.price;
+      document.getElementById("watch_description").textContent =
+        product.description;
+      const input = document.getElementById("quantity"); //reading the quantity
+      let value = parseInt(input.value); //parse into integer
+
+      function minus() {
+        if (value > 1) {
+          //check if it's bigger than one
+          input.value = value - 1; //input.value to update the value of the input ..just value will the update the variable but not the input
         }
-        
-        
+      }
+      function plus() {
+        input.value = value + 1;
+      }
+      function changeImage(el) {
+        document.getElementById("mainImg").src = el.src;
+        document
+          .querySelectorAll(".thumb-img")
+          .forEach((img) => img.classList.remove("active"));
+        el.classList.add("active");
+      }
+      function addToCart() {
+        const quantity = parseInt(document.getElementById("quantity").value);
 
-         //get curnt [product data]
-        const productId= localStorage.getItem('currentProduct');
-        //Find that product in your list
-        const allProducts = JSON.parse(localStorage.getItem('products'));
-        const product = allProducts.find(p => p.id == productId);
-        console.log("Image path:", product.image);
-        document.getElementById("mainImg").src= product.image;
-        document.getElementById("watch_name").textContent = product.name;
-        document.getElementById("watch_price").textContent = product.price;
-        document.getElementById("watch_description").textContent= product.description;
-        const input= document.getElementById("quantity"); //reading the quantity
-        let value = parseInt(input.value)  //parse into integer
+        // Get cart and current user from localStorage
+        let cart = JSON.parse(localStorage.getItem("Cart")) || [];
+        let currentUser =
+          JSON.parse(localStorage.getItem("currentUser")) || null;
 
-        function minus(){
-            if(value>1){   //check if it's bigger than one 
-                input.value= value-1;  //input.value to update the value of the input ..just value will the update the variable but not the input
-            }
-        }
-        function plus(){
-            input.value=value+1;
-        }
-        function changeImage(el) {
-            document.getElementById('mainImg').src = el.src;
-            document.querySelectorAll('.thumb-img').forEach(img => img.classList.remove('active'));
-            el.classList.add('active');
-        }
-        function addToCart() {
-            const quantity = parseInt(document.getElementById("quantity").value);
-
-            // Get cart and current user from localStorage
-            let cart = JSON.parse(localStorage.getItem("Cart")) || [];
-            let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-
-            // Check if a user is logged in
-            if (!currentUser || !currentUser.id) {
-                const messageBox = document.getElementById("messageBox");
-                messageBox.innerText = "⚠️ Please log in to add items to your cart.";
-                messageBox.style.display = "block";
-                return;
-            }
-
-            let currentUserId = currentUser.id; // Get the id directly
-
-            console.log(currentUserId); // Good for checking in Console
-
-            let item = {
-                userId: currentUserId,
-                product: {
-                    name: product.name,
-                    id: product.id,
-                    image: product.image,
-                    price: product.price,
-                    quantity_in_cart: quantity,
-                    max_quantity: 4
-                }
-            };
-
-            // Find if the same product already exists in cart for the same user
-            const existingItemIndex = cart.findIndex(cartItem => 
-                cartItem.userId === item.userId && cartItem.product.id === item.product.id
-            );
-
-            if (existingItemIndex !== -1) {
-                cart[existingItemIndex].product.quantity_in_cart += quantity;
-            } else {
-                cart.push(item);
-            }
-
-            localStorage.setItem("Cart", JSON.stringify(cart));
-            window.location.href = '../Shopping Cart/index.html';
+        // Check if a user is logged in
+        if (!currentUser || !currentUser.id) {
+          const messageBox = document.getElementById("messageBox");
+          messageBox.innerText = "⚠️ Please log in to add items to your cart.";
+          messageBox.style.display = "block";
+          return;
         }
 
+        let currentUserId = currentUser.id; // Get the id directly
 
-        function BuyNow(){
-            const quantity=parseInt(document.getElementById("quantity").value);
-            let checkoutItem={
-                id:productData.id,
-                name:productData.name,
-                price:productData.price,
-                quantity:quantity,
-                image:document.getElementById("mainImg").src,
-                totalPrice:productData.price*quantity
-            };
-            localStorage.setItem("checkout",JSON.stringify(checkoutItem));
-            window.location.href = "checkout.html";
+        // console.log(currentUserId); // Good for checking in Console
+
+        let item = {
+          userId: currentUserId,
+          product: {
+            name: product.name,
+            id: product.id,
+            image: product.image,
+            price: `${product.price} $`,
+            quantity_in_cart: quantity,
+            max_quantity: 4,
+          },
+        };
+
+        // Find if the same product already exists in cart for the same user
+        const existingItemIndex = cart.findIndex(
+          (cartItem) =>
+            cartItem.userId === item.userId &&
+            cartItem.product.id === item.product.id
+        );
+
+        if (existingItemIndex !== -1) {
+          cart[existingItemIndex].product.quantity_in_cart += quantity;
+        } else {
+          cart.push(item);
         }
 
+        localStorage.setItem("Cart", JSON.stringify(cart));
+        window.location.href = "../Shopping Cart/index.html";
+      }
+
+      function BuyNow() {
+        const quantity = parseInt(document.getElementById("quantity").value);
+        let checkoutItem = {
+          id: productData.id,
+          name: productData.name,
+          price: productData.price,
+          quantity: quantity,
+          image: document.getElementById("mainImg").src,
+          totalPrice: productData.price * quantity,
+        };
+        localStorage.setItem("checkout", JSON.stringify(checkoutItem));
+        window.location.href = "checkout.html";
+      }
     </script>
-</body>
+  </body>
 </html>

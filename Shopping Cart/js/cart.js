@@ -57,11 +57,6 @@ export class LocalStorageManager {
         const userProducts = allProducts.filter(item => {
           return item.userId === currentUser?.id;
         });
-
-
-        
-
-
     
         userProducts.forEach((item, index) => {
           this.renderDesktopItem(item, index);
