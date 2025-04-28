@@ -122,18 +122,15 @@
         document.getElementById("watch_name").textContent = product.name;
         document.getElementById("watch_price").textContent = product.price;
         document.getElementById("watch_description").textContent= product.description;
-
+        const input= document.getElementById("quantity"); //reading the quantity
+        let value = parseInt(input.value)  //parse into integer
 
         function minus(){
-            const input= document.getElementById("quantity"); //reading the quantity
-            let value = parseInt(input.value)  //parse into integer
             if(value>1){   //check if it's bigger than one 
                 input.value= value-1;  //input.value to update the value of the input ..just value will the update the variable but not the input
             }
         }
         function plus(){
-            const input= document.getElementById("quantity"); //reading the quantity
-            let value = parseInt(input.value)  //parse into integer
             input.value=value+1;
         }
         function changeImage(el) {
@@ -163,10 +160,10 @@
             let item = {
                 userId: currentUserId,
                 product: {
-                    name: productData.name,
-                    id: productData.id,
-                    image: document.getElementById("mainImg").src,
-                    price: productData.price,
+                    name: product.name,
+                    id: product.id,
+                    image: product.image,
+                    price: product.price,
                     quantity_in_cart: quantity,
                     max_quantity: 4
                 }
