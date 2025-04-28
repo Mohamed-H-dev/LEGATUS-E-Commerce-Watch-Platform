@@ -129,22 +129,38 @@ window.addEventListener('load', ()=>{
 }];
 
 storageManager.setProducts(sampleProducts) */
-  let allprod = storageManager.getProducts();
-    console.log(allprod)
-    allprod.forEach(data =>{
-              htmlContent +=` 
-            <!-- Start Product Card -->
-              <div class="card col text-center" data-product-id="${data.id}">
-                <img  id="watch_img" src="${data.image}" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title fw-normal">${data.name}</h5>
-                  <p class="h5 ">EGP ${data.price}</p>
-                </div>
-              </div>
-               <!-- End Product Card -->`
-          });
+  // let allprod = storageManager.getProducts();
+  //   console.log(allprod)
+  //   allprod.forEach(data =>{
+  //             htmlContent +=` 
+  //           <!-- Start Product Card -->
+  //             <div class="card col text-center" data-product-id="${data.id}">
+  //               <img  id="watch_img" src="${data.image}" class="card-img-top" alt="...">
+  //               <div class="card-body">
+  //                 <h5 class="card-title fw-normal">${data.name}</h5>
+  //                 <p class="h5 ">EGP ${data.price}</p>
+  //               </div>
+  //             </div>
+  //              <!-- End Product Card -->`
+  //         });
  
   
+
+          let allprod = storageManager.getProducts();
+          console.log(allprod)
+          allprod.forEach(data =>{
+                    htmlContent +=` 
+                  <!-- Start Product Card -->
+                    <div class="card col text-center" data-product-id="${data.id}">
+                      <img  id="watch_img" src="${data.image}" class="card-img-top" alt="...">
+                      <div class="card-body">
+                        <h5 class="card-title fw-normal">${data.name}</h5>
+                        <p class="h5 ">${(data.stock<=0)? "OutOf Stock" :data.price}</p>
+                      </div>
+                    </div>
+                     <!-- End Product Card -->`
+                });
+       
   
 
         container.innerHTML = htmlContent;
