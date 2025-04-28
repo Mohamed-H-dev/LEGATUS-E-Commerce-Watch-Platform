@@ -1,10 +1,9 @@
 let myJson = [
     {
-    "username": "Ahmed",
+    "userId": "1",
     "product": {
       "name": "Smart Watch",
       "id": "#12345",
-      "color": "Black",
       "image": "./img/watch1.png",
       "price": "10.90 $",
       "quantity_in_cart": 2,
@@ -12,11 +11,10 @@ let myJson = [
     }
   }
   ,{
-    "username": "Ali",
+    "userId": "1",
     "product": {
       "name": "Clasic Watch",
       "id": "#67890",
-      "color": "selver",
       "image": "./img/watch2.png",
       "price": "18.90 $",
       "quantity_in_cart": 1,
@@ -24,11 +22,10 @@ let myJson = [
     }
   }
   ,{
-    "username": "zeyad",
+    "userId": "2",
     "product": {
       "name": "modern  Watch",
       "id": "#4589",
-      "color": "brown",
       "image": "./img/watch2.png",
       "price": "10.90 $",
       "quantity_in_cart": 2,
