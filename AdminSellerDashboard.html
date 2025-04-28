@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard For Seller</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    body { background-color: #f5f7f6; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .sidebar { width: 190px; background-color: #1a1a2e; color: #fff; height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; align-items: start; }
+    .sidebar .logo { width: 100%; padding: 20px; text-align: center; }
+    .sidebar .logo img { width: 140px; }
+    .sidebar a { color: #bdc3c7; text-decoration: none; padding: 12px 16px; width: 100%; display: flex; align-items: center; gap: 8px; transition: background-color 0.3s; font-size: 0.9rem; }
+    .sidebar a:hover { background-color: #0f3460; color: #fff; }
+    .main-content { margin-left: 190px; padding: 20px; }
+    .navbar { background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .search-input { max-width: 300px; }
+    .card { border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .table-responsive { overflow-x: auto; }
+    .table-responsive table { table-layout: fixed; width: 100%; }
+    table.table-sm { margin: 0 auto; font-size: 0.85rem; }
+    .table-sm th, .table-sm td { padding: 0.5rem; text-align: center; vertical-align: middle; }
+    th { background-color: #1a1a2e; color: #fff; }
+    td { word-wrap: break-word; }
+    .btn {
+      border-radius: 12px;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .btn-reset { background-color: #0f3460; color: #fff; }
+    .btn-delete { background-color: #d63031; color: #fff; }
+    .btn-reset:hover { background-color: #1271d1; }
+    .btn-delete:hover { background-color: #f24848; }
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;  
+      flex-wrap: nowrap; 
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo"><img src="logo.png" alt="Logo"/></div>
+    <a href="AdminDashboard.html"><i class="bi bi-person"></i> Customer</a>
+    <a href="AdminProductDashboard.html"><i class="bi bi-bag"></i> Products</a>
+    <a href="AdminDashboardCustomerService.html"><i class="bi bi-people"></i> Customer Service</a>
+    <a href="homePage.html"><i class="bi bi-house-door-fill"></i> Home</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <nav class="navbar navbar-light mb-3">
+      <div class="container-fluid">
+        <div class="input-group search-input">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input id="searchInput" class="form-control" type="search" placeholder="Search by Brand" aria-label="Search">
+        </div>
+      </div>
+    </nav>
+
+    <h3 class="mb-3">Sellers Data</h3>
+
+    <div class="card p-3">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover table-sm align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Brand</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="sellerTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function renderSellers() {
+      let sellers = JSON.parse(localStorage.getItem("sellers")) || [];
+      sellers.forEach((seller, idx) => seller.id = String(idx + 1).padStart(3, '0'));
+      localStorage.setItem("sellers", JSON.stringify(sellers));
+
+      const tbody = document.getElementById("sellerTableBody");
+      tbody.innerHTML = "";
+
+      if (sellers.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td colspan="6" style="text-align:center; color: gray;">No Data Available</td>
+        `;
+        tbody.appendChild(row);
+        return;
+      }
+
+      sellers.forEach(seller => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${seller.id}</td>
+          <td>${seller.name}</td>
+          <td>${seller.phone}</td>
+          <td>${seller.email}</td>
+          <td>${seller.brand}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-reset"><i class="bi bi-arrow-clockwise"></i>R_Pass</button>
+              <button class="btn btn-delete" onclick="deleteSeller('${seller.id}')">
+                <i class="bi bi-trash"></i>Del
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function deleteSeller(id) {
+      let sellers = JSON.parse(localStorage.getItem("sellers")) || [];
+      sellers = sellers.filter(seller => seller.id !== id);
+      localStorage.setItem("sellers", JSON.stringify(sellers));
+      renderSellers();
+    }
+
+    document.getElementById("searchInput").addEventListener('input', function() {
+      const filter = this.value.trim().toLowerCase();
+      document.querySelectorAll('#sellerTableBody tr').forEach(row => {
+        const brand = row.querySelector('td:nth-child(5)').textContent.trim().toLowerCase();
+        row.style.display = brand.includes(filter) ? "" : "none";
+      });
+    });
+
+    window.onload = renderSellers;
+  </script>
+
+</body>
+</html>
