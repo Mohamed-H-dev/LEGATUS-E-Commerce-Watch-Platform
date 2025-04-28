@@ -176,23 +176,27 @@
       //Find that product in your list
       const allProducts = JSON.parse(localStorage.getItem("products"));
       const product = allProducts.find((p) => p.id == productId);
-      console.log("Image path:", product.image);
+      // console.log("Image path:", product.image);
       document.getElementById("mainImg").src = product.image;
       document.getElementById("watch_name").textContent = product.name;
       document.getElementById("watch_price").textContent = product.price;
-      document.getElementById("watch_description").textContent =
-        product.description;
+      document.getElementById("watch_description").textContent =product.description;
       const input = document.getElementById("quantity"); //reading the quantity
-      let value = parseInt(input.value); //parse into integer
 
       function minus() {
+        let value = parseInt(input.value); //parse into integer
         if (value > 1) {
           //check if it's bigger than one
           input.value = value - 1; //input.value to update the value of the input ..just value will the update the variable but not the input
         }
       }
       function plus() {
-        input.value = value + 1;
+        let value = parseInt(input.value); //parse into integer
+        if(value < product.stock){
+        input.value = value +1 ;
+        }else{
+          showMessage("You have reached the maximum stock limit.");
+        }
       }
       function changeImage(el) {
         document.getElementById("mainImg").src = el.src;
@@ -229,7 +233,7 @@
             image: product.image,
             price: `${product.price} $`,
             quantity_in_cart: quantity,
-            max_quantity: 4,
+            max_quantity: product.stock,
           },
         };
 
