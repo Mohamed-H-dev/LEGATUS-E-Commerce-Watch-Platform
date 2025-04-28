@@ -16,3 +16,6 @@ product.SelerId = 2;
 
 initDB();
 saveData('products',product);
+let productsss  = load('products')
+
+console.log(productsss)

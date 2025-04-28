@@ -19,9 +19,9 @@
             box-sizing: border-box;
         }
         :root{
-          --filter_color : #11487f;
-          --card_color : #11487f;
-          --nav_color : #11487f;
+          --filter_color : #002f5f;
+          --card_color : #002f5f;
+          --nav_color : #002f5f;
         }
         
         .accordion{
@@ -106,7 +106,7 @@
 
         .watchstxt_bg{
           height: 80px;
-          background: #11487f;
+          background: #002f5f;
           color: white;
           
         }
@@ -144,13 +144,15 @@
         }
        
         #watch_img{
-          width: 70%;
-          height: 70%;
-          object-fit: cover;
+          
+          height: 300px;
           transition: all 1s;
+          object-fit: contain;
            transform: rotate(-90deg); 
         }
         .card{
+          width: 450px;
+          height: 450px;
           align-items: center;
           border: none;
           transition: all 1s;
@@ -160,13 +162,14 @@
         }
         .card:hover{
           cursor: pointer;
-          background-color: #11487f;
+          background-color: #002f5f;
           color: white;
-        #watch_img{
-            transform: scale(1.2) translateY(-10px) rotate(0deg);
-          }
+        
           
         }
+        .card:hover #watch_img{
+            transform: scale(1.2) translateY(-10px) rotate(0deg);
+          }
     </style>
   </head>
   <body>
@@ -359,7 +362,7 @@
 
           <!-- Start Products -->
            <div class="products col-10 d-flex justify-content-center p-0">
-            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-center mt-5 p-0 m-0 w-100" id="cardswrapper">
+            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-sm-start m-5 p-0 m-0 w-100" id="cardswrapper">
             <!-- Start Product Card -->
            
              <!-- End Product Card -->
@@ -372,7 +375,7 @@
       </div>
      <!-- End Product Catalog -->
 
-      <script src="Products.js"></script>
+      <script src="Products Catalog.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
   </body>
 </html>
