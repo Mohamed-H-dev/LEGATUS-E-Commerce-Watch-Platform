@@ -1,52 +1,233 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>checkout</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-</head>
-<body>
-    <h1 class="text-center">CheckOut</h1>
-    <div class="container mt-4">
-        <div class="row">
-            <!-- Billing & Shipping Section -->
-            <div class="col-md-6">
-                <h3>Billing & Shipping</h3>
-                <form>
-                    <div class="mb-3">
-                        <label for="fullName" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="fullName" placeholder="Enter your full name">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>checkout</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+        <style>
+            .required-field::after {
+                content: " *";
+                color: red;
+                font-weight: bold;
+            }
+            .product-item {
+                border-bottom: 1px solid #eee;
+                padding: 10px 0;
+            }
+            .order-summary {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 5px;
+            }
+            .total-price {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+            .product-details {
+                flex: 1;
+        }
+        </style>
+    </head>
+    <body>
+        <h1 class="text-center my-4">CheckOut</h1>
+        <div class="container mt-4">
+            <div class="row">
+                <!-- Billing & Shipping Section -->
+                <div class="col-md-6">
+                    <h3>Billing & Shipping</h3>
+                    <form id="checkoutForm">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label required-field">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label required-field">Phone Number</label>
+                            <input type="text" class="form-control" id="phoneNumber" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="country" class="form-label required-field">Country/Region</label>
+                            <select class="form-select" id="country" required>
+                                <!--<option value="" disabled>Select your country</option>-->
+                                <!--<option selected>Egypt</option>-->
+                                <!-- Add more options as needed -->
+                                <option value="" disabled>Select Your Country</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="city" class="form-label required-field">Governorate/City</label>
+                            <input type="text" class="form-control" id="city" placeholder="Cairo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label required-field">Address</label>
+                            <textarea class="form-control" id="address" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="orderNotes" class="form-label">Order Notes</label>
+                            <textarea class="form-control" id="orderNotes" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Your Order Section -->
+                <div class="col-md-6">
+                    <h3>Your Order</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="orderSummary" class="order-summary" >
+                                <h5>Order Summary</h5>
+                                <div id=productList>
+
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between">
+                                    <span>SubTotal:</span>
+                                    <span id="subTotal">$0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Shipping:</span>
+                                    <span id="shipping">$50.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between total-price">
+                                    <span>Total:</span>
+                                    <span id="total">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="phoneNumber" class="form-label">Phone Number</label>
-                        <input type="text" class="form-control" id="phoneNumber" placeholder="Enter your phone number">
-                    </div>
-                    <div class="mb-3">
-                        <label for="country" class="form-label">Country/Region</label>
-                        <select class="form-select" id="country">
-                            <option selected>Egypt</option>
-                            <!-- Add more options as needed -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="city" class="form-label">Governorate/City</label>
-                        <input type="text" class="form-control" id="city" placeholder="Cairo">
-                    </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <textarea class="form-control" id="address" rows="2"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="orderNotes" class="form-label">Order Notes</label>
-                        <textarea class="form-control" id="orderNotes" rows="2"></textarea>
-                    </div>
-                </form>
+                </div>
             </div>
-    
-            <!-- Your Order Section -->
-    
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script> 
-</body>
-</html>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+        <script>
+            const countries = [
+                    { code: "AF", name: "Afghanistan" },
+                    { code: "AL", name: "Albania" },
+                    { code: "DZ", name: "Algeria" },
+                    { code: "EG", name: "Egypt" },
+                    { code: "US", name: "United States" },
+                    { code: "JP", name: "Japan" }
+                ];
+                const countrySelect= document.getElementById("country");
+                countries.forEach(country=>{
+                    const option = document.createElement("option")
+                    option.value=country.code;
+                    option.textContent=country.name;
+                    countrySelect.appendChild(option);
+                })
+                function getProductsFromStorage(){
+                    const cartProducts= JSON.parse(localStorage.getItem('cart'))||[];
+                    const checkOutProducts = JSON.parse(localStorage.getItem('checkout'))||[];
+                    return cartProducts.length> 0 ?cartProducts:checkOutProducts;
+                }
+
+        // Display products from local storage
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get products from local storage
+            const products = getProductsFromStorage();
+            displayProducts(products);
+            
+            // Form submission handler
+            document.getElementById('checkoutForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                if (this.checkValidity()) {
+                    // Collect form data
+                    const formData = {
+                        fullName: document.getElementById('fullName').value,
+                        phoneNumber: document.getElementById('phoneNumber').value,
+                        country: document.getElementById('country').options[document.getElementById('country').selectedIndex].text,
+                        city: document.getElementById('city').value,
+                        address: document.getElementById('address').value,
+                        orderNotes: document.getElementById('orderNotes').value
+                    };
+                    
+                    // Get the order summary values
+                    const orderSummary = {
+                        subtotal: document.getElementById('subtotal').textContent,
+                        shipping: document.getElementById('shipping').textContent,
+                        total: document.getElementById('total').textContent
+                    };
+                    
+                    // Combine with product data
+                    const orderData = {
+                        customer: formData,
+                        products: products,
+                        orderSummary: orderSummary
+                    };
+                    
+                    // Store in local storage for the confirmation page
+                    localStorage.setItem('orderData', JSON.stringify(orderData));
+                    
+                    // Redirect to confirmation page
+                    window.location.href = 'confirmation.html';
+                } else {
+                    this.classList.add('was-validated');
+                }
+            });
+        });
+
+        function displayProducts(products) {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+            
+            let subtotal = 0;
+            const shipping = 50; // Fixed $50 shipping
+            
+            if (products.length === 0) {
+                productList.innerHTML = '<p class="text-muted">No products in your cart</p>';
+                updateOrderSummary(0, shipping);
+                return;
+            }
+            
+            products.forEach(product => {
+                const price = parseFloat(product.price);
+                const quantity = parseInt(product.quantity);
+                const itemTotal = price * quantity;
+                subtotal += itemTotal;
+                
+                // Use product image if available, otherwise use placeholder
+                const imageUrl = product.image || "/api/placeholder/60/60";
+                
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
+                productItem.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <img src="${imageUrl}" alt="${product.name}" class="product-image">
+                        <div class="product-details">
+                            <h6 class="mb-0">${product.name}</h6>
+                            <small class="text-muted">Quantity: ${quantity} × $${price.toFixed(2)}</small>
+                        </div>
+                        <div class="ms-auto">
+                            <span>$${itemTotal.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                productList.appendChild(productItem);
+            });
+            
+            updateOrderSummary(subtotal, shipping);
+        }
+
+        function updateOrderSummary(subtotal, shipping) {
+            const total = subtotal + shipping;
+            
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('shipping').textContent = `$${shipping.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        </script>
+    </body>
+    </html>
