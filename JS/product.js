@@ -1,7 +1,7 @@
 
 export class Product{
     #id;
-    static #lastId;
+    static #lastId =0;
     #sellerId
     #name;
     #image;
