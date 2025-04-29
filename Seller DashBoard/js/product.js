@@ -52,4 +52,6 @@ export class LocalStorageManager {
     const products = this.getProducts();
     return products.filter((p) => p.sellerId === sellerId);
   }
+
+
 }
