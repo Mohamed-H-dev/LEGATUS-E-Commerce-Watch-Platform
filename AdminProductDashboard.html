@@ -65,6 +65,7 @@
               <th>Price</th>
               <th>Stock</th>
               <th>Seller Name</th>
+              <th>Email</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -75,42 +76,50 @@
   </div>
 
   <script>
-    function renderProducts() {
-      let products = JSON.parse(localStorage.getItem("products")) || [];
-      const tbody = document.getElementById("productTableBody");
-      tbody.innerHTML = "";
+  function renderProducts() {
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+  let users = JSON.parse(localStorage.getItem("users")) || [];
 
-      if (products.length === 0) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td colspan="7" style="text-align:center; color: gray;">No Products Available</td>`;
-        tbody.appendChild(row);
-        return;
-      }
+  const tbody = document.getElementById("productTableBody");
+  tbody.innerHTML = "";
 
-      products.forEach(product => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td><img src="${product.image}" class="product-image" alt="Product Image"></td>
-          <td>${product.name}</td>
-          <td>${product.brand}</td>
-          <td>$${parseFloat(product.price).toFixed(2)}</td>
-          <td>
-            <span class="stock-badge ${product.stock <= 5 ? 'stock-low' : 'stock-available'}">
-              In Stock (${product.stock})
-            </span>
-          </td>
-          <td>${product.sellerName || 'N/A'}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn btn-delete" onclick="deleteProduct('${product.id}')">
-                <i class="bi bi-trash"></i>Delete
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
+  if (products.length === 0) {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td colspan="8" style="text-align:center; color: gray;">No Products Available</td>`;
+    tbody.appendChild(row);
+    return;
+  }
+
+  products.forEach(product => {
+    const seller = users.find(user => user.role === "seller" && String(user.id) === String(product.sellerId));
+    
+    const sellerName = seller ? seller.name : 'N/A';
+    const sellerEmail = seller ? seller.email : 'N/A';
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><img src="${product.image}" class="product-image" alt="Product Image"></td>
+      <td>${product.name}</td>
+      <td>${product.brand}</td>
+      <td>$${parseFloat(product.price).toFixed(2)}</td>
+      <td>
+        <span class="stock-badge ${product.stock <= 5 ? 'stock-low' : 'stock-available'}">
+          In Stock (${product.stock})
+        </span>
+      </td>
+      <td>${sellerName}</td>
+      <td>${sellerEmail}</td>
+      <td>
+        <div class="action-buttons">
+          <button class="btn btn-delete" onclick="deleteProduct('${product.id}')">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
 
     function deleteProduct(id) {
       let products = JSON.parse(localStorage.getItem("products")) || [];

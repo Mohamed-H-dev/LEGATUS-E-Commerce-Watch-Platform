@@ -61,7 +61,7 @@
       <div class="container-fluid">
         <div class="input-group search-input">
           <span class="input-group-text"><i class="bi bi-search"></i></span>
-          <input id="searchInput" class="form-control" type="search" placeholder="Search by Brand" aria-label="Search">
+          <input id="searchInput" class="form-control" type="search" placeholder="Search by Name" aria-label="Search">
         </div>
       </div>
     </nav>
@@ -75,7 +75,6 @@
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Phone</th>
               <th>Email</th>
               <th>Brand</th>
               <th>Actions</th>
@@ -88,55 +87,86 @@
   </div>
 
   <script>
-    function renderSellers() {
-      let sellers = JSON.parse(localStorage.getItem("sellers")) || [];
-      sellers.forEach((seller, idx) => seller.id = String(idx + 1).padStart(3, '0'));
-      localStorage.setItem("sellers", JSON.stringify(sellers));
+  function renderSellers() {
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+  let sellers = users.filter(user => user.role === "seller");
 
-      const tbody = document.getElementById("sellerTableBody");
-      tbody.innerHTML = "";
+  sellers.forEach((seller, idx) => {
+    seller.displayId = String(idx + 1).padStart(3, '0');
 
-      if (sellers.length === 0) {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td colspan="6" style="text-align:center; color: gray;">No Data Available</td>
-        `;
-        tbody.appendChild(row);
-        return;
-      }
+    const sellerProducts = products.filter(product => product.sellerId === seller.id || product.sellerEmail === seller.email);
 
-      sellers.forEach(seller => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${seller.id}</td>
-          <td>${seller.name}</td>
-          <td>${seller.phone}</td>
-          <td>${seller.email}</td>
-          <td>${seller.brand}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn btn-reset"><i class="bi bi-arrow-clockwise"></i>R_Pass</button>
-              <button class="btn btn-delete" onclick="deleteSeller('${seller.id}')">
-                <i class="bi bi-trash"></i>Del
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
+    const uniqueBrands = [...new Set(sellerProducts.map(p => p.brand))];
+
+    seller.brands = uniqueBrands.length > 0 ? uniqueBrands.join(', ') : "-";
+  });
+
+  const tbody = document.getElementById("sellerTableBody");
+  tbody.innerHTML = "";
+
+  if (sellers.length === 0) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td colspan="6" style="text-align:center; color: gray;">No Data Available</td>
+    `;
+    tbody.appendChild(row);
+    return;
+  }
+
+  sellers.forEach(seller => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${seller.displayId}</td>
+      <td>${seller.name}</td>
+      <td>${seller.email}</td>
+      <td>${seller.brands}</td>
+      <td>
+        <div class="action-buttons">
+          <button class="btn btn-reset" onclick="resetSellerPassword('${seller.id}')"><i class="bi bi-arrow-clockwise"></i> Reset Password</button>
+          <button class="btn btn-delete" onclick="deleteSeller('${seller.id}')">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+function deleteSeller(id) {
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  users = users.filter(user => !(user.role === "seller" && String(user.id) === String(id)));
+  localStorage.setItem("users", JSON.stringify(users));
+  
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+  products = products.filter(product => String(product.sellerId) !== String(id));
+  localStorage.setItem("products", JSON.stringify(products));
+  
+  renderSellers();
+}
+
+function resetSellerPassword(id) {
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  const sellerIndex = users.findIndex(user => user.role === "seller" && String(user.id) === String(id));
+  if (sellerIndex !== -1) {
+    const newPassword = prompt("Please enter the new password:");
+    if (newPassword && newPassword.trim() !== "") {
+      users[sellerIndex].password = newPassword.trim();
+      localStorage.setItem("users", JSON.stringify(users));
+      renderSellers(); 
+      alert("Password has been successfully updated.");
+    } else {
+      alert("No new password entered.");
     }
-
-    function deleteSeller(id) {
-      let sellers = JSON.parse(localStorage.getItem("sellers")) || [];
-      sellers = sellers.filter(seller => seller.id !== id);
-      localStorage.setItem("sellers", JSON.stringify(sellers));
-      renderSellers();
-    }
+  } else {
+    alert("Seller not found.");
+  }
+}
 
     document.getElementById("searchInput").addEventListener('input', function() {
       const filter = this.value.trim().toLowerCase();
       document.querySelectorAll('#sellerTableBody tr').forEach(row => {
-        const brand = row.querySelector('td:nth-child(5)').textContent.trim().toLowerCase();
+        const brand = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
         row.style.display = brand.includes(filter) ? "" : "none";
       });
     });
