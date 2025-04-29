@@ -17,7 +17,7 @@
 
     <!-- JS -->
     <script src="./js/all.min.js"></script>
-    <!-- In your head section -->
+  
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -620,11 +620,20 @@ document.querySelector(".nav-link .Logout").addEventListener("click", function(e
       .addEventListener("change", function (e) {
         const file = e.target.files[0];
         if (file) {
+          const allowedTypes = ["image/png", "image/jpeg"];
+      if (!allowedTypes.includes(file.type)) {
+        // alert("Only PNG and JPEG images are allowed.");
+        document.querySelector(".warningCaseNotValid").innerHTML = "Only PNG and JPEG images are allowed.";
+        document.querySelector(".warningCaseNotValid").classList.add("text-danger"); 
+        e.target.value = ""; 
+        return;
+      }
           const reader = new FileReader();
           reader.onload = function (e) {
             document.getElementById("productImage").value = e.target.result;
             document.getElementById("previewImage").src = e.target.result;
             document.getElementById("imagePreview").style.display = "block";
+        document.querySelector(".warningCaseNotValid").innerHTML = ""; // Clear the warning message
           };
           reader.readAsDataURL(file);
         }
@@ -1594,6 +1603,7 @@ document.querySelector(".nav-link .Logout").addEventListener("click", function(e
                       <div class="row mb-3">
                         <div class="col-md-12">
                           <label class="form-label">Product Image</label>
+                          <p class="warningCaseNotValid"></p>
                           <div class="input-group">
                             <input
                               type="file"
