@@ -210,7 +210,7 @@
       renderCustomers();
     }
 
-    function resetCustomerPassword(id) {
+  function resetCustomerPassword(id) {
   let users = JSON.parse(localStorage.getItem("users")) || [];
   const customerIndex = users.findIndex(user => user.role === "customer" && String(user.id) === String(id));
   if (customerIndex !== -1) {
