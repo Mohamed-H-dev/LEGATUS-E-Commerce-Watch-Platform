@@ -128,7 +128,7 @@ window.addEventListener('load', ()=>{
   "description": "Mechanical automatic movement with exhibition caseback. Skeletonized dial showing the intricate movement."
 }];
 
-storageManager.setProducts(sampleProducts) */
+storageManager.setProducts(sampleProducts)  */
   // let allprod = storageManager.getProducts();
   //   console.log(allprod)
   //   allprod.forEach(data =>{
@@ -151,11 +151,11 @@ storageManager.setProducts(sampleProducts) */
           allprod.forEach(data =>{
                     htmlContent +=` 
                   <!-- Start Product Card -->
-                    <div class="card col text-center" data-product-id="${data.id}">
+                    <div class="col  card  text-center " data-product-id="${data.id}">
                       <img  id="watch_img" src="${data.image}" class="card-img-top" alt="...">
                       <div class="card-body">
                         <h5 class="card-title fw-normal">${data.name}</h5>
-                        <p class="h5 ">${(data.stock<=0)? "OutOf Stock" :data.price}</p>
+                        <p class="h5 ">${(data.stock<=0)? "OutOf Stock" :'EGP '+ data.price}</p>
                       </div>
                     </div>
                      <!-- End Product Card -->`
@@ -173,8 +173,33 @@ storageManager.setProducts(sampleProducts) */
           })//end click product card
         }
         
+        let serach = document.getElementById("search_input");
+        let Prodcutcard = document.querySelectorAll(".card");
+
+        serach.addEventListener('input', ()=>{
+          if(serach.value !==""){
+            Prodcutcard.forEach(card=>{
+              let productHead = card.querySelector('h5');
+              let productNameText = productHead.innerHTML.toLowerCase();
+              let inputText = serach.value.toLowerCase(); 
+
+              if(!productNameText.includes(inputText)) {
+                card.style.display = 'none';
+
+              }else{
+                card.style.display = 'block';
+              }
+            })
+          }else{
+            Prodcutcard.forEach(card=>{
+              card.style.display = "block";
+            })
+            
+          }
+
+        })//end of search input
       
-    });
+    });// end of load
     
    
 

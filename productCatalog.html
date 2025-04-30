@@ -49,13 +49,28 @@
         }
         .navbar-brand{
           color: white !important;
-          font-size: 50px;
+          font-size: 42px;
         }
         .nav-link{
           
           color: white !important;
         }
-
+        #search_input{
+          border: 0;
+          
+        }
+        .navbar-toggler {
+        border: none !important;
+        box-shadow: none !important;
+        }
+        #search_input:focus{
+          border: 0 !important;
+          box-shadow: none;
+        }
+        .search_icon{
+          color: #002f5f;
+        }
+        
         .banner_img{
           width: 100%;
           height: 400px;
@@ -78,14 +93,13 @@
         }
         
         .carousel-inner{
-          height: 400px;
-          position: relative;
+          
           z-index: 1; 
         }
         .carousel-item{
           width: 100%;
           position: relative;
-          bottom: 300px;
+
         }
         .carsl_img{
           width: 100%;
@@ -145,19 +159,17 @@
        
         #watch_img{
           
-          height: 300px;
           transition: all 1s;
           object-fit: contain;
+          aspect-ratio: 1/1;
+
            transform: rotate(-90deg); 
         }
         .card{
-          width: 450px;
-          height: 450px;
+          width: 18rem;
           align-items: center;
           border: none;
           transition: all 1s;
-          width: 300px;
-          
           
         }
         .card:hover{
@@ -180,7 +192,7 @@
     </div>
   </div>
     <!-- Start Nav Bar -->
-    <nav class="navbar navbar-expand-lg ">
+    <!-- <nav class="navbar navbar-expand-lg ">
       <div class="container-fluid">
         <a class="navbar-brand h1  fw-bolder ps-5" href="#">Legatus</a>
         
@@ -188,6 +200,7 @@
           <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
           <i class="fa-solid fa-user fs-4 me-2 "></i>
         </div>
+        
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -215,13 +228,74 @@
           <i class="fa-solid fa-user fs-4 me-2 "></i>
         </div>
       </div>
+    </nav> -->
+
+    <nav class="navbar navbar-expand-lg px-4 ">
+      <div class="container-fluid d-flex px-5 gap-3">
+        <a class="navbar-brand  fw-bolder m-0" href="index.html">Legatus
+          <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-4">
+            <!-- Shopping Bag Icon -->
+            <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+          
+            <!-- User Icon with Dropdown Toggle -->
+            <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-user fs-4"></i>
+            </a>
+          
+            <!-- Dropdown Menu -->
+            <ul class="dropdown-menu">
+              <li><span class="dropdown-header">Role</span></li>
+              <li><h1 class="dropdown-item-text h1 fs-6">Name</h1></li>
+              <li><a class="dropdown-item" href="#">Account</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </div></a></a>
+          <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fa-solid fa-bars text-light fs-1"></i>
+          </button>
+          <div class="collapse navbar-collapse gap-2" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto fs-5 mb-2 gap-4  mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="productCatalog.html">Shop</a>
+              </li> 
+              <li class="nav-item">
+                <a class="nav-link" href="#">Contact Us</a>
+              </li>
+            </ul>
+            <form class="d-flex align-items-center rounded  bg-white flex-grow-1" role="search">
+              <input id="search_input" class="form-control border-0 me-2" type="search" placeholder="Search" aria-label="Search">
+              <i class="fa-solid search_icon fs-5 me-2 fa-magnifying-glass"></i>
+            </form>
+        </div>
+        <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-4">
+          <!-- Shopping Bag Icon -->
+          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+        
+          <!-- User Icon with Dropdown Toggle -->
+          <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user fs-4"></i>
+          </a>
+        
+          <!-- Dropdown Menu -->
+          <ul class="dropdown-menu">
+            <li><span class="dropdown-header">Role</span></li>
+            <li><h1 class="dropdown-item-text h1 fs-6">Name</h1></li>
+            <li><a class="dropdown-item" href="#">Account</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
+          </ul>
+        </div>
+      </div>   
     </nav>
+
     <!-- End Nav Bar -->
 
     <!-- Start Banner -->
      <!-- <div class="banner_img container-fluid "> -->
-
-
 
       <div id="carouselExampleAutoplaying" class="carousel slide fixed-caruosel p-0 m-0" data-bs-ride="carousel">
         <div class="carousel-indicators">
@@ -231,14 +305,10 @@
         </div>
         <div class="carousel-inner ">
           <div class="carousel-item active">
-            <img src="images/1.jpg" class="carsl_img d-block w-100" alt="...">
+            <img src="images/4.png" class="carsl_img d-block w-100" alt="...">
           </div>
-          <div class="carousel-item ">
-            <img src="images/2.jpg" class="carsl_img d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item">
-            <img src="images/3.jpg" class="carsl_img d-block w-100" alt="...">
-          </div>
+          
+         
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -256,13 +326,13 @@
      <!-- Start Product Catalog -->
      
       <div class="container-fluid p-0" >
-        <div class="container-fluid d-flex align-items-center justify-content-center watchstxt_bg position-sticky top-0 z-1">
-          <h2 class="h1 text-center ">Legatus Watches</h2>
+        <div class="container-fluid d-flex align-items-center justify-content-center watchstxt_bg position-sticky top-0 mb-4 z-1">
+          <h2 class="h1 text-center">Legatus Watches</h2>
         </div>
         
-        <div class="row mx-auto flex-nowrap g-5 ">
+        <div class="row mx-auto bg-danger  ">
           <!-- Start Filter -->
-          <div class="filter position-sticky top-0 z-1 col-2 p-2 ">
+         <!--  <div class="filter position-sticky top-0 z-1 col-2 p-2 ">
             
             <div class="accordion " id="accordionPanelsStayOpenExample">
               <div class="accordion-item">
@@ -356,13 +426,14 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- End Filter -->
 
 
           <!-- Start Products -->
-           <div class="products col-10 d-flex justify-content-center p-0">
-            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-sm-start m-5 p-0 m-0 w-100" id="cardswrapper">
+        <div></div>
+           <div class="products col-10 bg-primary  ">
+            <div class="d-flex flex-wrap accordion row-cols-1 row-cols-md-3 row-cols-lg-5 justify-content-center justify-content-md-start  m-0 gap-2  bg-warning"  id="cardswrapper">
             <!-- Start Product Card -->
            
              <!-- End Product Card -->
@@ -371,6 +442,7 @@
            
            </div>
           <!-- End Products -->
+        </div>
         </div>
       </div>
      <!-- End Product Catalog -->
