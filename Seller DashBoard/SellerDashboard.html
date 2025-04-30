@@ -23,136 +23,300 @@
       rel="stylesheet"
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-      .chart-container {
-          width: 100%;
-          height: 300px;
-          margin: 0 auto;
-      }
-      
-      .chart-container-mobile {
-          width: 100%;
-          height: 250px;
-          margin: 0 auto;
-      }
-      
-      .legend {
-          display: flex;
-          justify-content: center;
-          margin-top: 15px;
-          flex-wrap: wrap;
-      }
-      
-      .legend-item {
-          display: flex;
-          align-items: center;
-          margin: 0 10px;
-          font-size: 14px;
-      }
-      
-      .legend-color {
-          width: 15px;
-          height: 15px;
-          border-radius: 3px;
-          margin-right: 5px;
-      }
-      
-      .chart-tooltip {
-          position: absolute;
-          background: rgba(0, 0, 0, 0.8);
-          color: white;
-          padding: 5px 10px;
-          border-radius: 5px;
-          pointer-events: none;
-          font-size: 14px;
-          z-index: 10;
-      }
-  </style>
+  
 </head>
 
 <script>
   document.addEventListener("DOMContentLoaded", async function () {
-    const { LocalStorageManager } = await import("./js/product.js");
-    const storageManager = new LocalStorageManager();
+  const { LocalStorageManager } = await import("./js/product.js");
+  const storageManager = new LocalStorageManager();
 
-   
-    // Modify your existing showPage function to call showDashboardPage when dashboard is shown
-    function showPage(pageToShow, pages) {
-      if (!pages) return;
+  // Modify your existing showPage function to call showDashboardPage when dashboard is shown
+  function showPage(pageToShow, pages) {
+    if (!pages) return;
 
-      Object.values(pages).forEach((page) => {
-        if (page) page.classList.add("d-none");
-      });
+    Object.values(pages).forEach((page) => {
+      if (page) page.classList.add("d-none");
+    });
 
-      if (pages[pageToShow.toLowerCase()]) {
-        pages[pageToShow.toLowerCase()].classList.remove("d-none");
+    if (pages[pageToShow.toLowerCase()]) {
+      pages[pageToShow.toLowerCase()].classList.remove("d-none");
 
-        // If dashboard is shown, initialize the chart
-        if (pageToShow.toLowerCase() === "dashboard") {
-          showDashboardPage();
-        }
+      // If dashboard is shown, initialize the chart
+      if (pageToShow.toLowerCase() === "dashboard") {
+        showDashboardPage();
+      }
+      // If orders page is shown, load orders
+      else if (pageToShow.toLowerCase() === "orders") {
+        showOrdersPage();
       }
     }
+  }
 
-    // Rest of your existing code...
-    // Pagination variables
-    let currentPage = 1;
-    const productsPerPage = 4;
-    //End Pagination variables
+  // Function to load and display orders
+  function loadOrders(searchTerm = '') {
+    // Get orders from localStorage
+    const orders = JSON.parse(localStorage.getItem('Orders')) || [];
+    
+    // Filter if search term exists
+    const filteredOrders = searchTerm 
+        ? orders.filter(order => order.orderId.toLowerCase().includes(searchTerm.toLowerCase()))
+        : [...orders];
+    
+    // Render orders
+    renderOrders(filteredOrders, searchTerm);
+}
 
-    //DOM to get the places where we want to display the data or to get the data from the input field
-    const desktopSearchInput = document.querySelector(
-      '.header-Dashboard-style input[type="search"]'
-    );
-    const mobileSearchInput = document.querySelector(
-      '.mobile-layout input[type="search"]'
-    );
-    const desktopSearchForm = document.querySelector(
-      ".header-Dashboard-style form"
-    );
-    const mobileSearchForm = document.querySelector(".mobile-layout form");
+function renderOrders(ordersToDisplay, searchTerm = '') {
+    // Desktop View
+    const desktopTable = document.querySelector('.orders-page table');
+    if (desktopTable) {
+        const tbody = desktopTable.querySelector('tbody') || desktopTable;
+        tbody.innerHTML = ordersToDisplay.length ? '' : `
+            <tr>
+                <td colspan="6" class="text-center py-4">
+                    <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                    <p>${searchTerm ? `No orders found for "${searchTerm}"` : 'No orders found'}</p>
+                    ${searchTerm ? `<button class="btn btn-outline-primary mt-2 clear-order-search-btn">Clear Search</button>` : ''}
+                </td>
+            </tr>
+        `;
 
-    // Add this function to handle product searching
-    function searchProducts(searchTerm) {
-      const products = storageManager.getProducts();
-      const sellerProducts = products.filter(
-        (p) => p.sellerId === sellerId
-      );
-
-      if (!searchTerm || searchTerm.trim() === "") {
-        // If search is empty, show all products
-        currentPage = 1;
-        loadProducts();
-        return;
-      }
-
-      // Filter products by name (case insensitive)
-      const filteredProducts = sellerProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-      if (filteredProducts.length === 0) {
-        // Show "not found" message
-        showNotFoundMessage(searchTerm);
-      } else {
-        // Display filtered products
-        displaySearchResults(filteredProducts);
-      }
+        // Render each order (newest first)
+        ordersToDisplay.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)).forEach(order => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${order.orderId}</td>
+                <td>${new Date(order.orderDate).toLocaleDateString()}</td>
+                <td>${order.userId}</td>
+                <td>
+                    <select class="form-select form-select-sm status-select" data-order-id="${order.orderId}">
+                        <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                        <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                </td>
+                <td>
+                    <span class="badge ${order.paymentStatus === 'paid' ? 'bg-success' : 'bg-danger'}">
+                        ${order.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}
+                    </span>
+                </td>
+                <td>$ <strong class="text-end money ${getStatusColorClass(order.status)}">${order.totalAmmount}</strong></td>
+            `;
+            tbody.appendChild(row);
+        });
     }
 
-    // Add this function to show "not found" message
-    function showNotFoundMessage(searchTerm) {
-      // Clear existing content
-      productsTableBody.innerHTML = "";
-      mobileProductsList.innerHTML = "";
+    // Mobile View - similar changes needed here
+    const mobileOrdersContainer = document.querySelector('.mobile-layout .orders-page .container');
+    if (mobileOrdersContainer) {
+        ordersToDisplay.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)).forEach((order, index) => {
+            const card = document.createElement('div');
+            card.className = 'card mb-2 border-secondary';
+            card.setAttribute('data-order-id', order.orderId);  
+            card.innerHTML = `
+                <div class="card-header bg-light p-2 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#mobileOrderDetails${index}">
+                    <div>
+                        <span class="fw-bold">${order.orderId}</span>
+                        <span class="badge ${getStatusBadgeClass(order.status)} ms-1">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+                        <span class="badge ${order.paymentStatus === 'paid' ? 'text-bg-success' : 'text-bg-danger'} ms-1">${order.paymentStatus === 'paid' ? 'PAID' : 'UNPAID'}</span>
+                    </div>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapse" id="mobileOrderDetails${index}">
+                    <div class="card-body p-2">
+                        <div class="row">
+                            <div class="col-6">
+                                <p><strong>Date:</strong> ${new Date(order.orderDate).toLocaleDateString()}</p>
+                                <p><strong>Customer:</strong> ${order.userId}</p>
+                            </div>
+                            <div class="col-6 text-end">
+                               <p><strong>Total:</strong> 
+                                   <span class="money ${getStatusColorClass(order.status)}">$${order.totalAmmount}</span>
+                              </p>  
 
-      // Hide pagination
-      document.getElementById("desktopPagination").innerHTML = "";
-      document.getElementById("mobilePagination").innerHTML = "";
+                              <select class="form-select form-select-sm status-select" data-order-id="${order.orderId}">
+                                    <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                                    <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            mobileOrdersContainer.appendChild(card);
+        });
+    }
+}
 
-      // Create "not found" message for desktop
-      const desktopMessage = document.createElement("tr");
-      desktopMessage.innerHTML = `
+
+
+function getStatusBadgeClass(status) {
+    switch(status) {
+        case 'processing': return 'text-bg-warning';
+        case 'shipped': return 'text-bg-success';
+        case 'cancelled': return 'text-bg-danger';
+        default: return 'text-bg-secondary';
+    }
+}
+
+
+function updateOrderStatus(orderId, newStatus) {
+  const orders = storageManager.getSellerOrders(sellerId);
+  const orderIndex = orders.findIndex(o => o.orderId === orderId);
+  
+  if (orderIndex !== -1) {
+    orders[orderIndex].status = newStatus;
+    storageManager.saveSellerOrders(sellerId, orders);
+    
+    document.querySelectorAll(`[data-order-id="${orderId}"]`).forEach(el => {
+      if (el.classList.contains('money')) {
+        el.className = `money ${getStatusColorClass(newStatus)}`;
+      }
+    });
+    
+    document.querySelectorAll(`.card[data-order-id="${orderId}"] .money`).forEach(el => {
+      el.className = `money ${getStatusColorClass(newStatus)}`;
+    });
+  }
+}
+function updateOrderUI(orderId, newStatus) {
+    document.querySelectorAll(`select[data-order-id="${orderId}"]`).forEach(select => {
+        select.value = newStatus;
+    });
+    
+    document.querySelectorAll(`[data-order-id="${orderId}"] .badge`).forEach(badge => {
+        badge.className = `badge ${getStatusBadgeClass(newStatus)}`;
+        badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+    });
+    
+    document.querySelectorAll(`[data-order-id="${orderId}"] .money`).forEach(money => {
+        money.className = `money ${getStatusColorClass(newStatus)}`;
+    });
+}
+function updateOrderUI(orderId, newStatus) {
+    // Update status dropdown
+    document.querySelectorAll(`select[data-order-id="${orderId}"]`).forEach(select => {
+        select.value = newStatus;
+    });
+    
+    // Update status badge
+    document.querySelectorAll(`[data-order-id="${orderId}"] .badge`).forEach(badge => {
+        badge.className = `badge ${getStatusBadgeClass(newStatus)}`;
+        badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+    });
+    
+    // Update total amount color
+    document.querySelectorAll(`[data-order-id="${orderId}"] .money`).forEach(money => {
+        money.className = `money ${getStatusColorClass(newStatus)}`;
+    });
+}
+
+
+// Helper function to get color class based on status
+function getStatusColorClass(status) {
+    switch(status) {
+        case 'processing': return 'text-warning'; 
+        case 'shipped':    return 'text-success'; 
+        case 'cancelled':  return 'text-danger';  
+        default:           return 'text-secondary';
+    }
+}
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('status-select')) {
+        const orderId = e.target.getAttribute('data-order-id');
+        const newStatus = e.target.value;
+        updateOrderStatus(orderId, newStatus); // Updates localStorage + UI
+    }
+});
+
+
+function showOrdersPage() {
+    loadOrders();
+  }
+
+  function updateDashboardStats() {
+  const orders = storageManager.getSellerOrders(sellerId);
+  
+  // Calculate total sales (including shipping)
+  const totalSales = orders.reduce((total, order) => {
+    const sellerProducts = order.products.filter(p => p.userId == sellerId);
+    const productsTotal = sellerProducts.reduce((sum, product) => {
+      const price = typeof product.product.price === 'string' 
+        ? parseFloat(product.product.price.replace(/[^0-9.]/g, '')) || 0
+        : product.product.price || 0;
+      return sum + (price * (product.quantity_in_cart || 1));
+    }, 0);
+    return total + productsTotal + (parseFloat(order.shipping || 0) || 0);
+  }, 0);
+  
+  // Rest of your function remains the same...
+}
+
+
+  function showDashboardPage() {
+    updateDashboardStats();
+  }
+
+  // Pagination variables
+let currentPage = 1;
+const productsPerPage = 4;
+  //End Pagination variables
+
+  //DOM to get the places where we want to display the data or to get the data from the input field
+  const desktopSearchInput = document.querySelector(
+    '.header-Dashboard-style input[type="search"]'
+  );
+  const mobileSearchInput = document.querySelector(
+    '.mobile-layout input[type="search"]'
+  );
+  const desktopSearchForm = document.querySelector(
+    ".header-Dashboard-style form"
+  );
+  const mobileSearchForm = document.querySelector(".mobile-layout form");
+
+  // Add this function to handle product searching
+  function searchProducts(searchTerm) {
+    const products = storageManager.getProducts();
+    const sellerProducts = products.filter(
+      (p) => p.sellerId === sellerId
+    );
+
+    if (!searchTerm || searchTerm.trim() === "") {
+      // If search is empty, show all products
+      currentPage = 1;
+      loadProducts();
+      return;
+    }
+
+    // Filter products by name (case insensitive)
+    const filteredProducts = sellerProducts.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (filteredProducts.length === 0) {
+      // Show "not found" message
+      showNotFoundMessage(searchTerm);
+    } else {
+      // Display filtered products
+      displaySearchResults(filteredProducts);
+    }
+  }
+
+  // Add this function to show "not found" message
+  function showNotFoundMessage(searchTerm) {
+    // Clear existing content
+    productsTableBody.innerHTML = "";
+    mobileProductsList.innerHTML = "";
+
+    // Hide pagination
+    document.getElementById("desktopPagination").innerHTML = "";
+    document.getElementById("mobilePagination").innerHTML = "";
+
+    // Create "not found" message for desktop
+    const desktopMessage = document.createElement("tr");
+    desktopMessage.innerHTML = `
     <td colspan="7" class="text-center py-4">
       <div class="d-flex flex-column align-items-center">
         <i class="fas fa-search fa-3x mb-3 text-muted"></i>
@@ -164,12 +328,12 @@
       </div>
     </td>
   `;
-      productsTableBody.appendChild(desktopMessage);
+    productsTableBody.appendChild(desktopMessage);
 
-      // Create "not found" message for mobile
-      const mobileMessage = document.createElement("div");
-      mobileMessage.className = "list-group-item text-center py-4";
-      mobileMessage.innerHTML = `
+    // Create "not found" message for mobile
+    const mobileMessage = document.createElement("div");
+    mobileMessage.className = "list-group-item text-center py-4";
+    mobileMessage.innerHTML = `
     <div class="d-flex flex-column align-items-center">
       <i class="fas fa-search fa-3x mb-3 text-muted"></i>
       <h4>No products found for "${searchTerm}"</h4>
@@ -179,42 +343,42 @@
       </button>
     </div>
   `;
-      mobileProductsList.appendChild(mobileMessage);
+    mobileProductsList.appendChild(mobileMessage);
 
-      // Add event listeners to clear search buttons
-      document.querySelectorAll(".clear-search-btn").forEach((btn) => {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          desktopSearchInput.value = "";
-          mobileSearchInput.value = "";
-          currentPage = 1;
-          loadProducts();
-        });
+    // Add event listeners to clear search buttons
+    document.querySelectorAll(".clear-search-btn").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        desktopSearchInput.value = "";
+        mobileSearchInput.value = "";
+        currentPage = 1;
+        loadProducts();
       });
-    }
+    });
+  }
 
-    // Add this function to display search results
-    function displaySearchResults(filteredProducts) {
-      // Reset to first page when showing search results
-      currentPage = 1;
+  // Add this function to display search results
+  function displaySearchResults(filteredProducts) {
+    // Reset to first page when showing search results
+    currentPage = 1;
 
-      // Update pagination controls
-      updatePaginationControls(filteredProducts.length);
+    // Update pagination controls
+    updatePaginationControls(filteredProducts.length);
 
-      // Clear existing rows
-      productsTableBody.innerHTML = "";
-      mobileProductsList.innerHTML = "";
+    // Clear existing rows
+    productsTableBody.innerHTML = "";
+    mobileProductsList.innerHTML = "";
 
-      // Get paginated results
-      const paginatedResults = paginateProducts(filteredProducts);
+    // Get paginated results
+    const paginatedResults = paginateProducts(filteredProducts);
 
-      // Add search results to desktop table
-      paginatedResults.forEach((product) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
+    // Add search results to desktop table
+    paginatedResults.forEach((product) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
       <td><img src="${product.image}" class="img-thumbnail" alt="${
-          product.name
-        }" width="50"></td>
+        product.name
+      }" width="50"></td>
       <td>${product.name}</td>
       <td>${product.brand}</td>
       <td>${product.gender || "Unspecified"}</td>
@@ -247,14 +411,14 @@
         </a>
       </td>
     `;
-        productsTableBody.appendChild(row);
-      });
+      productsTableBody.appendChild(row);
+    });
 
-      // Add search results to mobile list
-      paginatedResults.forEach((product) => {
-        const item = document.createElement("div");
-        item.className = "list-group-item";
-        item.innerHTML = `
+    // Add search results to mobile list
+    paginatedResults.forEach((product) => {
+      const item = document.createElement("div");
+      item.className = "list-group-item";
+      item.innerHTML = `
       <div class="d-flex align-items-center">
         <img src="${
           product.image
@@ -294,16 +458,34 @@
         </a>
       </div>
     `;
-        mobileProductsList.appendChild(item);
+      mobileProductsList.appendChild(item);
+    });
+
+    // Reattach event listeners to edit/delete buttons
+    attachProductButtonListeners();
+  }
+
+  // Add this function to reattach button listeners
+  function attachProductButtonListeners() {
+    document.querySelectorAll(".edit-product-btn").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const productId = this.getAttribute("data-id");
+        editProduct(productId);
       });
+    });
 
-      // Reattach event listeners to edit/delete buttons
-      attachProductButtonListeners();
-    }
+    document.querySelectorAll(".delete-product-btn").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const productId = this.getAttribute("data-id");
+        deleteProduct(productId);
+      });
+    });
 
-    // Add this function to reattach button listeners
-    function attachProductButtonListeners() {
-      document.querySelectorAll(".edit-product-btn").forEach((btn) => {
+    document
+      .querySelectorAll(".edit-product-btn-mobile")
+      .forEach((btn) => {
         btn.addEventListener("click", function (e) {
           e.preventDefault();
           const productId = this.getAttribute("data-id");
@@ -311,84 +493,66 @@
         });
       });
 
-      document.querySelectorAll(".delete-product-btn").forEach((btn) => {
+    document
+      .querySelectorAll(".delete-product-btn-mobile")
+      .forEach((btn) => {
         btn.addEventListener("click", function (e) {
           e.preventDefault();
           const productId = this.getAttribute("data-id");
           deleteProduct(productId);
         });
       });
+  }
 
-      document
-        .querySelectorAll(".edit-product-btn-mobile")
-        .forEach((btn) => {
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const productId = this.getAttribute("data-id");
-            editProduct(productId);
-          });
-        });
+  //get the data from search bar when search button is clicked
+  if (desktopSearchForm) {
+    desktopSearchForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      searchProducts(desktopSearchInput.value.trim());
+    });
+  }
+  //get the data from search bar when search button is clicked
+  if (mobileSearchForm) {
+    mobileSearchForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      searchProducts(mobileSearchInput.value.trim());
+    });
+  }
 
-      document
-        .querySelectorAll(".delete-product-btn-mobile")
-        .forEach((btn) => {
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const productId = this.getAttribute("data-id");
-            deleteProduct(productId);
-          });
-        });
-    }
+  // get the data from input field
+  if (desktopSearchInput) {
+    desktopSearchInput.addEventListener("input", function () {
+      searchProducts(this.value.trim());
+    });
+  }
 
-    //get the data from search bar when search button is clicked
-    if (desktopSearchForm) {
-      desktopSearchForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        searchProducts(desktopSearchInput.value.trim());
-      });
-    }
-    //get the data from search bar when search button is clicked
-    if (mobileSearchForm) {
-      mobileSearchForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        searchProducts(mobileSearchInput.value.trim());
-      });
-    }
+  // get the data from input field
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener("input", function () {
+      searchProducts(this.value.trim());
+    });
+  }
 
-    // get the data from input field
-    if (desktopSearchInput) {
-      desktopSearchInput.addEventListener("input", function () {
-        searchProducts(this.value.trim());
-      });
-    }
+  // Function to paginate for products
+  function paginateProducts(products) {
+    const startIndex = (currentPage - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
+    return products.slice(startIndex, endIndex);
+  }
 
-    // get the data from input field
-    if (mobileSearchInput) {
-      mobileSearchInput.addEventListener("input", function () {
-        searchProducts(this.value.trim());
-      });
-    }
+  // Function to update pagination controls
+  function updatePaginationControls(totalProducts) {
+    const totalPages = Math.ceil(totalProducts / productsPerPage);
 
-    // Function to paginate for products
-    function paginateProducts(products) {
-      const startIndex = (currentPage - 1) * productsPerPage;
-      const endIndex = startIndex + productsPerPage;
-      return products.slice(startIndex, endIndex);
-    }
+    // Desktop pagination
+    const desktopPagination =
+      document.getElementById("desktopPagination");
+    if (desktopPagination) {
+      desktopPagination.innerHTML = "";
 
-    // Function to update pagination controls
-    function updatePaginationControls(totalProducts) {
-      const totalPages = Math.ceil(totalProducts / productsPerPage);
-
-      // Desktop pagination
-      const desktopPagination =
-        document.getElementById("desktopPagination");
-      if (desktopPagination) {
-        desktopPagination.innerHTML = "";
-
-        if (totalPages > 1) {
-          // Previous button
-          desktopPagination.innerHTML += `
+      if (totalPages > 1) {
+        // Previous button
+        desktopPagination.innerHTML += `
         <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
           <a class="page-link" href="#" data-page="${
             currentPage - 1
@@ -396,17 +560,17 @@
         </li>
       `;
 
-          // Page numbers
-          for (let i = 1; i <= totalPages; i++) {
-            desktopPagination.innerHTML += `
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          desktopPagination.innerHTML += `
           <li class="page-item ${i === currentPage ? "active" : ""}">
             <a class="page-link" href="#" data-page="${i}">${i}</a>
           </li>
         `;
-          }
+        }
 
-          // Next button
-          desktopPagination.innerHTML += `
+        // Next button
+        desktopPagination.innerHTML += `
         <li class="page-item ${
           currentPage === totalPages ? "disabled" : ""
         }">
@@ -415,17 +579,17 @@
           }">&raquo;</a>
         </li>
       `;
-        }
       }
+    }
 
-      // Mobile pagination
-      const mobilePagination = document.getElementById("mobilePagination");
-      if (mobilePagination) {
-        mobilePagination.innerHTML = "";
+    // Mobile pagination
+    const mobilePagination = document.getElementById("mobilePagination");
+    if (mobilePagination) {
+      mobilePagination.innerHTML = "";
 
-        if (totalPages > 1) {
-          // Previous button
-          mobilePagination.innerHTML += `
+      if (totalPages > 1) {
+        // Previous button
+        mobilePagination.innerHTML += `
         <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
           <a class="page-link" href="#" data-page="${
             currentPage - 1
@@ -433,17 +597,17 @@
         </li>
       `;
 
-          // Page numbers
-          for (let i = 1; i <= totalPages; i++) {
-            mobilePagination.innerHTML += `
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          mobilePagination.innerHTML += `
           <li class="page-item ${i === currentPage ? "active" : ""}">
             <a class="page-link" href="#" data-page="${i}">${i}</a>
           </li>
         `;
-          }
+        }
 
-          // Next button
-          mobilePagination.innerHTML += `
+        // Next button
+        mobilePagination.innerHTML += `
         <li class="page-item ${
           currentPage === totalPages ? "disabled" : ""
         }">
@@ -452,327 +616,328 @@
           }">&raquo;</a>
         </li>
       `;
-        }
       }
     }
+  }
 
-    // Event delegation for pagination clicks
-    document.addEventListener("click", function (e) {
-      if (e.target.classList.contains("page-link")) {
+  // Event delegation for pagination clicks
+// Event delegation for pagination clicks
+document.addEventListener("click", function (e) {
+    // Handle pagination clicks
+    if (e.target.classList.contains("page-link")) {
         e.preventDefault();
         const page = parseInt(e.target.getAttribute("data-page"));
+        
         if (!isNaN(page)) {
-          currentPage = page;
-          loadProducts();
+            // Check which pagination was clicked
+            const isOrdersPagination = e.target.closest('#desktopOrdersPagination') || 
+                                     e.target.closest('#mobileOrdersPagination');
+            
+            if (isOrdersPagination) {
+                currentOrdersPage = page;
+                loadOrders(); // Reload orders with new page
+            } else {
+                currentPage = page;
+                loadProducts(); // Handle product pagination
+            }
         }
+    }
+});
+function searchOrders(searchTerm) {
+  currentOrdersPage = 1; // Reset to first page when searching
+  loadOrders(searchTerm);
+}
+
+  // Initialize page navigation
+  const navLinks = document.querySelectorAll(
+    ".navbar-nav .nav-link:not(.dropdown-item)"
+  );
+  const mobileNavLinks = document.querySelectorAll(
+    "#navbarNavDropdown .nav-link"
+  );
+
+  const mobileNavToggler = document.querySelector(".navbar-toggler");
+  const mobileNavMenu = document.getElementById("navbarNavDropdown");
+
+  const desktopPages = {
+    dashboard: document.querySelector(
+      ".dashboard-item-desktop .dashboard-page"
+    ),
+    orders: document.querySelector(
+      ".dashboard-item-desktop .orders-page"
+    ),
+    products: document.querySelector(
+      ".dashboard-item-desktop .Products-page"
+    ),
+  };
+
+  const mobilePages = {
+    dashboard: document.querySelector(
+      ".dashboard-item-mobile .dashboard-page"
+    ),
+    orders: document.querySelector(".dashboard-item-mobile .orders-page"),
+    products: document.querySelector(
+      ".dashboard-item-mobile .Products-page"
+    ),
+  };
+
+  function initializePages(pages) {
+    Object.values(pages).forEach((page) => {
+      if (page && page !== pages.dashboard) {
+        page.classList.add("d-none");
       }
     });
+  }
 
-    // Initialize page navigation
-    const navLinks = document.querySelectorAll(
-      ".navbar-nav .nav-link:not(.dropdown-item)"
-    );
-    const mobileNavLinks = document.querySelectorAll(
-      "#navbarNavDropdown .nav-link"
-    );
+  initializePages(desktopPages);
+  initializePages(mobilePages);
 
-    const mobileNavToggler = document.querySelector(".navbar-toggler");
-    const mobileNavMenu = document.getElementById("navbarNavDropdown");
-
-    const desktopPages = {
-      dashboard: document.querySelector(
-        ".dashboard-item-desktop .dashboard-page"
-      ),
-      orders: document.querySelector(
-        ".dashboard-item-desktop .orders-page"
-      ),
-      products: document.querySelector(
-        ".dashboard-item-desktop .Products-page"
-      ),
-    };
-
-    const mobilePages = {
-      dashboard: document.querySelector(
-        ".dashboard-item-mobile .dashboard-page"
-      ),
-      orders: document.querySelector(".dashboard-item-mobile .orders-page"),
-      products: document.querySelector(
-        ".dashboard-item-mobile .Products-page"
-      ),
-    };
-
-    function initializePages(pages) {
-      Object.values(pages).forEach((page) => {
-        if (page && page !== pages.dashboard) {
-          page.classList.add("d-none");
-        }
+  function collapseMobileMenu() {
+    if (mobileNavMenu.classList.contains("show")) {
+      const bsCollapse = new bootstrap.Collapse(mobileNavMenu, {
+        toggle: false,
       });
+      bsCollapse.hide();
     }
+  }
 
-    initializePages(desktopPages);
-    initializePages(mobilePages);
-
-    function showPage(pageToShow, pages) {
-      if (!pages) return;
-
-      Object.values(pages).forEach((page) => {
-        if (page) page.classList.add("d-none");
-      });
-
-      if (pages[pageToShow.toLowerCase()]) {
-        pages[pageToShow.toLowerCase()].classList.remove("d-none");
-
-        // If dashboard is shown, initialize the chart
-        if (pageToShow.toLowerCase() === "dashboard") {
-          showDashboardPage();
-        }
-      }
-    }
-
-    function collapseMobileMenu() {
-      if (mobileNavMenu.classList.contains("show")) {
-        const bsCollapse = new bootstrap.Collapse(mobileNavMenu, {
-          toggle: false,
-        });
-        bsCollapse.hide();
-      }
-    }
-
-    navLinks.forEach((link) => {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        const pageName = this.id || this.textContent.trim();
-        showPage(pageName, desktopPages);
-      });
+  navLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      const pageName = this.id || this.textContent.trim();
+      showPage(pageName, desktopPages);
     });
+  });
 
-    mobileNavLinks.forEach((link) => {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        const linkText = this.textContent.trim();
+  mobileNavLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      const linkText = this.textContent.trim();
 
-        if (linkText.includes("Dashboard"))
-          showPage("dashboard", mobilePages);
-        else if (linkText.includes("Orders"))
-          showPage("orders", mobilePages);
-        else if (linkText.includes("Products"))
-          showPage("products", mobilePages);
-
-        collapseMobileMenu();
-      });
-    });
-
-    const productSubLinks = document.querySelectorAll(
-      ".sub-menu .nav-link"
-    );
-    productSubLinks.forEach((link) => {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        showPage("products", desktopPages);
+      if (linkText.includes("Dashboard"))
+        showPage("dashboard", mobilePages);
+      else if (linkText.includes("Orders")) {
+        showPage("orders", mobilePages);
+        showOrdersPage();
+      }
+      else if (linkText.includes("Products"))
         showPage("products", mobilePages);
-        collapseMobileMenu();
-      });
+
+      collapseMobileMenu();
+    });
+  });
+
+  const productSubLinks = document.querySelectorAll(
+    ".sub-menu .nav-link"
+  );
+  productSubLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      showPage("products", desktopPages);
+      showPage("products", mobilePages);
+      collapseMobileMenu();
+    });
+  });
+
+  // Product Management System
+  // Initialize products in local storage if empty
+  storageManager.initializeProducts();
+
+  // Sample seller ID (in a real app, this would come from authentication)
+  let sellerId;
+  const userSellerRole = storageManager.getUserAuthentication();
+  const CurrentUser = storageManager.getCurrentUser();
+  userSellerRole.forEach((user) => {
+    if(CurrentUser.role==user.role&& CurrentUser.id==user.id){
+      sellerId =user.id;
+    }
+  })
+  
+  // For desktop version
+  document.querySelector(".dropdown-item.Logout").addEventListener("click", function(e) {
+    e.preventDefault();
+    storageManager.ClearCurrentUser();
+    window.location.href = "../index.html";
+  });
+
+  // For mobile version
+  document.querySelector(".nav-link .Logout").addEventListener("click", function(e) {
+    e.preventDefault();
+    storageManager.ClearCurrentUser();
+    window.location.href = "../index.html";
+  });
+
+
+  // DOM elements
+  const productsTableBody = document.getElementById("productsTableBody");
+  const mobileProductsList =
+    document.getElementById("mobileProductsList");
+
+  // Image upload handlers
+  document
+    .getElementById("productImageBtn")
+    .addEventListener("click", function () {
+      document.getElementById("productImageUpload").click();
     });
 
-    // Product Management System
-    // Initialize products in local storage if empty
-    storageManager.initializeProducts();
-
-    // Sample seller ID (in a real app, this would come from authentication)
-    let sellerId ;
-    const userSellerRole = storageManager.getUserAuthentication();
-    const CurrentUser = storageManager.getCurrentUser();
-    userSellerRole.forEach((user) => {
-      if(CurrentUser.role==user.role&& CurrentUser.id==user.id){
-        sellerId =user.id;
+  document
+    .getElementById("productImageUpload")
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const allowedTypes = ["image/png", "image/jpeg"];
+    if (!allowedTypes.includes(file.type)) {
+      // alert("Only PNG and JPEG images are allowed.");
+      document.querySelector(".warningCaseNotValid").innerHTML = "Only PNG and JPEG images are allowed.";
+      document.querySelector(".warningCaseNotValid").classList.add("text-danger"); 
+      e.target.value = ""; 
+      return;
+    }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("productImage").value = e.target.result;
+          document.getElementById("previewImage").src = e.target.result;
+          document.getElementById("imagePreview").style.display = "block";
+      document.querySelector(".warningCaseNotValid").innerHTML = ""; // Clear the warning message
+        };
+        reader.readAsDataURL(file);
       }
-    })
-   
-// For desktop version
-document.querySelector(".dropdown-item.Logout").addEventListener("click", function(e) {
-  e.preventDefault();
-  storageManager.ClearCurrentUser();
-  window.location.href = "../index.html";
-});
+    });
 
-// For mobile version
-document.querySelector(".nav-link .Logout").addEventListener("click", function(e) {
-  e.preventDefault();
-  storageManager.ClearCurrentUser();
-  window.location.href = "../index.html";
-});
+  document
+    .getElementById("editProductImageBtn")
+    .addEventListener("click", function () {
+      document.getElementById("editProductImageUpload").click();
+    });
 
-
-    // DOM elements
-    const productsTableBody = document.getElementById("productsTableBody");
-    const mobileProductsList =
-      document.getElementById("mobileProductsList");
-
-    // Image upload handlers
-    document
-      .getElementById("productImageBtn")
-      .addEventListener("click", function () {
-        document.getElementById("productImageUpload").click();
-      });
-
-    document
-      .getElementById("productImageUpload")
-      .addEventListener("change", function (e) {
-        const file = e.target.files[0];
-        if (file) {
-          const allowedTypes = ["image/png", "image/jpeg"];
-      if (!allowedTypes.includes(file.type)) {
-        // alert("Only PNG and JPEG images are allowed.");
-        document.querySelector(".warningCaseNotValid").innerHTML = "Only PNG and JPEG images are allowed.";
-        document.querySelector(".warningCaseNotValid").classList.add("text-danger"); 
-        e.target.value = ""; 
-        return;
+  document
+    .getElementById("editProductImageUpload")
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("editProductImage").value =
+            e.target.result;
+          document.getElementById("editPreviewImage").src =
+            e.target.result;
+          document.getElementById("editImagePreview").style.display =
+            "block";
+        };
+        reader.readAsDataURL(file);
       }
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            document.getElementById("productImage").value = e.target.result;
-            document.getElementById("previewImage").src = e.target.result;
-            document.getElementById("imagePreview").style.display = "block";
-        document.querySelector(".warningCaseNotValid").innerHTML = ""; // Clear the warning message
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+    });
 
+  // Mobile image upload handlers
+  document
+    .getElementById("productImageBtnMobile")
+    .addEventListener("click", function () {
+      document.getElementById("productImageUploadMobile").click();
+    });
+
+  document
+    .getElementById("productImageUploadMobile")
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("productImageMobile").value =
+            e.target.result;
+          document.getElementById("previewImageMobile").src =
+            e.target.result;
+          document.getElementById("imagePreviewMobile").style.display =
+            "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+  document
+    .getElementById("editProductImageBtnMobile")
+    .addEventListener("click", function () {
+      document.getElementById("editProductImageUploadMobile").click();
+    });
+
+  document
+    .getElementById("editProductImageUploadMobile")
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("editProductImageMobile").value =
+            e.target.result;
+          document.getElementById("editPreviewImageMobile").src =
+            e.target.result;
+          document.getElementById(
+            "editImagePreviewMobile"
+          ).style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+  // View navigation functions
+  function showProductsListView() {
     document
-      .getElementById("editProductImageBtn")
-      .addEventListener("click", function () {
-        document.getElementById("editProductImageUpload").click();
-      });
-
+      .querySelectorAll(".products-list-view")
+      .forEach((view) => view.classList.remove("d-none"));
     document
-      .getElementById("editProductImageUpload")
-      .addEventListener("change", function (e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            document.getElementById("editProductImage").value =
-              e.target.result;
-            document.getElementById("editPreviewImage").src =
-              e.target.result;
-            document.getElementById("editImagePreview").style.display =
-              "block";
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-    // Mobile image upload handlers
+      .querySelectorAll(".add-product-view")
+      .forEach((view) => view.classList.add("d-none"));
     document
-      .getElementById("productImageBtnMobile")
-      .addEventListener("click", function () {
-        document.getElementById("productImageUploadMobile").click();
-      });
+      .querySelectorAll(".edit-product-view")
+      .forEach((view) => view.classList.add("d-none"));
+    loadProducts();
+  }
 
+  function showAddProductView() {
     document
-      .getElementById("productImageUploadMobile")
-      .addEventListener("change", function (e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            document.getElementById("productImageMobile").value =
-              e.target.result;
-            document.getElementById("previewImageMobile").src =
-              e.target.result;
-            document.getElementById("imagePreviewMobile").style.display =
-              "block";
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
+      .querySelectorAll(".products-list-view")
+      .forEach((view) => view.classList.add("d-none"));
     document
-      .getElementById("editProductImageBtnMobile")
-      .addEventListener("click", function () {
-        document.getElementById("editProductImageUploadMobile").click();
-      });
-
+      .querySelectorAll(".add-product-view")
+      .forEach((view) => view.classList.remove("d-none"));
     document
-      .getElementById("editProductImageUploadMobile")
-      .addEventListener("change", function (e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            document.getElementById("editProductImageMobile").value =
-              e.target.result;
-            document.getElementById("editPreviewImageMobile").src =
-              e.target.result;
-            document.getElementById(
-              "editImagePreviewMobile"
-            ).style.display = "block";
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+      .querySelectorAll(".edit-product-view")
+      .forEach((view) => view.classList.add("d-none"));
+    // Reset form
+    document.getElementById("addProductForm").reset();
+    document.getElementById("imagePreview").style.display = "none";
+  }
 
-    // View navigation functions
-    function showProductsListView() {
-      document
-        .querySelectorAll(".products-list-view")
-        .forEach((view) => view.classList.remove("d-none"));
-      document
-        .querySelectorAll(".add-product-view")
-        .forEach((view) => view.classList.add("d-none"));
-      document
-        .querySelectorAll(".edit-product-view")
-        .forEach((view) => view.classList.add("d-none"));
-      loadProducts();
-    }
+  function showEditProductView() {
+    document
+      .querySelectorAll(".products-list-view")
+      .forEach((view) => view.classList.add("d-none"));
+    document
+      .querySelectorAll(".add-product-view")
+      .forEach((view) => view.classList.add("d-none"));
+    document
+      .querySelectorAll(".edit-product-view")
+      .forEach((view) => view.classList.remove("d-none"));
+  }
 
-    function showAddProductView() {
-      document
-        .querySelectorAll(".products-list-view")
-        .forEach((view) => view.classList.add("d-none"));
-      document
-        .querySelectorAll(".add-product-view")
-        .forEach((view) => view.classList.remove("d-none"));
-      document
-        .querySelectorAll(".edit-product-view")
-        .forEach((view) => view.classList.add("d-none"));
-      // Reset form
-      document.getElementById("addProductForm").reset();
-      document.getElementById("imagePreview").style.display = "none";
-    }
+  // Load products from local storage
+  function loadProducts() {
+    const products = storageManager.getProducts();
+    const sellerProducts = products.filter(
+      (p) => p.sellerId === sellerId
+    );
+    const paginatedProducts = paginateProducts(sellerProducts);
 
-    function showEditProductView() {
-      document
-        .querySelectorAll(".products-list-view")
-        .forEach((view) => view.classList.add("d-none"));
-      document
-        .querySelectorAll(".add-product-view")
-        .forEach((view) => view.classList.add("d-none"));
-      document
-        .querySelectorAll(".edit-product-view")
-        .forEach((view) => view.classList.remove("d-none"));
-    }
+    // Update pagination controls
+    updatePaginationControls(sellerProducts.length);
 
-    // Load products from local storage
-    function loadProducts() {
-      const products = storageManager.getProducts();
-      const sellerProducts = products.filter(
-        (p) => p.sellerId === sellerId
-      );
-      const paginatedProducts = paginateProducts(sellerProducts);
+    // Clear existing rows
+    productsTableBody.innerHTML = "";
+    mobileProductsList.innerHTML = "";
 
-      // Update pagination controls
-      updatePaginationControls(sellerProducts.length);
-
-      // Clear existing rows
-      productsTableBody.innerHTML = "";
-      mobileProductsList.innerHTML = "";
-
-      // Add paginated products to desktop table
-      paginatedProducts.forEach((product) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
+    // Add paginated products to desktop table
+    paginatedProducts.forEach((product) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
       <td><img src="${
         product.image || "https://via.placeholder.com/50"
       }" class="img-thumbnail" alt="${product.name}" width="50"></td>
@@ -808,14 +973,14 @@ document.querySelector(".nav-link .Logout").addEventListener("click", function(e
         </a>
       </td>
     `;
-        productsTableBody.appendChild(row);
-      });
+      productsTableBody.appendChild(row);
+    });
 
-      // Add paginated products to mobile list
-      paginatedProducts.forEach((product) => {
-        const item = document.createElement("div");
-        item.className = "list-group-item";
-        item.innerHTML = `
+    // Add paginated products to mobile list
+    paginatedProducts.forEach((product) => {
+      const item = document.createElement("div");
+      item.className = "list-group-item";
+      item.innerHTML = `
       <div class="d-flex align-items-center">
         <img src="${
           product.image || "https://via.placeholder.com/50"
@@ -855,10 +1020,28 @@ document.querySelector(".nav-link .Logout").addEventListener("click", function(e
         </a>
       </div>
     `;
-        mobileProductsList.appendChild(item);
-      });
+      mobileProductsList.appendChild(item);
+    });
 
-      document.querySelectorAll(".edit-product-btn").forEach((btn) => {
+    document.querySelectorAll(".edit-product-btn").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const productId = this.getAttribute("data-id");
+        editProduct(productId);
+      });
+    });
+
+    document.querySelectorAll(".delete-product-btn").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const productId = this.getAttribute("data-id");
+        deleteProduct(productId);
+      });
+    });
+
+    document
+      .querySelectorAll(".edit-product-btn-mobile")
+      .forEach((btn) => {
         btn.addEventListener("click", function (e) {
           e.preventDefault();
           const productId = this.getAttribute("data-id");
@@ -866,282 +1049,325 @@ document.querySelector(".nav-link .Logout").addEventListener("click", function(e
         });
       });
 
-      document.querySelectorAll(".delete-product-btn").forEach((btn) => {
+    document
+      .querySelectorAll(".delete-product-btn-mobile")
+      .forEach((btn) => {
         btn.addEventListener("click", function (e) {
           e.preventDefault();
           const productId = this.getAttribute("data-id");
           deleteProduct(productId);
         });
       });
+  }
+  // Add a new product
+  function addProduct(productData) {
+    storageManager.addProduct(productData);
+    showProductsListView();
+    updateAnalitics();
+  }
 
-      document
-        .querySelectorAll(".edit-product-btn-mobile")
-        .forEach((btn) => {
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const productId = this.getAttribute("data-id");
-            editProduct(productId);
-          });
-        });
+  // Edit an existing product
+  function editProduct(productId) {
+    const products = storageManager.getProducts();
+    const product = products.find((p) => p.id === productId);
 
-      document
-        .querySelectorAll(".delete-product-btn-mobile")
-        .forEach((btn) => {
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const productId = this.getAttribute("data-id");
-            deleteProduct(productId);
-          });
-        });
+    if (product) {
+      // Set form values for desktop
+      document.getElementById("editProductId").value = product.id;
+      document.getElementById("editProductName").value = product.name;
+      document.getElementById("editProductBrand").value = product.brand;
+      document.getElementById("editProductGender").value =
+        product.gender || "";
+      document.getElementById("editProductPrice").value = product.price;
+      document.getElementById("editProductStock").value = product.stock;
+      document.getElementById("editProductImage").value =
+        product.image || "";
+      document.getElementById("editProductDescription").value =
+        product.description || "";
+
+      if (product.image) {
+        document.getElementById("editPreviewImage").src = product.image;
+        document.getElementById("editImagePreview").style.display =
+          "block";
+      } else {
+        document.getElementById("editImagePreview").style.display =
+          "none";
+      }
+
+      // Set form values for mobile
+      document.getElementById("editProductIdMobile").value = product.id;
+      document.getElementById("editProductNameMobile").value =
+        product.name;
+      document.getElementById("editProductBrandMobile").value =
+        product.brand;
+      document.getElementById("editProductGenderMobile").value =
+        product.gender || "";
+      document.getElementById("editProductPriceMobile").value =
+        product.price;
+      document.getElementById("editProductStockMobile").value =
+        product.stock;
+      document.getElementById("editProductImageMobile").value =
+        product.image || "";
+      document.getElementById("editProductDescriptionMobile").value =
+        product.description || "";
+
+      if (product.image) {
+        document.getElementById("editPreviewImageMobile").src =
+          product.image;
+        document.getElementById("editImagePreviewMobile").style.display =
+          "block";
+      } else {
+        document.getElementById("editImagePreviewMobile").style.display =
+          "none";
+      }
+
+      showEditProductView();
     }
-    // Add a new product
-    function addProduct(productData) {
-      storageManager.addProduct(productData);
-      showProductsListView();
+  }
+
+  // Update a product
+  function updateProduct(updatedProduct) {
+    storageManager.updateProduct(updatedProduct);
+    showProductsListView();
+    updateAnalitics();
+  }
+  // Delete a product
+  function deleteProduct(productId) {
+    if (confirm("Are you sure you want to delete this product?")) {
+      storageManager.deleteProduct(productId);
+      loadProducts();
       updateAnalitics();
     }
+  }
+  // Event listeners for navigation
+  document
+    .getElementById("addNewProductBtn")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      showAddProductView();
+    });
 
-    // Edit an existing product
-    function editProduct(productId) {
-      const products = storageManager.getProducts();
-      const product = products.find((p) => p.id === productId);
+  document
+    .getElementById("addNewProductBtnMobile")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      showAddProductView();
+    });
 
-      if (product) {
-        // Set form values for desktop
-        document.getElementById("editProductId").value = product.id;
-        document.getElementById("editProductName").value = product.name;
-        document.getElementById("editProductBrand").value = product.brand;
-        document.getElementById("editProductGender").value =
-          product.gender || "";
-        document.getElementById("editProductPrice").value = product.price;
-        document.getElementById("editProductStock").value = product.stock;
-        document.getElementById("editProductImage").value =
-          product.image || "";
-        document.getElementById("editProductDescription").value =
-          product.description || "";
-
-        if (product.image) {
-          document.getElementById("editPreviewImage").src = product.image;
-          document.getElementById("editImagePreview").style.display =
-            "block";
-        } else {
-          document.getElementById("editImagePreview").style.display =
-            "none";
-        }
-
-        // Set form values for mobile
-        document.getElementById("editProductIdMobile").value = product.id;
-        document.getElementById("editProductNameMobile").value =
-          product.name;
-        document.getElementById("editProductBrandMobile").value =
-          product.brand;
-        document.getElementById("editProductGenderMobile").value =
-          product.gender || "";
-        document.getElementById("editProductPriceMobile").value =
-          product.price;
-        document.getElementById("editProductStockMobile").value =
-          product.stock;
-        document.getElementById("editProductImageMobile").value =
-          product.image || "";
-        document.getElementById("editProductDescriptionMobile").value =
-          product.description || "";
-
-        if (product.image) {
-          document.getElementById("editPreviewImageMobile").src =
-            product.image;
-          document.getElementById("editImagePreviewMobile").style.display =
-            "block";
-        } else {
-          document.getElementById("editImagePreviewMobile").style.display =
-            "none";
-        }
-
-        showEditProductView();
-      }
-    }
-
-    // Update a product
-    function updateProduct(updatedProduct) {
-      storageManager.updateProduct(updatedProduct);
+  document.querySelectorAll(".back-to-products-btn").forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
       showProductsListView();
-      updateAnalitics();
-    }
-    // Delete a product
-    function deleteProduct(productId) {
-      if (confirm("Are you sure you want to delete this product?")) {
-        storageManager.deleteProduct(productId);
-        loadProducts();
-        updateAnalitics();
-      }
-    }
-    // Event listeners for navigation
-    document
-      .getElementById("addNewProductBtn")
-      .addEventListener("click", function (e) {
-        e.preventDefault();
-        showAddProductView();
-      });
+    });
+  });
 
-    document
-      .getElementById("addNewProductBtnMobile")
-      .addEventListener("click", function (e) {
-        e.preventDefault();
-        showAddProductView();
-      });
-
-    document.querySelectorAll(".back-to-products-btn").forEach((btn) => {
+  document
+    .querySelectorAll(".back-to-products-btn-mobile")
+    .forEach((btn) => {
       btn.addEventListener("click", function (e) {
         e.preventDefault();
         showProductsListView();
       });
     });
 
-    document
-      .querySelectorAll(".back-to-products-btn-mobile")
-      .forEach((btn) => {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          showProductsListView();
-        });
+  // Form submission handlers
+  document
+    .getElementById("addProductForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const newProduct = {
+        id: "#prod-" + Date.now(),
+        name: document.getElementById("productName").value,
+        brand: document.getElementById("productBrand").value,
+        gender: document.getElementById("productGender").value,
+        price: parseFloat(document.getElementById("productPrice").value),
+        stock: parseInt(document.getElementById("productStock").value),
+        image: document.getElementById("productImage").value,
+        description: document.getElementById("productDescription").value,
+        sellerId: sellerId,
+      };
+
+      addProduct(newProduct);
+    });
+
+  document
+    .getElementById("addProductFormMobile")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const newProduct = {
+        id: "#prod-" + Date.now(),
+        name: document.getElementById("productNameMobile").value,
+        brand: document.getElementById("productBrandMobile").value,
+        gender: document.getElementById("productGenderMobile").value,
+        price: parseFloat(
+          document.getElementById("productPriceMobile").value
+        ),
+        stock: parseInt(
+          document.getElementById("productStockMobile").value
+        ),
+        image: document.getElementById("productImageMobile").value,
+        description: document.getElementById("productDescriptionMobile")
+          .value,
+        sellerId: sellerId,
+      };
+
+      addProduct(newProduct);
+    });
+
+  document
+    .getElementById("editProductForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const updatedProduct = {
+        id: document.getElementById("editProductId").value,
+        name: document.getElementById("editProductName").value,
+        brand: document.getElementById("editProductBrand").value,
+        gender: document.getElementById("editProductGender").value,
+        price: parseFloat(
+          document.getElementById("editProductPrice").value
+        ),
+        stock: parseInt(
+          document.getElementById("editProductStock").value
+        ),
+        image: document.getElementById("editProductImage").value,
+        description: document.getElementById("editProductDescription")
+          .value,
+        sellerId: sellerId,
+      };
+
+      updateProduct(updatedProduct);
+    });
+
+  document
+    .getElementById("editProductFormMobile")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const updatedProduct = {
+        id: document.getElementById("editProductIdMobile").value,
+        name: document.getElementById("editProductNameMobile").value,
+        brand: document.getElementById("editProductBrandMobile").value,
+        gender: document.getElementById("editProductGenderMobile").value,
+        price: parseFloat(
+          document.getElementById("editProductPriceMobile").value
+        ),
+        stock: parseInt(
+          document.getElementById("editProductStockMobile").value
+        ),
+        image: document.getElementById("editProductImageMobile").value,
+        description: document.getElementById(
+          "editProductDescriptionMobile"
+        ).value,
+        sellerId: sellerId,
+      };
+
+      updateProduct(updatedProduct);
+    });
+
+  //Event for the Inventory Alerts
+  function updateInventoryAlerts() {
+    const productsList = storageManager.getProducts();
+    let countInventoryAlerts = 0;
+    productsList.forEach((product) => {
+      if (product.stock < 10) {
+        countInventoryAlerts++;
+      }
+    });
+    document.getElementById("Inventory-Alerts").innerHTML =
+      countInventoryAlerts;
+    document.getElementById("mobile-Inventory-Alerts").innerHTML =
+      countInventoryAlerts;
+  }
+
+  //Event for the Stock Value
+  function updateStockValue() {
+    const productsList = storageManager.getProducts();
+    let ValueStock = 0;
+    productsList.forEach((product) => {
+      ValueStock += product.stock * product.price;
+    });
+    document.getElementById("Stock-Value").innerHTML =
+      ValueStock.toFixed(2);
+    document.getElementById("mobile-Stock-Value").innerHTML =
+      ValueStock.toFixed(2);
+  }
+
+  function updateAnalitics() {
+    updateInventoryAlerts();
+    updateStockValue();
+    updateDashboardStats();
+  }
+
+  // Initial load
+  showProductsListView();
+  updateAnalitics();
+
+
+
+
+
+  function generateSampleOrders(sellerId) {
+  const sampleOrders = [];
+  const statuses = ['processing', 'shipped', 'cancelled'];
+  const paymentStatuses = ['paid', 'unpaid'];
+  const products = [
+    { id: 'prod-101', name: 'Wireless Earbuds', price: 80.00 },
+    { id: 'prod-102', name: 'Charging Cable', price: 20.50 },
+    { id: 'prod-103', name: 'Phone Case', price: 25.00 },
+    { id: 'prod-104', name: 'Bluetooth Speaker', price: 45.99 },
+    { id: 'prod-105', name: 'Smart Watch', price: 129.99 }
+  ];
+
+  // Generate 20 sample orders
+  for (let i = 1; i <= 20; i++) {
+    const orderDate = new Date();
+    orderDate.setDate(orderDate.getDate() - Math.floor(Math.random() * 30)); // Random date in last 30 days
+    
+    // Random number of products (1-3)
+    const numProducts = Math.floor(Math.random() * 3) + 1;
+    const orderProducts = [];
+    let subtotal = 0;
+    
+    for (let j = 0; j < numProducts; j++) {
+      const product = products[Math.floor(Math.random() * products.length)];
+      const quantity = Math.floor(Math.random() * 3) + 1; // 1-3 quantity
+      orderProducts.push({
+        product: product,
+        quantity_in_cart: quantity,
+        userId: sellerId // Assign to current seller
       });
-
-    // Form submission handlers
-    document
-      .getElementById("addProductForm")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const newProduct = {
-          id: "#prod-" + Date.now(),
-          name: document.getElementById("productName").value,
-          brand: document.getElementById("productBrand").value,
-          gender: document.getElementById("productGender").value,
-          price: parseFloat(document.getElementById("productPrice").value),
-          stock: parseInt(document.getElementById("productStock").value),
-          image: document.getElementById("productImage").value,
-          description: document.getElementById("productDescription").value,
-          sellerId: sellerId,
-        };
-
-        addProduct(newProduct);
-      });
-
-    document
-      .getElementById("addProductFormMobile")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const newProduct = {
-          id: "#prod-" + Date.now(),
-          name: document.getElementById("productNameMobile").value,
-          brand: document.getElementById("productBrandMobile").value,
-          gender: document.getElementById("productGenderMobile").value,
-          price: parseFloat(
-            document.getElementById("productPriceMobile").value
-          ),
-          stock: parseInt(
-            document.getElementById("productStockMobile").value
-          ),
-          image: document.getElementById("productImageMobile").value,
-          description: document.getElementById("productDescriptionMobile")
-            .value,
-          sellerId: sellerId,
-        };
-
-        addProduct(newProduct);
-      });
-
-    document
-      .getElementById("editProductForm")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const updatedProduct = {
-          id: document.getElementById("editProductId").value,
-          name: document.getElementById("editProductName").value,
-          brand: document.getElementById("editProductBrand").value,
-          gender: document.getElementById("editProductGender").value,
-          price: parseFloat(
-            document.getElementById("editProductPrice").value
-          ),
-          stock: parseInt(
-            document.getElementById("editProductStock").value
-          ),
-          image: document.getElementById("editProductImage").value,
-          description: document.getElementById("editProductDescription")
-            .value,
-          sellerId: sellerId,
-        };
-
-        updateProduct(updatedProduct);
-      });
-
-    document
-      .getElementById("editProductFormMobile")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const updatedProduct = {
-          id: document.getElementById("editProductIdMobile").value,
-          name: document.getElementById("editProductNameMobile").value,
-          brand: document.getElementById("editProductBrandMobile").value,
-          gender: document.getElementById("editProductGenderMobile").value,
-          price: parseFloat(
-            document.getElementById("editProductPriceMobile").value
-          ),
-          stock: parseInt(
-            document.getElementById("editProductStockMobile").value
-          ),
-          image: document.getElementById("editProductImageMobile").value,
-          description: document.getElementById(
-            "editProductDescriptionMobile"
-          ).value,
-          sellerId: sellerId,
-        };
-
-        updateProduct(updatedProduct);
-      });
-
-    //Event for the Inventory Alerts
-    function updateInventoryAlerts() {
-      const productsList = storageManager.getProducts();
-      let countInventoryAlerts = 0;
-      productsList.forEach((product) => {
-        if (product.stock < 10) {
-          countInventoryAlerts++;
-        }
-      });
-      document.getElementById("Inventory-Alerts").innerHTML =
-        countInventoryAlerts;
-      document.getElementById("mobile-Inventory-Alerts").innerHTML =
-        countInventoryAlerts;
+      subtotal += product.price * quantity;
     }
+    
+    const shipping = 10.00;
+    const totalAmount = subtotal + shipping;
+    
+    sampleOrders.push({
+      orderId: `ORD-${1000 + i}`,
+      userId: `cust-${Math.floor(Math.random() * 50) + 1}`,
+      sellerId: sellerId,
+      orderDate: orderDate.toISOString(),
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+      paymentStatus: paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)],
+      subtotal: subtotal.toFixed(2),
+      shipping: shipping.toFixed(2),
+      totalAmmount: totalAmount.toFixed(2),
+      products: orderProducts
+    });
+  }
+  
+  // Save to localStorage
+  localStorage.setItem('Orders', JSON.stringify(sampleOrders));
+  return sampleOrders;
+}
 
-    //Event for the Stock Value
-    function updateStockValue() {
-      const productsList = storageManager.getProducts();
-      let ValueStock = 0;
-      productsList.forEach((product) => {
-        ValueStock += product.stock * product.price;
-      });
-      document.getElementById("Stock-Value").innerHTML =
-        ValueStock.toFixed(2);
-      document.getElementById("mobile-Stock-Value").innerHTML =
-        ValueStock.toFixed(2);
-    }
 
-    function updateAnalitics() {
-      updateInventoryAlerts();
-      updateStockValue();
-    }
-
-    // Initial load
-    showProductsListView();
-    updateAnalitics();
-
-    // initializeSalesChart();
-  });
+});
 </script>
+
   </head>
   <body>
     <!-- Desktop Design -->
@@ -1427,49 +1653,23 @@ document.querySelector(".nav-link .Logout").addEventListener("click", function(e
             <div class="orders-page">
               <div class="container">
                 <table class="table table-hover table-striped">
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Date</th>
-                    <th>Customer Name</th>
-                    <th>Order Status</th>
-                    <th>Payment Status</th>
-                    <th class="text-end">Total</th>
-                  </tr>
-                  <tr>
-                    <td>#ORD12345</td>
-                    <td>01-01-2023</td>
-                    <td>Ahmed</td>
-                    <td>Pending</td>
-                    <td>PAID</td>
-                    <td class="text-end">
-                      <span>199</span> <i class="fa-solid fa-dollar-sign"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#ORD12345</td>
-                    <td>01-01-2023</td>
-                    <td>Ahmed</td>
-                    <td>Pending</td>
-                    <td>PAID</td>
-                    <td class="text-end">
-                      <span>199</span> <i class="fa-solid fa-dollar-sign"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#ORD12345</td>
-                    <td>01-01-2023</td>
-                    <td>Ahmed</td>
-                    <td>Pending</td>
-                    <td>PAID</td>
-                    <td class="text-end">
-                      <span>199</span> <i class="fa-solid fa-dollar-sign"></i>
-                    </td>
-                  </tr>
-                </table>
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Date</th>
+                      <th>Customer Name</th>
+                      <th>Order Status</th>
+                      <th>Payment Status</th>
+                      <th class="text-end">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  </table>
+
               </div>
             </div>
             <!-- ENd orders-body-page -->
-
+            
             <!-- Products-body-page -->
             <div class="Products-page mb-auto">
               <!-- Products List View -->
@@ -2094,180 +2294,13 @@ document.querySelector(".nav-link .Logout").addEventListener("click", function(e
           <!-- orders-body-page -->
           <div class="orders-page">
             <div class="container">
-              <!-- Search and Filter -->
-              <div class="row mb-3">
-                <div class="col-8 pe-1">
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    placeholder="Search orders..."
-                  />
-                </div>
-                <div class="col-4 ps-1">
-                  <button class="btn btn-outline-secondary btn-sm w-100">
-                    <i class="fas fa-filter"></i> Filter
-                  </button>
-                </div>
-              </div>
-
-              <!-- Order Card 1 -->
+              
+          
+              <!-- Template Order Card (will be cloned for each order) -->
               <div class="card mb-2 border-secondary">
-                <div
-                  class="card-header bg-light p-2 d-flex justify-content-between align-items-center"
-                  data-bs-toggle="collapse"
-                  href="#orderDetails1"
-                >
-                  <div>
-                    <span class="fw-bold">#ORD12345</span>
-                    <span class="badge text-bg-warning ms-1">Pending</span>
-                    <span class="badge text-bg-success ms-1">PAID</span>
-                  </div>
-                  <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="collapse" id="orderDetails1">
-                  <div class="card-body p-2">
-                    <div class="row small">
-                      <div class="col-6">
-                        <div>
-                          <span class="text-muted">Date:</span> 01-01-2023
-                        </div>
-                        <div>
-                          <span class="text-muted">Customer:</span> Ahmed
-                        </div>
-                      </div>
-                      <div class="col-6 text-end">
-                        <div>
-                          <span class="text-muted">Total:</span> 199
-                          <i class="fa-solid fa-dollar-sign"></i>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-end mt-2">
-                      <button
-                        class="btn btn-sm btn-outline-primary me-1 py-0 px-2"
-                      >
-                        <i class="fas fa-eye"></i>
-                      </button>
-                      <button
-                        class="btn btn-sm btn-outline-secondary py-0 px-2"
-                      >
-                        <i class="fas fa-print"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Order Card 2 -->
-              <div class="card mb-2 border-secondary">
-                <div
-                  class="card-header bg-light p-2 d-flex justify-content-between align-items-center"
-                  data-bs-toggle="collapse"
-                  href="#orderDetails2"
-                >
-                  <div>
-                    <span class="fw-bold">#ORD12346</span>
-                    <span class="badge text-bg-success ms-1">Completed</span>
-                    <span class="badge text-bg-success ms-1">PAID</span>
-                  </div>
-                  <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="collapse" id="orderDetails2">
-                  <div class="card-body p-2">
-                    <div class="row small">
-                      <div class="col-6">
-                        <div>
-                          <span class="text-muted">Date:</span> 02-01-2023
-                        </div>
-                        <div>
-                          <span class="text-muted">Customer:</span> Mohamed
-                        </div>
-                      </div>
-                      <div class="col-6 text-end">
-                        <div>
-                          <span class="text-muted">Total:</span> 250
-                          <i class="fa-solid fa-dollar-sign"></i>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-end mt-2">
-                      <button
-                        class="btn btn-sm btn-outline-primary me-1 py-0 px-2"
-                      >
-                        <i class="fas fa-eye"></i>
-                      </button>
-                      <button
-                        class="btn btn-sm btn-outline-secondary py-0 px-2"
-                      >
-                        <i class="fas fa-print"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
-
-              <!-- Order Card 3 -->
-              <div class="card mb-2 border-secondary">
-                <div
-                  class="card-header bg-light p-2 d-flex justify-content-between align-items-center"
-                  data-bs-toggle="collapse"
-                  href="#orderDetails3"
-                >
-                  <div>
-                    <span class="fw-bold">#ORD12347</span>
-                    <span class="badge text-bg-danger ms-1">Cancelled</span>
-                    <span class="badge text-bg-secondary ms-1">REFUNDED</span>
-                  </div>
-                  <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="collapse" id="orderDetails3">
-                  <div class="card-body p-2">
-                    <div class="row small">
-                      <div class="col-6">
-                        <div>
-                          <span class="text-muted">Date:</span> 03-01-2023
-                        </div>
-                        <div><span class="text-muted">Customer:</span> Ali</div>
-                      </div>
-                      <div class="col-6 text-end">
-                        <div>
-                          <span class="text-muted">Total:</span> 175
-                          <i class="fa-solid fa-dollar-sign"></i>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-end mt-2">
-                      <button
-                        class="btn btn-sm btn-outline-primary me-1 py-0 px-2"
-                      >
-                        <i class="fas fa-eye"></i>
-                      </button>
-                      <button
-                        class="btn btn-sm btn-outline-secondary py-0 px-2"
-                      >
-                        <i class="fas fa-print"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Pagination -->
-              <nav class="mt-3">
-                <ul class="pagination pagination-sm justify-content-center">
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">&laquo;</a>
-                  </li>
-                  <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">&raquo;</a>
-                  </li>
-                </ul>
-              </nav>
+              <!-- More order cards will be added here dynamically -->
             </div>
           </div>
           <!-- ENd orders-body-page -->
