@@ -55,7 +55,7 @@ this.fullNameInput.addEventListener("input", this.validateName.bind(this));
   allowing access to this.fullNameInput and other properties.
   - here we call the references we made above to the inputs
 */
-    this.brandNameInput.addEventListener("input", this.validateName.bind(this));
+    this.brandNameInput.addEventListener("input", this.validateBrandName.bind(this));
     
     
     this.emailInput.addEventListener("input", this.validateEmailField.bind(this));
@@ -167,10 +167,15 @@ this.updateSubmitButton();
 
   updateSubmitButton() {
     if (!this.submitButton) return;
-
-    const allValid = this.isNameValid && this.isEmailValid && this.isPasswordValid && this.isBrandNameValid;
+  
+    // Only require brand name validation if account type is "seller" made the error 
+    const isSeller = document.querySelector('input[name="accountType"]:checked')?.value === "seller";
+    
+    const allValid = this.isNameValid && this.isEmailValid && this.isPasswordValid && 
+                    (!isSeller || this.isBrandNameValid);
+    
     this.submitButton.disabled = !allValid;
-
+  
     if (this.submitButton.disabled) {
       this.submitButton.classList.add("opacity-50");
     } else {
