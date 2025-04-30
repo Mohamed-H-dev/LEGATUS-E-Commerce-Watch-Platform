@@ -6,37 +6,136 @@
   <title>Contact Us</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
   <style>
-    body { background-color: #f5f7f6; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .sidebar { width: 190px; background-color: #1a1a2e; color: #fff; height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; align-items: start; }
-    .sidebar .logo { width: 100%; padding: 20px; text-align: center; }
-    .sidebar .logo img { width: 140px; }
-    .sidebar a { color: #bdc3c7; text-decoration: none; padding: 12px 16px; width: 100%; display: flex; align-items: center; gap: 8px; transition: background-color 0.3s; font-size: 0.9rem; }
-    .sidebar a:hover { background-color: #0f3460; color: #fff; }
-    .main-content { margin-left: 190px; padding: 40px; }
-    .card { border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); background-color: #fff; }
-    .form-control, .btn { border-radius: 4px; }
-    .btn-primary { background-color: #1a1a2e; border-color: #1a1a2e; }
-    .btn-primary:hover { background-color: #0f3460; border-color: #0f3460; }
-    .header { margin-bottom: 30px; }
-    .alert { display: none; }
+    :root {
+      --nav_color: #002f5f;
+    }
+    body { 
+      background-color: #f5f7f6; 
+      margin: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .main-content { 
+      padding: 40px; 
+      flex: 1;
+    }
+    .card { 
+      border: none; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+      background-color: #fff; 
+    }
+    .form-control, .btn { 
+      border-radius: 4px; 
+    }
+    .btn-primary { 
+      background-color:  #0d6efd; 
+      border-color: #1a1a2e; 
+    }
+    .btn-primary:hover { 
+      background-color: #002f5f; 
+      border-color: #0f3460; 
+    }
+    .header { 
+      margin-bottom: 30px; 
+    }
+    .alert { 
+      display: none; 
+    }
+    
+    /* Navbar Styles */
+    .navbar {
+      background-color: var(--nav_color);
+      color: white !important;
+    }
+    .navbar-brand {
+      color: white !important;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .nav-link {
+      color: white !important;
+    }
+    
+    /* Footer Styles */
+    .footer {
+      background-color: #002f5f;
+      color: white;
+    }
+    .footer a:hover {
+      color: #bdc3c7 !important;
+    }
+    
+    /* Top Bar Styles */
+    .top-bar {
+      background-color: #dae5ef;
+      color: #002f5f;
+      font-size: 0.9rem;
+      padding: 0.3rem 0;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="logo">
-      <img src="logo.png" alt="Logo"/>
+  <!-- Top Bar -->
+  <div class="top-bar py-1">
+    <div class="container d-flex justify-content-center">
+      <div>Fast & Secure Shopping | Professional Packaging</div>
     </div>
-    <a href="index.html"><i class="bi bi-house-door-fill"></i> Home</a>
-    <a href="#" class="active"><i class="bi bi-envelope-fill"></i> Contact Us</a>
-    <a href="about.html"><i class="bi bi-info-circle-fill"></i> About</a>
   </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand h1 fw-bolder ps-5" href="#">Legatus</a>
+      
+      <div class="icon d-flex gap-3 px-3 d-sm-none">
+        <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+        <i class="fa-solid fa-user fs-4 me-2"></i>
+      </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="productCatalog.html">Shop</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="ContactUs.html">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+      <div class="icon d-flex gap-3 px-3 d-lg-none">
+        <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+        <i class="fa-solid fa-user fs-4 me-2"></i>
+      </div>
+    </div>
+  </nav>
 
   <!-- Main Content -->
   <div class="main-content">
-    <h2 class="header">Contact Us</h2>
+    <div class="card bg-light border-0 shadow-sm mb-4">
+      <div class="card-body text-center">
+        <h2 class="card-title fw-bold mb-0" style="color: #0d6efd; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); letter-spacing: 1px;">Contact Us</h2>
+      </div>
+    </div>
+    
+    
     <div class="card p-4" style="max-width: 600px; margin: auto;">
       <form id="contactForm">
         <div class="mb-3">
@@ -65,8 +164,44 @@
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="footer text-white pt-5 pb-3">
+    <div class="container">
+      <div class="d-flex flex-column flex-md-row text-center text-md-start">
+        
+        <!-- Brand / About -->
+        <div class="flex-fill px-3 mb-4 mb-md-0">
+          <h5 class="text-uppercase text-center text-md-start">WatchStore</h5>
+          <p class="small text-white">Discover timeless elegance with our curated <br> selection of luxury watches from top global brands.</p>
+        </div>
+  
+        <!-- Quick Links -->
+        <div class="flex-fill px-3 mb-4 mb-md-0">
+          <h6 class="text-uppercase mb-3 text-center text-md-start">Quick Links</h6>
+          <ul class="list-unstyled small">
+            <li><a href="index.html" class="text-white text-decoration-none">Home</a></li>
+            <li><a href="productCatalog.html" class="text-white text-decoration-none">Shop</a></li>
+            <li><a href="ContactUs.html" class="text-white text-decoration-none">Contact</a></li>
+          </ul>
+        </div>
+  
+        <!-- Contact Info -->
+        <div class="flex-fill px-3">
+          <h6 class="text-uppercase mb-3 text-center text-md-start">Contact Us</h6>
+          <p class="small text-white mb-1">📍 123 Luxury Ave, Cairo, Egypt</p>
+          <p class="small text-white mb-1">📞 +20 123 456 789</p>
+          <p class="small text-white mb-3">✉️ info@watchstore.com</p>
+          <div class="d-flex justify-content-center justify-content-md-start gap-3">
+            <a href="#" class="text-white fs-5"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="text-white fs-5"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="text-white fs-5"><i class="bi bi-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <script>
-    // Show success message and clear the form after submission
     document.getElementById('contactForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const name = document.getElementById('name').value;
@@ -76,18 +211,20 @@
 
       const customerServiceData = { name, email, phone, comments };
 
-      // Store the new data in localStorage (if needed)
       let customerServiceList = JSON.parse(localStorage.getItem('customerServiceList')) || [];
       customerServiceList.push(customerServiceData);
       localStorage.setItem('customerServiceList', JSON.stringify(customerServiceList));
 
-      // Clear the form fields
       document.getElementById('contactForm').reset();
 
-      // Show success message
       document.querySelector('.alert').style.display = 'block';
+      
+      setTimeout(() => {
+        document.querySelector('.alert').style.display = 'none';
+      }, 5000);
     });
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -18,7 +18,8 @@ export class AccessControl {
                     "/SignUp.html",
                     "../index.html",
                     "/checkout.html",
-                    "/add-to-cart.html"
+                    "/add-to-cart.html",
+                    "/Customer Dashboard/customer-dashboard.html"
                 ],
                 seller: [
                     "/index.html",
@@ -44,6 +45,8 @@ export class AccessControl {
                 window.location.href = "Sign.html";
                 return;
             }
+
+
             
 
             //WRITE HERE IF U WANT TO REDIRECT 
@@ -58,7 +61,9 @@ export class AccessControl {
                 if (!isAllowed) {
                     // Redirect to appropriate page based on role here 
                     if (userRole === "customer") {
-                        window.location.href = "../index.html";
+                        // window.location.href = "../index.html";
+                        
+                    window.location.href = "../Customer Dashboard/customer-dashboard.html";
                     } else if (userRole === "seller") {
                         window.location.href = "../Seller DashBoard/SellerDashboard.html";
                     } else if (userRole === "admin") {

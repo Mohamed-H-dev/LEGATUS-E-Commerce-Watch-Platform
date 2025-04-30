@@ -4,10 +4,21 @@ export class FormValidator {
     this.isNameValid = false;
     this.isEmailValid = false;
     this.isPasswordValid = false;
+    this.isBrandNameValid = false;     
   }
 
+  //steps to validate the form
+
+// Add a property to track brand name validation status
+// Add a reference to the brand name input field
+// Set up the event listener for the brand name field
+// Create a validation function specific to the brand name
+// Update the submit button check to include the brand name validation
+
+
+
   init() {
-    // Wait for DOM to be fully loaded
+  
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.initialize());
     } else {
@@ -19,6 +30,7 @@ export class FormValidator {
     this.form = document.querySelector("form");
     this.fullNameInput = document.getElementById("fullName");
     this.emailInput = document.getElementById("email");
+    this.brandNameInput =document.getElementById("brandName");
     this.passwordInput = document.getElementById("password");
     this.submitButton = document.querySelector("button[type='submit']");
 
@@ -27,18 +39,27 @@ export class FormValidator {
       return;
     }
 
+  
     this.setupEventListeners();
     this.initializeFields();
   }
 
   setupEventListeners() {
-    // Validate full name
-    this.fullNameInput.addEventListener("input", this.validateName.bind(this));
+//validation for all inputs    
+    
+this.fullNameInput.addEventListener("input", this.validateName.bind(this));
 
-    // Validate email
+/*bind  here means that the function will be called 
+ with the context of the 
+ current instance of FormValidator,
+  allowing access to this.fullNameInput and other properties.
+  - here we call the references we made above to the inputs
+*/
+    this.brandNameInput.addEventListener("input", this.validateBrandName.bind(this));
+    
+    
     this.emailInput.addEventListener("input", this.validateEmailField.bind(this));
 
-    // Validate password
     this.passwordInput.addEventListener("input", this.validatePasswordField.bind(this));
   }
 
@@ -53,6 +74,22 @@ export class FormValidator {
     }
     this.updateSubmitButton();
   }
+validateBrandName(event) {
+  //target is the element that triggered the event
+  //this.brandNameInput is the element we are validating
+const input = event.target  || this.brandNameInput;
+if (input.value.trim().length < 2) {
+  this.isBrandNameValid = false;
+  this.showError(input, "Brand name must be at least 2 characters");
+}
+else {
+  this.isBrandNameValid = true;
+  this.removeError(input);
+}
+this.updateSubmitButton();
+}
+//brand name validation is similar to name validation
+
 
   validateEmailField(event) {
     const input = event.target || this.emailInput;
@@ -103,7 +140,10 @@ export class FormValidator {
     errorDiv.className = "error-message text-danger small mt-1";
     errorDiv.textContent = message;
 
-    // Insert after the input or its container if it's in a special wrapper
+    // Insert after the input element
+    // Check if the input is inside a relative positioned container
+    // If so, insert the error message after the container
+    // Otherwise, insert it after the input element
     const container = input.parentElement.classList.contains("position-relative")
       ? input.parentElement
       : input;
@@ -127,10 +167,15 @@ export class FormValidator {
 
   updateSubmitButton() {
     if (!this.submitButton) return;
-
-    const allValid = this.isNameValid && this.isEmailValid && this.isPasswordValid;
+  
+    // Only require brand name validation if account type is "seller" made the error 
+    const isSeller = document.querySelector('input[name="accountType"]:checked')?.value === "seller";
+    
+    const allValid = this.isNameValid && this.isEmailValid && this.isPasswordValid && 
+                    (!isSeller || this.isBrandNameValid);
+    
     this.submitButton.disabled = !allValid;
-
+  
     if (this.submitButton.disabled) {
       this.submitButton.classList.add("opacity-50");
     } else {
@@ -141,6 +186,7 @@ export class FormValidator {
   initializeFields() {
     // Initial validation of prefilled values
     if (this.fullNameInput.value) this.validateName({ target: this.fullNameInput });
+    if (this.brandNameInput.value) this.validateBrandName({ target: this.brandNameInput }); 
     if (this.emailInput.value) this.validateEmailField({ target: this.emailInput });
     if (this.passwordInput.value) this.validatePasswordField({ target: this.passwordInput });
   }

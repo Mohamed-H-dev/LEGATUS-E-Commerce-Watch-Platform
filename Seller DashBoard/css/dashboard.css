@@ -50,6 +50,23 @@ body {
   transform: scale(1.2);
   transition: all 0.2s ease-in-out;
 }
+.orders-page table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-page table thead {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Match your table header background */
+  z-index: 10;
+}
+
+.orders-page .container {
+  max-height: calc(100vh - 200px); /* Adjust based on your header height */
+  overflow-y: auto;
+  padding-right: 15px; /* Prevent scrollbar from overlapping content */
+}
 /* Desctop Design */
 
 /* Mobile Design */

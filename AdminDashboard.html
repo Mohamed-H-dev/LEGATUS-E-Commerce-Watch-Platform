@@ -14,7 +14,7 @@
     }
     .sidebar {
       width: 190px;
-      background-color: #1a1a2e;
+      background-color: #002f5f;
       color: #fff;
       height: 100vh;
       position: fixed;
@@ -22,6 +22,7 @@
       left: 0;
       display: flex;
       flex-direction: column;
+      font-size: 1 rem;
       align-items: start;
     }
     .sidebar .logo {
@@ -44,7 +45,7 @@
     }
     .sidebar a.active,
     .sidebar a:hover {
-      background-color: #0f3460;
+      background-color: #112235;
       color: #fff;
     }
     .main-content {
@@ -118,14 +119,18 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <div class="logo">
-      <img src="logo.png" alt="Logo" />
+    <div class="logo text-center py-4">
+      <h1 class="d-flex align-items-center justify-content-center gap-2 text-white fs-3 m-0">
+        <i class="bi bi-shield-lock"></i>
+        <span>Admin</span>
+      </h1>
     </div>
+    
     <a href="#" class="active"><i class="bi bi-person"></i> Customer</a>
     <a href="AdminSellerDashboard.html"><i class="bi bi-shop"></i> Seller</a>
     <a href="AdminProductDashboard.html"><i class="bi bi-bag"></i> Products</a>
     <a href="AdminDashboardCustomerService.html"><i class="bi bi-people"></i> Customer Service</a>
-    <a href="homePage.html"><i class="bi bi-house-door-fill"></i> Home Page</a>
+    <a href="index.html"><i class="bi bi-house-door-fill"></i> Home Page</a>
   </div>
 
   <!-- Main Content -->
