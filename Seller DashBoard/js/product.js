@@ -76,6 +76,49 @@ export class LocalStorageManager {
   saveOrders(orders) {
     localStorage.setItem('Orders', JSON.stringify(orders));
   }
+
+  restockProduct(productId, additionalQuantity) {
+    const products = this.getProducts();
+    const productIndex = products.findIndex(p => p.id === productId);
+    
+    if (productIndex !== -1) {
+      products[productIndex].stock += additionalQuantity;
+      this.setProducts(products);
+      return true;
+    }
+    return false;
+  }
+
+
+  checkStock(productId, requestedQuantity) {
+    const products = this.getProducts();
+    const product = products.find(p => p.id === productId);
+    return product && product.stock >= requestedQuantity;
+}
+
+decreaseStock(productId, quantity) {
+    const products = this.getProducts();
+    const productIndex = products.findIndex(p => p.id === productId);
+    
+    if (productIndex !== -1) {
+        products[productIndex].stock -= quantity;
+        this.setProducts(products);
+        return true;
+    }
+    return false;
+}
+
+increaseStock(productId, quantity) {
+    const products = this.getProducts();
+    const productIndex = products.findIndex(p => p.id === productId);
+    
+    if (productIndex !== -1) {
+        products[productIndex].stock += quantity;
+        this.setProducts(products);
+        return true;
+    }
+    return false;
+}
 }
 
 

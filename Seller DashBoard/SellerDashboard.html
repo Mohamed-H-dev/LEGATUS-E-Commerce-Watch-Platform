@@ -58,6 +58,9 @@
     // Get orders from localStorage
     const orders = JSON.parse(localStorage.getItem('Orders')) || [];
     
+    // Process orders to update product stock
+    processOrdersForStock(orders);
+    
     // Filter if search term exists
     const filteredOrders = searchTerm 
         ? orders.filter(order => order.orderId.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -67,6 +70,35 @@
     renderOrders(filteredOrders, searchTerm);
 }
 
+function processOrdersForStock(orders) {
+    const storageManager = new LocalStorageManager();
+    const products = storageManager.getProducts();
+    let productsUpdated = false;
+
+    orders.forEach(order => {
+        // Only process orders that are not cancelled
+        if (order.status !== 'cancelled') {
+            order.products.forEach(orderProduct => {
+                const product = products.find(p => p.id === orderProduct.product.id);
+                if (product) {
+                    // Check if this order has already been processed for stock reduction
+                    if (!order.stockProcessed) {
+                        product.stock -= orderProduct.quantity_in_cart;
+                        productsUpdated = true;
+                    }
+                }
+            });
+            
+            order.stockProcessed = true;
+        }
+    });
+
+    if (productsUpdated) {
+        storageManager.setProducts(products);
+    }
+}
+
+
 function renderOrders(ordersToDisplay, searchTerm = '') {
     // Desktop View
     const desktopTable = document.querySelector('.orders-page table');
@@ -74,7 +106,7 @@ function renderOrders(ordersToDisplay, searchTerm = '') {
         const tbody = desktopTable.querySelector('tbody') || desktopTable;
         tbody.innerHTML = ordersToDisplay.length ? '' : `
             <tr>
-                <td colspan="6" class="text-center py-4">
+                <td colspan="7" class="text-center py-4">
                     <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
                     <p>${searchTerm ? `No orders found for "${searchTerm}"` : 'No orders found'}</p>
                     ${searchTerm ? `<button class="btn btn-outline-primary mt-2 clear-order-search-btn">Clear Search</button>` : ''}
@@ -82,8 +114,18 @@ function renderOrders(ordersToDisplay, searchTerm = '') {
             </tr>
         `;
 
-        // Render each order (newest first)
         ordersToDisplay.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)).forEach(order => {
+            const productGroups = {};
+            order.products.forEach(product => {
+                if (!productGroups[product.product.id]) {
+                    productGroups[product.product.id] = {
+                        ...product.product,
+                        quantity: 0
+                    };
+                }
+                productGroups[product.product.id].quantity += product.quantity_in_cart;
+            });
+
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${order.orderId}</td>
@@ -101,16 +143,46 @@ function renderOrders(ordersToDisplay, searchTerm = '') {
                         ${order.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}
                     </span>
                 </td>
-                <td>$ <strong class="text-end money ${getStatusColorClass(order.status)}">${order.totalAmmount}</strong></td>
+                <td>$<strong class="text-end money ${getStatusColorClass(order.status)}">${order.totalAmmount}</strong></td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-secondary view-details-btn" data-order-id="${order.orderId}">
+                        <i class="fas fa-eye"></i> Details
+                    </button>
+                </td>
             `;
             tbody.appendChild(row);
         });
     }
 
-    // Mobile View - similar changes needed here
+    // Mobile View
     const mobileOrdersContainer = document.querySelector('.mobile-layout .orders-page .container');
     if (mobileOrdersContainer) {
+        mobileOrdersContainer.innerHTML = '';   
+        
+        if (!ordersToDisplay.length) {
+            const noOrdersMsg = document.createElement('div');
+            noOrdersMsg.className = 'text-center py-4';
+            noOrdersMsg.innerHTML = `
+                <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                <p>${searchTerm ? `No orders found for "${searchTerm}"` : 'No orders found'}</p>
+                ${searchTerm ? `<button class="btn btn-outline-primary mt-2 clear-order-search-btn">Clear Search</button>` : ''}
+            `;
+            mobileOrdersContainer.appendChild(noOrdersMsg);
+            return;
+        }
+
         ordersToDisplay.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)).forEach((order, index) => {
+            const productGroups = {};
+            order.products.forEach(product => {
+                if (!productGroups[product.product.id]) {
+                    productGroups[product.product.id] = {
+                        ...product.product,
+                        quantity: 0
+                    };
+                }
+                productGroups[product.product.id].quantity += product.quantity_in_cart;
+            });
+
             const card = document.createElement('div');
             card.className = 'card mb-2 border-secondary';
             card.setAttribute('data-order-id', order.orderId);  
@@ -142,6 +214,22 @@ function renderOrders(ordersToDisplay, searchTerm = '') {
                                 </select>
                             </div>
                         </div>
+                        <div class="mt-3">
+                            <h6>Products:</h6>
+                            <ul class="list-group">
+                                ${Object.values(productGroups).map(product => `
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        ${product.name} (${product.brand})
+                                        <span class="badge bg-primary rounded-pill">${product.quantity}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-outline-secondary w-100 view-details-btn" data-order-id="${order.orderId}">
+                                <i class="fas fa-eye me-1"></i> View Full Details
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -151,6 +239,124 @@ function renderOrders(ordersToDisplay, searchTerm = '') {
 }
 
 
+function showOrderDetails(orderId) {
+    const orders = JSON.parse(localStorage.getItem('Orders')) || [];
+    const order = orders.find(o => o.orderId === orderId);
+    
+    if (!order) return;
+
+    // Group products by ID
+    const productGroups = {};
+    order.products.forEach(product => {
+        if (!productGroups[product.product.id]) {
+            productGroups[product.product.id] = {
+                ...product.product,
+                quantity: 0,
+                total: 0
+            };
+        }
+        productGroups[product.product.id].quantity += product.quantity_in_cart;
+        productGroups[product.product.id].total += product.product.price * product.quantity_in_cart;
+    });
+
+    // Create modal HTML
+    const modalHTML = `
+        <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="orderDetailsModalLabel">Order Details: ${order.orderId}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p><strong>Order Date:</strong> ${new Date(order.orderDate).toLocaleString()}</p>
+                                <p><strong>Customer ID:</strong> ${order.userId}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Status:</strong> <span class="badge ${getStatusBadgeClass(order.status)}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></p>
+                                <p><strong>Payment Status:</strong> <span class="badge ${order.paymentStatus === 'paid' ? 'bg-success' : 'bg-danger'}">${order.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}</span></p>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4">Products</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Brand</th>
+                                        <th>Price</th>
+                                        <th>Qty</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.values(productGroups).map(product => `
+                                        <tr>
+                                            <td>${product.name}</td>
+                                            <td>${product.brand}</td>
+                                            <td>$${product.price.toFixed(2)}</td>
+                                            <td>${product.quantity}</td>
+                                            <td>$${product.total.toFixed(2)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h5>Order Summary</h5>
+                                <table class="table">
+                                    <tr>
+                                        <td><strong>Subtotal:</strong></td>
+                                        <td class="text-end">$${order.subtotal}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Shipping:</strong></td>
+                                        <td class="text-end">$${order.shipping}</td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td><strong>Total:</strong></td>
+                                        <td class="text-end"><strong>$${order.totalAmmount}</strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add modal to DOM
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHTML;
+    document.body.appendChild(modalContainer);
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+    modal.show();
+
+    // Remove modal from DOM after it's closed
+    document.getElementById('orderDetailsModal').addEventListener('hidden.bs.modal', function() {
+        modalContainer.remove();
+    });
+}
+
+
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('view-details-btn') || e.target.closest('.view-details-btn')) {
+        const orderId = e.target.getAttribute('data-order-id') || 
+                        e.target.closest('.view-details-btn').getAttribute('data-order-id');
+        showOrderDetails(orderId);
+    }
+});
 
 function getStatusBadgeClass(status) {
     switch(status) {
@@ -161,73 +367,90 @@ function getStatusBadgeClass(status) {
     }
 }
 
+function hasSufficientStock(order) {
+    const storageManager = new LocalStorageManager();
+    const products = storageManager.getProducts();
+    
+    for (const orderProduct of order.products) {
+        const product = products.find(p => p.id === orderProduct.product.id);
+        if (!product || product.stock < orderProduct.quantity_in_cart) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
 
 function updateOrderStatus(orderId, newStatus) {
-  const orders = storageManager.getSellerOrders(sellerId);
-  const orderIndex = orders.findIndex(o => o.orderId === orderId);
-  
-  if (orderIndex !== -1) {
-    orders[orderIndex].status = newStatus;
-    storageManager.saveSellerOrders(sellerId, orders);
+    const storageManager = new LocalStorageManager();
+    const orders = storageManager.getOrders();
+    const products = storageManager.getProducts();
+    const orderIndex = orders.findIndex(o => o.orderId === orderId);
     
-    document.querySelectorAll(`[data-order-id="${orderId}"]`).forEach(el => {
-      if (el.classList.contains('money')) {
-        el.className = `money ${getStatusColorClass(newStatus)}`;
-      }
-    });
-    
-    document.querySelectorAll(`.card[data-order-id="${orderId}"] .money`).forEach(el => {
-      el.className = `money ${getStatusColorClass(newStatus)}`;
-    });
-  }
-}
-function updateOrderUI(orderId, newStatus) {
-    document.querySelectorAll(`select[data-order-id="${orderId}"]`).forEach(select => {
-        select.value = newStatus;
-    });
-    
-    document.querySelectorAll(`[data-order-id="${orderId}"] .badge`).forEach(badge => {
-        badge.className = `badge ${getStatusBadgeClass(newStatus)}`;
-        badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
-    });
-    
-    document.querySelectorAll(`[data-order-id="${orderId}"] .money`).forEach(money => {
-        money.className = `money ${getStatusColorClass(newStatus)}`;
-    });
-}
-function updateOrderUI(orderId, newStatus) {
-    // Update status dropdown
-    document.querySelectorAll(`select[data-order-id="${orderId}"]`).forEach(select => {
-        select.value = newStatus;
-    });
-    
-    // Update status badge
-    document.querySelectorAll(`[data-order-id="${orderId}"] .badge`).forEach(badge => {
-        badge.className = `badge ${getStatusBadgeClass(newStatus)}`;
-        badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
-    });
-    
-    // Update total amount color
-    document.querySelectorAll(`[data-order-id="${orderId}"] .money`).forEach(money => {
-        money.className = `money ${getStatusColorClass(newStatus)}`;
-    });
-}
-
-
-// Helper function to get color class based on status
-function getStatusColorClass(status) {
-    switch(status) {
-        case 'processing': return 'text-warning'; 
-        case 'shipped':    return 'text-success'; 
-        case 'cancelled':  return 'text-danger';  
-        default:           return 'text-secondary';
+    if (orderIndex !== -1) {
+        const order = orders[orderIndex];
+        const previousStatus = order.status;
+        order.status = newStatus;
+        
+        // Handle stock changes based on status changes
+        if (previousStatus === 'cancelled' && newStatus !== 'cancelled') {
+            // Order was cancelled and is now being uncancelled - reduce stock
+            order.products.forEach(orderProduct => {
+                const product = products.find(p => p.id === orderProduct.product.id);
+                if (product) {
+                    product.stock -= orderProduct.quantity_in_cart;
+                }
+            });
+        } else if (previousStatus !== 'cancelled' && newStatus === 'cancelled') {
+            // Order is being cancelled - restore stock
+            order.products.forEach(orderProduct => {
+                const product = products.find(p => p.id === orderProduct.product.id);
+                if (product) {
+                    product.stock += orderProduct.quantity_in_cart;
+                }
+            });
+        }
+        
+        storageManager.setProducts(products);
+        storageManager.saveOrders(orders);
+        updateOrderUI(orderId, newStatus);
     }
 }
+
+
+function updateOrderUI(orderId, newStatus) {
+    // Update status dropdown in both views
+    document.querySelectorAll(`select[data-order-id="${orderId}"]`).forEach(select => {
+        select.value = newStatus;
+    });
+    
+    // Update status badges in both views
+    document.querySelectorAll(`[data-order-id="${orderId}"] .badge`).forEach(badge => {
+        badge.className = `badge ${getStatusBadgeClass(newStatus)}`;
+        badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+    });
+    
+    // Update total amount color in both views
+    document.querySelectorAll(`[data-order-id="${orderId}"] .money`).forEach(money => {
+        money.className = `money ${getStatusColorClass(newStatus)}`;
+    });
+}
+
+function getStatusColorClass(status) {
+    switch(status) {
+        case 'processing': return 'text-warning';
+        case 'shipped': return 'text-success';
+        case 'cancelled': return 'text-danger';
+        default: return 'text-secondary';
+    }
+}
+
 document.addEventListener('change', function(e) {
     if (e.target.classList.contains('status-select')) {
         const orderId = e.target.getAttribute('data-order-id');
         const newStatus = e.target.value;
-        updateOrderStatus(orderId, newStatus); // Updates localStorage + UI
+        updateOrderStatus(orderId, newStatus);
     }
 });
 
@@ -1305,50 +1528,69 @@ function searchOrders(searchTerm) {
   showProductsListView();
   updateAnalitics();
 
+  function hasSufficientStock(productId, requestedQuantity) {
+  const products = storageManager.getProducts();
+  const product = products.find(p => p.id === productId);
+  return product && product.stock >= requestedQuantity;
+}
 
 
 
 
-  function generateSampleOrders(sellerId) {
+
+function generateSampleOrders(sellerId) {
   const sampleOrders = [];
   const statuses = ['processing', 'shipped', 'cancelled'];
   const paymentStatuses = ['paid', 'unpaid'];
-  const products = [
-    { id: 'prod-101', name: 'Wireless Earbuds', price: 80.00 },
-    { id: 'prod-102', name: 'Charging Cable', price: 20.50 },
-    { id: 'prod-103', name: 'Phone Case', price: 25.00 },
-    { id: 'prod-104', name: 'Bluetooth Speaker', price: 45.99 },
-    { id: 'prod-105', name: 'Smart Watch', price: 129.99 }
+
+  // Your actual product list
+  const productList = [
+    { id: "#prod-1746034438044", name: "soso", brand: "cugi", gender: "male", price: 100, stock: 20, image: "..." },
+    { id: "#prod-1746034448237", name: "soso", brand: "cugi", gender: "female", price: 100, stock: 120, image: "..." },
+    { id: "#prod-1746034460269", name: "soso", brand: "cugi", gender: "female", price: 100, stock: 50, image: "..." },
+    { id: "#prod-1746034468501", name: "soso", brand: "cugi", gender: "male", price: 100, stock: 27, image: "..." },
+    { id: "#prod-1746034478773", name: "soso", brand: "cugi", gender: "female", price: 100, stock: 23, image: "..." }
   ];
 
-  // Generate 20 sample orders
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 5; i++) {
     const orderDate = new Date();
-    orderDate.setDate(orderDate.getDate() - Math.floor(Math.random() * 30)); // Random date in last 30 days
-    
-    // Random number of products (1-3)
+    orderDate.setDate(orderDate.getDate() - Math.floor(Math.random() * 30));
+
     const numProducts = Math.floor(Math.random() * 3) + 1;
     const orderProducts = [];
     let subtotal = 0;
-    
-    for (let j = 0; j < numProducts; j++) {
-      const product = products[Math.floor(Math.random() * products.length)];
-      const quantity = Math.floor(Math.random() * 3) + 1; // 1-3 quantity
+
+    // Shallow copy of available products
+    const availableProducts = productList.filter(p => p.stock > 0);
+
+    for (let j = 0; j < numProducts && availableProducts.length > 0; j++) {
+      const index = Math.floor(Math.random() * availableProducts.length);
+      const product = availableProducts[index];
+      const maxQty = Math.min(3, product.stock);
+      const quantity = Math.floor(Math.random() * maxQty) + 1;
+
       orderProducts.push({
-        product: product,
+        product: { ...product }, // Copy product
         quantity_in_cart: quantity,
-        userId: sellerId // Assign to current seller
+        userId: sellerId
       });
+
       subtotal += product.price * quantity;
+      product.stock -= quantity;
+
+      // Remove from available list if out of stock
+      if (product.stock <= 0) {
+        availableProducts.splice(index, 1);
+      }
     }
-    
+
     const shipping = 10.00;
     const totalAmount = subtotal + shipping;
-    
+
     sampleOrders.push({
       orderId: `ORD-${1000 + i}`,
       userId: `cust-${Math.floor(Math.random() * 50) + 1}`,
-      sellerId: sellerId,
+      sellerId,
       orderDate: orderDate.toISOString(),
       status: statuses[Math.floor(Math.random() * statuses.length)],
       paymentStatus: paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)],
@@ -1358,11 +1600,17 @@ function searchOrders(searchTerm) {
       products: orderProducts
     });
   }
-  
-  // Save to localStorage
+
+  // Save orders and updated product stock to localStorage
   localStorage.setItem('Orders', JSON.stringify(sampleOrders));
+  localStorage.setItem('Products', JSON.stringify(productList));
+
   return sampleOrders;
 }
+
+
+
+generateSampleOrders(2);
 
 
 });
@@ -1654,18 +1902,18 @@ function searchOrders(searchTerm) {
               <div class="container">
                 <table class="table table-hover table-striped">
                   <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Date</th>
-                      <th>Customer Name</th>
-                      <th>Order Status</th>
-                      <th>Payment Status</th>
-                      <th class="text-end">Total</th>
-                    </tr>
+                      <tr>
+                          <th>Order ID</th>
+                          <th>Date</th>
+                          <th>Customer Name</th>
+                          <th>Order Status</th>
+                          <th>Payment Status</th>
+                          <th class="text-center">Total</th>
+                          <th class="text-center">Actions</th>
+                      </tr>
                   </thead>
                   <tbody></tbody>
-                  </table>
-
+              </table>
               </div>
             </div>
             <!-- ENd orders-body-page -->
@@ -2294,13 +2542,7 @@ function searchOrders(searchTerm) {
           <!-- orders-body-page -->
           <div class="orders-page">
             <div class="container">
-              
-          
-              <!-- Template Order Card (will be cloned for each order) -->
-              <div class="card mb-2 border-secondary">
 
-              </div>
-              <!-- More order cards will be added here dynamically -->
             </div>
           </div>
           <!-- ENd orders-body-page -->
