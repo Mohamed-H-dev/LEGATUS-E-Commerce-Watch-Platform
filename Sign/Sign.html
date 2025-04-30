@@ -21,17 +21,17 @@
 
     <style>
       :root {
-        --bg-color: #797d86;
-        --card-bg: #dae5ef;
+        --bg-color: #dae5ef;
+        --card-bg: #ffffff;
         --primary-color: #002f5f;
-        --secondry-color: #94abc1;
-        --dark-color: #2a2a2a;
+        --secondry-color: #95b3d7;
+        --dark-color: #002f5f;
         --light-color: #ffffff;
         --SwampTime-color: #002f5f;
-        --text-color: #000000;
-        --muted-color: #cccccc;
-        --border-color: #dddddd;
-        --translucent-bg: rgba(255, 255, 255, 0.1);
+        --text-color: #333333;
+        --muted-color: #bbccdd;
+        --border-color: #dae5ef;
+        --translucent-bg: rgba(218, 229, 239, 0.3);
       }
 
       body {
@@ -98,6 +98,10 @@
         border-radius: 25px;
         padding: 10px;
       }
+      .btn-submit:hover {
+        background-color: var(--secondry-color);
+        
+      }
 
       .btn-social {
         border: 1px solid var(--border-color);
@@ -157,7 +161,6 @@
             <div class="logo">Legatus</div>
           </div>
           <h2 class="mb-4">Welcome Back!</h2>
-          <p class="text-muted mb-4">Sign in to continue to your account</p>
 
           <form id="loginForm">
             <div class="mb-3">
@@ -166,7 +169,6 @@
                 type="email"
                 class="form-control rounded-pill"
                 id="loginEmail"
-                placeholder="Enter your email"
               />
             </div>
 
@@ -177,7 +179,6 @@
                   type="password"
                   class="form-control rounded-pill"
                   id="loginPassword"
-                  placeholder="Enter your password"
                 />
               </div>
             </div>
@@ -199,7 +200,8 @@
                   Remember me
                 </label>
               </div>
-              <a href="#" class="text-decoration-none">Forgot Password?</a>
+              <!--to do:  didn't handle it yet -->
+              <!-- <a href="#" class="text-decoration-none">Forgot Password?</a> -->
             </div>
 
             <div class="mb-3">
