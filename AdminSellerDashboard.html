@@ -47,15 +47,14 @@
     .navbar { background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .search-input { max-width: 300px; }
     .card { border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .table-responsive { overflow-x: auto; }
-    .table-responsive table { table-layout: fixed; width: 100%; }
+    .table-responsive { overflow-x: auto;table-layout: fixed; }
     .table-sm th, .table-sm td { padding: 0.6rem; text-align: center; vertical-align: middle; }
     th { background-color: #1a1a2e; color: #fff; }
     td { word-wrap: break-word; }
     .btn {
       border-radius: 12px;
       padding: 2px 6px;
-      font-size: 0.7rem;
+      font-size: 0.9rem;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -68,7 +67,7 @@
     .action-buttons {
       display: flex;
       justify-content: center;
-      gap: 10px;  
+      gap: 20px;  
       flex-wrap: nowrap; 
     }
   </style>
@@ -108,10 +107,11 @@
         <table class="table table-bordered table-hover table-sm align-middle">
           <thead>
             <tr>
-              <th>ID</th>
+              <th style="width: 5%;">ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Brand</th>
+              <th>Store Name</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -156,6 +156,7 @@
       <td>${seller.name}</td>
       <td>${seller.email}</td>
       <td>${seller.brands}</td>
+      <td>${seller.store}</td>
       <td>
         <div class="action-buttons">
           <button class="btn btn-reset" onclick="resetSellerPassword('${seller.id}')"><i class="bi bi-arrow-clockwise"></i> Reset Password</button>
