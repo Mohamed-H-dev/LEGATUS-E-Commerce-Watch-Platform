@@ -37,14 +37,18 @@ export class UserManager {
       return { success: false, message: "Email already registered" };
     }
     
-    // Create new user with auto-generated ID
     const newUser = {
       id: users.length + 1,
       name: userData.name,
       email: userData.email,
-      password: userData.password, 
-      role: userData.role || "customer" 
+      password: userData.password,
+      role: userData.role || "customer"
     };
+    
+    // Add store property if user is a seller i will add it to local storage 
+    if (userData.role === "seller") {
+      newUser.store = userData.store || "Default Store";
+    }
     
     users.push(newUser);
     StorageManager.save("users", users);
