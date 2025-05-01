@@ -41,6 +41,7 @@ function runOnceReload() {
     if (!hasReloaded) {
         hasReloaded = true;
         window.location.reload();
+        window.location.reload();
     }
 }
 
@@ -95,9 +96,14 @@ function processOrdersForStock(orders) {
     orders.forEach(order => {
         // Check if this order has already been processed
         if (!processedOrderIds.includes(order.orderId)) {
+          console.log("1");
             order.products.forEach(orderProduct => {
                 const productIndex = products.findIndex(p => p.id === orderProduct.product.id);
+          console.log("2");
+
                 if (productIndex !== -1) {
+          console.log("3");
+
                     const currentStock = Number(products[productIndex].stock) || 0;
                     const orderedQuantity = Number(orderProduct.product.quantity_in_cart) || 0;
 
@@ -148,8 +154,8 @@ function renderOrders(ordersToDisplay, searchTerm = '') {
                     </select>
                 </td>
                 <td>
-                    <span class="badge ${order.paymentStatus === 'paid' ? 'bg-success' : 'bg-danger'}">
-                        ${order.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}
+                    <span class="badge bg-success">
+                        Paid
                     </span>
                 </td>
                 <td>$<strong class="text-end money ${getStatusColorClass(order.status)}">${order.totalAmount || order.totalAmmount || '0.00'}</strong></td>                <td class="text-center">
@@ -237,6 +243,9 @@ function renderOrders(ordersToDisplay, searchTerm = '') {
 document.querySelector("#HomePage").addEventListener("click", () => {
     window.location.href = "../productCatalog.html";
 });
+document.querySelector("#HomePageMObile").addEventListener("click", () => {
+    window.location.href = "../productCatalog.html";
+});
 
 function showOrderDetails(orderId) {
     const orders = JSON.parse(localStorage.getItem('Orders')) || [];
@@ -295,8 +304,8 @@ function showOrderDetails(orderId) {
                                     </span>
                                 </p>
                                 <p><strong>Payment Status:</strong> 
-                                    <span class="badge ${order.paymentStatus === 'paid' ? 'bg-success' : 'bg-danger'}">
-                                        ${order.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}
+                                    <span class="badge bg-success">
+                                      Paid
                                     </span>
                                 </p>
                             </div>
@@ -425,6 +434,7 @@ function updateOrderStatus(orderId, newStatus) {
         
         // Handle stock changes based on status changes
         if (previousStatus === 'cancelled' && newStatus !== 'cancelled') {
+          
             // Order was cancelled and is now being uncancelled - reduce stock
             if (!order.stockProcessed) {
                 order.products.forEach(orderProduct => {
@@ -1805,16 +1815,7 @@ new Chart(mobileStockCtx, {
                     Dashboard</a
                   >
                 </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link dashboard-active border-bottom border-secondary my-1"
-                    aria-current="page"
-                    href="#"
-                    id="HomePage"
-                    ><i class="fa-solid fa-house"></i>
-                    Home Page</a
-                  >
-                </li>
+
 
                 <li class="nav-item">
                   <a
@@ -1839,6 +1840,16 @@ new Chart(mobileStockCtx, {
                     <i class="fa-solid fa-tags me-1"></i>
                     <span class="menu-title">Products </span>
                   </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1"
+                    aria-current="page"
+                    href="#"
+                    id="HomePage"
+                    ><i class="fa-solid fa-house"></i>
+                    Home Page</a
+                  >
                 </li>
               </ul>
             </div>
@@ -1985,7 +1996,7 @@ new Chart(mobileStockCtx, {
                       <tr>
                           <th>Order ID</th>
                           <th>Date</th>
-                          <th>Customer Name</th>
+                          <th>Customer ID</th>
                           <th>Order Status</th>
                           <th>Payment Status</th>
                           <th class="text-center">Total</th>
@@ -2015,7 +2026,7 @@ new Chart(mobileStockCtx, {
                   </a>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive px-2 me-2">
                   <table class="table table-hover" id="productsTable">
                     <thead>
                       <tr>
@@ -2427,6 +2438,17 @@ new Chart(mobileStockCtx, {
                   >
                     <i class="fa-solid fa-tags me-1"></i>
                     <span class="menu-title">Products</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link dashboard-active border-bottom border-secondary my-1 collapsed"
+                    data-bs-toggle="collapse"
+                    href="#ui-basic"
+                    aria-expanded="false"
+                  >
+                  <i class="fa-solid fa-house"></i>
+                    <span id="HomePageMObile">Home Page</span>
                   </a>
                 </li>
 
