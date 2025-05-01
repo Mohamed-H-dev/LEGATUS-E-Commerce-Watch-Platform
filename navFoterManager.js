@@ -6,6 +6,12 @@ console.log(users);
 let accountLink = "#";
 class SpecialNav extends HTMLElement{
 connectedCallback(){
+
+  const currentPath = window.location.pathname;
+  const depth = currentPath.split('/').filter(segment => segment && !segment.includes('.html')).length;
+  // 2. Set the correct path prefix (./ or ../)
+  const prefix = depth > 0 ? '../'.repeat(depth) : './';
+
   users.forEach(data=>{
     console.log(data.role);
     if(data.role === 'customer'){
@@ -13,10 +19,10 @@ connectedCallback(){
     
       <nav class="navbar navbar-expand-lg px-4 ">
        <div class="container-fluid d-flex px-5 gap-3">
-         <a class="navbar-brand  fw-bolder m-0" href="index.html">Legatus
+         <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
            <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-4">
              <!-- Shopping Bag Icon -->
-             <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+             <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
            
              <!-- User Icon with Dropdown Toggle -->
              <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -27,9 +33,9 @@ connectedCallback(){
              <ul class="dropdown-menu">
                <li><span class="dropdown-header">${data.role}</span></li>
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
-               <li><a class="dropdown-item" href="../Customer Dashboard/customer-dashboard.html">My Account</a></li>
+               <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="../Sign/Sign.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/Sign.html">Logout</a></li>
              </ul>
            </div></a></a>
            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,13 +44,13 @@ connectedCallback(){
            <div class="collapse navbar-collapse gap-2" id="navbarSupportedContent">
              <ul class="navbar-nav me-auto fs-6 mb-2 gap-4  mb-lg-0">
                <li class="nav-item">
-                 <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                 <a class="nav-link active" aria-current="page" href="${prefix}index.html">Home</a>
                </li>
                <li class="nav-item">
-                 <a class="nav-link" href="productCatalog.html">Shop</a>
+                 <a class="nav-link" href="${prefix}productCatalog.html">Shop</a>
                </li> 
                <li class="nav-item">
-                 <a class="nav-link" href="ContactUs.html">Contact Us</a>
+                 <a class="nav-link" href="${prefix}ContactUs.html">Contact Us</a>
                </li>
              </ul>
              <form class="d-flex align-items-center rounded  bg-white flex-grow-1" role="search">
@@ -54,7 +60,7 @@ connectedCallback(){
          </div>
          <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-3">
            <!-- Shopping Bag Icon -->
-           <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+           <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
          
            <!-- User Icon with Dropdown Toggle -->
            <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -65,9 +71,9 @@ connectedCallback(){
            <ul class="dropdown-menu">
             <li><span class="dropdown-header">${data.role}</span></li>
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
-               <li><a class="dropdown-item" href="../Customer Dashboard/customer-dashboard.html">My Account</a></li>
+               <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="../Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
            </ul>
          </div>
        </div>   
@@ -78,10 +84,10 @@ connectedCallback(){
     
       <nav class="navbar navbar-expand-lg px-4 ">
        <div class="container-fluid d-flex px-5 gap-3">
-         <a class="navbar-brand  fw-bolder m-0" href="index.html">Legatus
+         <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
            <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-4">
              <!-- Shopping Bag Icon -->
-             <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+             <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
            
              <!-- User Icon with Dropdown Toggle -->
              <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -92,9 +98,9 @@ connectedCallback(){
              <ul class="dropdown-menu">
                <li><span class="dropdown-header">${data.role}</span></li>
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
-               <li><a class="dropdown-item" href="../Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
+               <li><a class="dropdown-item" href="${prefix}Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="../Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
              </ul>
            </div></a></a>
            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,13 +109,13 @@ connectedCallback(){
            <div class="collapse navbar-collapse gap-2" id="navbarSupportedContent">
              <ul class="navbar-nav me-auto fs-6 mb-2 gap-4  mb-lg-0">
                <li class="nav-item">
-                 <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                 <a class="nav-link active" aria-current="page" href="${prefix}index.html">Home</a>
                </li>
                <li class="nav-item">
-                 <a class="nav-link" href="productCatalog.html">Shop</a>
+                 <a class="nav-link" href="${prefix}productCatalog.html">Shop</a>
                </li> 
                <li class="nav-item">
-                 <a class="nav-link" href="ContactUs.html">Contact Us</a>
+                 <a class="nav-link" href="${prefix}ContactUs.html">Contact Us</a>
                </li>
              </ul>
              <form class="d-flex align-items-center rounded  bg-white flex-grow-1" role="search">
@@ -119,7 +125,7 @@ connectedCallback(){
          </div>
          <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-3">
            <!-- Shopping Bag Icon -->
-           <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+           <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
          
            <!-- User Icon with Dropdown Toggle -->
            <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -130,9 +136,9 @@ connectedCallback(){
            <ul class="dropdown-menu">
             <li><span class="dropdown-header">${data.role}</span></li>
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
-               <li><a class="dropdown-item" href="../Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
+               <li><a class="dropdown-item" href="${prefix}Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="../Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
            </ul>
          </div>
        </div>   
@@ -143,10 +149,10 @@ connectedCallback(){
     
       <nav class="navbar navbar-expand-lg px-4 ">
        <div class="container-fluid d-flex px-5 gap-3">
-         <a class="navbar-brand  fw-bolder m-0" href="index.html">Legatus
+         <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
            <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-4">
              <!-- Shopping Bag Icon -->
-             <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+             <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
            
              <!-- User Icon with Dropdown Toggle -->
              <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -157,9 +163,9 @@ connectedCallback(){
              <ul class="dropdown-menu">
                <li><span class="dropdown-header">${data.role}</span></li>
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
-               <li><a class="dropdown-item" href="AdminDashboard.html">My Dashboard</a></li>
+               <li><a class="dropdown-item" href="${prefix}AdminDashboard.html">My Dashboard</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="../Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
              </ul>
            </div></a></a>
            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -168,13 +174,13 @@ connectedCallback(){
            <div class="collapse navbar-collapse gap-2" id="navbarSupportedContent">
              <ul class="navbar-nav me-auto fs-6 mb-2 gap-4  mb-lg-0">
                <li class="nav-item">
-                 <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                 <a class="nav-link active" aria-current="page" href="${prefix}index.html">Home</a>
                </li>
                <li class="nav-item">
-                 <a class="nav-link" href="productCatalog.html">Shop</a>
+                 <a class="nav-link" href="${prefix}productCatalog.html">Shop</a>
                </li> 
                <li class="nav-item">
-                 <a class="nav-link" href="ContactUs.html">Contact Us</a>
+                 <a class="nav-link" href="${prefix}ContactUs.html">Contact Us</a>
                </li>
              </ul>
              <form class="d-flex align-items-center rounded  bg-white flex-grow-1" role="search">
@@ -184,7 +190,7 @@ connectedCallback(){
          </div>
          <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-3">
            <!-- Shopping Bag Icon -->
-           <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+           <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
          
            <!-- User Icon with Dropdown Toggle -->
            <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -195,9 +201,9 @@ connectedCallback(){
            <ul class="dropdown-menu">
             <li><span class="dropdown-header">${data.role}</span></li>
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
-               <li><a class="dropdown-item" href="AdminDashboard.html">My Dashboard</a></li>
+               <li><a class="dropdown-item" href="${prefix}AdminDashboard.html">My Dashboard</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="../Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
            </ul>
          </div>
        </div>   
@@ -235,9 +241,9 @@ class SpecialFooter extends HTMLElement{
       <div class="flex-fill px-3 mb-4 mb-md-0">
         <h6 class="text-uppercase mb-3 text-center text-md-start">Quick Links</h6>
         <ul class="list-unstyled small">
-          <li><a href="index.html" class="text-white text-decoration-none">Home</a></li>
-          <li><a href="productCatalog.html" class="text-white text-decoration-none">Shop</a></li>
-          <li><a href="ContactUs.html" class="text-white text-decoration-none">Contact Us</a></li>
+          <li><a href="${prefix}index.html" class="text-white text-decoration-none">Home</a></li>
+          <li><a href="${prefix}productCatalog.html" class="text-white text-decoration-none">Shop</a></li>
+          <li><a href="${prefix}ContactUs.html" class="text-white text-decoration-none">Contact Us</a></li>
         </ul>
       </div>
 
