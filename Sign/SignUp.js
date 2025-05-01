@@ -12,20 +12,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize the validator when DOM is ready
   validator.init();
 
-  //this is just for the brand name
+  //this is just for the store name
   const accountTypeRadios = document.querySelectorAll(
     'input[name="accountType"]'
   );
-  const brandNameContainer =
-    document.getElementById("brandNameContainer") || createBrandNameField();
-  // added event listener to show brand name field when seller is selected
+  const storeNameContainer =
+    document.getElementById("storeNameContainer") || createStoreNameField();
+  // added event listener to show store name field when seller is selected
   accountTypeRadios.forEach((radio) => {
     radio.addEventListener("change", function () {
-      // Show brand name field only if seller is selected
+      // Show store name field only if seller is selected
       if (this.value === "seller") {
-        brandNameContainer.style.display = "block";
+        storeNameContainer.style.display = "block";
       } else {
-        brandNameContainer.style.display = "none";
+        storeNameContainer.style.display = "none";
       }
     });
   });
@@ -58,20 +58,20 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector('input[name="accountType"]:checked').value ===
         "seller";
 
-      // For sellers, also validate brand name
-      let isBrandNameValid = true;
+      // For sellers, also validate store name
+      let isStoreNameValid = true;
       if (isSeller) {
-        const brandNameInput = document.getElementById("brandName");
-        if (!brandNameInput.value.trim()) {
-          isBrandNameValid = false;
-          // Show error for empty brand name
+        const storeNameInput = document.getElementById("storeName");
+        if (!storeNameInput.value.trim()) {
+          isStoreNameValid = false;
+          // Show error for empty store name
           const errorElement =
-            document.getElementById("brandNameError") ||
-            createErrorElement("brandNameError", brandNameInput);
-          errorElement.textContent = "Brand name is required";
+            document.getElementById("storeNameError") ||
+            createErrorElement("storeNameError", storeNameInput);
+          errorElement.textContent = "Store name is required";
           errorElement.style.display = "block";
         } else {
-          const errorElement = document.getElementById("brandNameError");
+          const errorElement = document.getElementById("storeNameError");
           if (errorElement) errorElement.style.display = "none";
         }
       }
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       if (isSeller) {
-        userData.brandName = document.getElementById("brandName").value.trim();
+        userData.store = document.getElementById("storeName").value.trim();
       }
 
 
@@ -95,9 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Redirect
         if (userData.role === "seller") {
-          window.location.href = "testpageseller.html";
+          window.location.href = "../Seller DashBoard/SellerDashboard.html";
         } else {
-          window.location.href = "../Customer Dashboard/customer-dashboard.html";
+          window.location.href = "../index.html";
         }
       } else {
         alert(result.message || "Error creating account");

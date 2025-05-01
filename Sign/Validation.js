@@ -4,16 +4,16 @@ export class FormValidator {
     this.isNameValid = false;
     this.isEmailValid = false;
     this.isPasswordValid = false;
-    this.isBrandNameValid = false;     
+    this.isStoreNameValid = false;     
   }
 
   //steps to validate the form
 
-// Add a property to track brand name validation status
-// Add a reference to the brand name input field
-// Set up the event listener for the brand name field
-// Create a validation function specific to the brand name
-// Update the submit button check to include the brand name validation
+// Add a property to track store name validation status
+// Add a reference to the store name input field
+// Set up the event listener for the store name field
+// Create a validation function specific to the store name
+// Update the submit button check to include the store name validation
 
 
 
@@ -30,7 +30,7 @@ export class FormValidator {
     this.form = document.querySelector("form");
     this.fullNameInput = document.getElementById("fullName");
     this.emailInput = document.getElementById("email");
-    this.brandNameInput =document.getElementById("brandName");
+    this.storeNameInput =document.getElementById("storeName");
     this.passwordInput = document.getElementById("password");
     this.submitButton = document.querySelector("button[type='submit']");
 
@@ -55,7 +55,7 @@ this.fullNameInput.addEventListener("input", this.validateName.bind(this));
   allowing access to this.fullNameInput and other properties.
   - here we call the references we made above to the inputs
 */
-    this.brandNameInput.addEventListener("input", this.validateBrandName.bind(this));
+    this.storeNameInput.addEventListener("input", this.validateStoreName.bind(this));
     
     
     this.emailInput.addEventListener("input", this.validateEmailField.bind(this));
@@ -74,21 +74,21 @@ this.fullNameInput.addEventListener("input", this.validateName.bind(this));
     }
     this.updateSubmitButton();
   }
-validateBrandName(event) {
+validateStoreName(event) {
   //target is the element that triggered the event
-  //this.brandNameInput is the element we are validating
-const input = event.target  || this.brandNameInput;
+  //this.storeNameInput is the element we are validating
+const input = event.target  || this.storeNameInput;
 if (input.value.trim().length < 2) {
-  this.isBrandNameValid = false;
-  this.showError(input, "Brand name must be at least 2 characters");
+  this.isStoreNameValid = false;
+  this.showError(input, "Store name must be at least 2 characters");
 }
 else {
-  this.isBrandNameValid = true;
+  this.isStoreNameValid = true;
   this.removeError(input);
 }
 this.updateSubmitButton();
 }
-//brand name validation is similar to name validation
+//store name validation is similar to name validation
 
 
   validateEmailField(event) {
@@ -168,11 +168,11 @@ this.updateSubmitButton();
   updateSubmitButton() {
     if (!this.submitButton) return;
   
-    // Only require brand name validation if account type is "seller" made the error 
+    // Only require store name validation if account type is "seller" made the error 
     const isSeller = document.querySelector('input[name="accountType"]:checked')?.value === "seller";
     
     const allValid = this.isNameValid && this.isEmailValid && this.isPasswordValid && 
-                    (!isSeller || this.isBrandNameValid);
+                    (!isSeller || this.isStoreNameValid);
     
     this.submitButton.disabled = !allValid;
   
@@ -186,7 +186,7 @@ this.updateSubmitButton();
   initializeFields() {
     // Initial validation of prefilled values
     if (this.fullNameInput.value) this.validateName({ target: this.fullNameInput });
-    if (this.brandNameInput.value) this.validateBrandName({ target: this.brandNameInput }); 
+    if (this.storeNameInput.value) this.validateStoreName({ target: this.storeNameInput }); 
     if (this.emailInput.value) this.validateEmailField({ target: this.emailInput });
     if (this.passwordInput.value) this.validatePasswordField({ target: this.passwordInput });
   }

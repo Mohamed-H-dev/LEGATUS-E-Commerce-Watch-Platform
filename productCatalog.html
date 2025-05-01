@@ -12,6 +12,8 @@
       <!-- FontAwesome -->
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
        <!--FontAwesome  -->
+       <!-- Nav css -->
+        <link rel="stylesheet" href="nav.css">
     <style>
         *{
             margin: 0;
@@ -43,18 +45,7 @@
       color: #002f5f;
       font-size: 0.9rem;
     }
-        .navbar{
-          background-color:var(--nav_color) ;
-          color: white !important;
-        }
-        .navbar-brand{
-          color: white !important;
-          font-size: 50px;
-        }
-        .nav-link{
-          
-          color: white !important;
-        }
+        
 
         .banner_img{
           width: 100%;
@@ -78,14 +69,13 @@
         }
         
         .carousel-inner{
-          height: 400px;
-          position: relative;
+          
           z-index: 1; 
         }
         .carousel-item{
           width: 100%;
           position: relative;
-          bottom: 300px;
+
         }
         .carsl_img{
           width: 100%;
@@ -122,15 +112,16 @@
         .filter{
           background-color: var(--filter_color);
           min-width: 150px;
-          height: 900px;
+          height: 100%;
           color: white;
         }
+        
         .check_style{
-          border: 1px solid black !important;
+          border: 1px solid  !important;
           box-shadow: none !important;
         }
         .check_style:checked{
-          background-color: #000000 ;
+          background-color: #1165ba ;
           
         }
         .radio_style{
@@ -139,25 +130,23 @@
           accent-color: #232323 !important;
         }
         .radio_style:checked{
-          background-color: #000000 ;
+          background-color: #1165ba ;
           
         }
        
         #watch_img{
-          
-          height: 300px;
+        
           transition: all 1s;
           object-fit: contain;
+          aspect-ratio: 1/1;
            transform: rotate(-90deg); 
         }
         .card{
-          width: 450px;
-          height: 450px;
+/*           border: 1px solid #002f5f !important;
+ */          width: 18rem;
           align-items: center;
           border: none;
           transition: all 1s;
-          width: 300px;
-          
           
         }
         .card:hover{
@@ -179,49 +168,18 @@
       <div>Fast & Secure Shopping | Professional Packaging</div>
     </div>
   </div>
+  
+  <special-nav></special-nav>
+  
+
     <!-- Start Nav Bar -->
-    <nav class="navbar navbar-expand-lg ">
-      <div class="container-fluid">
-        <a class="navbar-brand h1  fw-bolder ps-5" href="#">Legatus</a>
-        
-        <div class="icon d-flex gap-3 px-3 d-sm-none">
-          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
-          <i class="fa-solid fa-user fs-4 me-2 "></i>
-        </div>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse  " id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Shop</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-            
-          </ul>
-          <form class="d-flex flex-grow-1" role="search">
-            <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-light " type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-          </form>
-          
-        </div>
-        <div class="icon d-flex gap-3 px-3 d-lg-none ">
-          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
-          <i class="fa-solid fa-user fs-4 me-2 "></i>
-        </div>
-      </div>
-    </nav>
+
+   
+
     <!-- End Nav Bar -->
 
     <!-- Start Banner -->
      <!-- <div class="banner_img container-fluid "> -->
-
-
 
       <div id="carouselExampleAutoplaying" class="carousel slide fixed-caruosel p-0 m-0" data-bs-ride="carousel">
         <div class="carousel-indicators">
@@ -231,14 +189,10 @@
         </div>
         <div class="carousel-inner ">
           <div class="carousel-item active">
-            <img src="images/1.jpg" class="carsl_img d-block w-100" alt="...">
+            <img src="images/4.png" class="carsl_img d-block w-100" alt="...">
           </div>
-          <div class="carousel-item ">
-            <img src="images/2.jpg" class="carsl_img d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item">
-            <img src="images/3.jpg" class="carsl_img d-block w-100" alt="...">
-          </div>
+          
+         
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -256,13 +210,13 @@
      <!-- Start Product Catalog -->
      
       <div class="container-fluid p-0" >
-        <div class="container-fluid d-flex align-items-center justify-content-center watchstxt_bg position-sticky top-0 z-1">
-          <h2 class="h1 text-center ">Legatus Watches</h2>
+        <div class="container-fluid d-flex align-items-center justify-content-center watchstxt_bg position-sticky top-0 mb-4 z-1">
+          <h2 class="h1 text-center">Legatus Watches</h2>
         </div>
         
-        <div class="row mx-auto flex-nowrap g-5 ">
+        <div class="row flex-nowrap px-5">
           <!-- Start Filter -->
-          <div class="filter position-sticky top-0 z-1 col-2 p-2 ">
+          <div class="filter rounded-3 col-2  p-2 ">
             
             <div class="accordion " id="accordionPanelsStayOpenExample">
               <div class="accordion-item">
@@ -361,20 +315,22 @@
 
 
           <!-- Start Products -->
-           <div class="products col-10 d-flex justify-content-center p-0">
-            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-sm-start m-5 p-0 m-0 w-100" id="cardswrapper">
-            <!-- Start Product Card -->
-           
-             <!-- End Product Card -->
+          <div class="products col-10 d-flex justify-content-center p-0">
+          
+            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-center  p-0 m-0 w-100" style="min-width: 90px;" id="cardswrapper">
+                <!-- Start Product Card -->
+                <!-- Example Card -->
+               
+                <!-- Repeat dynamically via JavaScript if needed -->
+              </div>
             </div>
-            
-           
-           </div>
-          <!-- End Products -->
-        </div>
-      </div>
+          </div>
+      
      <!-- End Product Catalog -->
+<!-- Footer -->
+<special-footer></special-footer>
 
+      <script src="navFoterManager.js" type="module"></script>
       <script src="Products Catalog.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
   </body>
