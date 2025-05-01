@@ -29,7 +29,7 @@ connectedCallback(){
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
                <li><a class="dropdown-item" href="../Customer Dashboard/customer-dashboard.html">My Account</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="../Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="../Sign/Sign.html">Logout</a></li>
              </ul>
            </div></a></a>
            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -209,6 +209,14 @@ connectedCallback(){
 }
 }
 
+const logOut = Array.from(document.querySelectorAll('.dropdown-item'))
+.find(data => data.textContent.trim() === "Logout");
+if(logOut){
+  logOut.addEventListener('click', ()=>{
+    console.log("clicked")
+    /* localStorage.removeItem('currentUser') */
+  })
+}
 
 class SpecialFooter extends HTMLElement{
     connectedCallback(){
