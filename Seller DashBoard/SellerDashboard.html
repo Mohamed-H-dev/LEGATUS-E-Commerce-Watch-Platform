@@ -1103,23 +1103,34 @@ function searchOrders(searchTerm) {
       document.getElementById("productImageUploadMobile").click();
     });
 
-  document
-    .getElementById("productImageUploadMobile")
-    .addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("productImageMobile").value =
-            e.target.result;
-          document.getElementById("previewImageMobile").src =
-            e.target.result;
-          document.getElementById("imagePreviewMobile").style.display =
-            "block";
-        };
-        reader.readAsDataURL(file);
+    document
+  .getElementById("productImageUploadMobile")
+  .addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const validTypes = ["image/jpeg", "image/png"];
+      const fileType = file.type;
+
+      if (!validTypes.includes(fileType)) {
+        // alert("Only JPG and PNG images are allowed.");
+        document.querySelector(".warningCaseNotValidMobile").innerHTML = "Only PNG and JPEG images are allowed.";
+      document.querySelector(".warningCaseNotValidMobile").classList.add("text-danger"); 
+        e.target.value = ""; // Clear the file input
+        return;
       }
-    });
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById("productImageMobile").value = e.target.result;
+        document.getElementById("previewImageMobile").src = e.target.result;
+        document.getElementById("imagePreviewMobile").style.display = "block";
+      document.querySelector(".warningCaseNotValidMobile").innerHTML = ""; // Clear the warning message
+
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
 
   document
     .getElementById("editProductImageBtnMobile")
@@ -1132,6 +1143,7 @@ function searchOrders(searchTerm) {
     .addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (file) {
+        
         const reader = new FileReader();
         reader.onload = function (e) {
           document.getElementById("editProductImageMobile").value =
@@ -2253,6 +2265,7 @@ updateAnalitics();
                       <div class="row mb-3">
                         <div class="col-md-12">
                           <label class="form-label">Product Image</label>
+                          <p class="WarningEditImage"></p>
                           <div class="input-group">
                             <input
                               type="file"
@@ -2704,6 +2717,7 @@ updateAnalitics();
 
                     <div class="mb-3">
                       <label class="form-label">Product Image</label>
+                      <p class="warningCaseNotValidMobile"></p>
                       <div class="input-group input-group-sm">
                         <input
                           type="file"
