@@ -95,9 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Redirect
         if (userData.role === "seller") {
-          window.location.href = "testpageseller.html";
+          window.location.href = "../Seller DashBoard/SellerDashboard.html";
         } else {
-          window.location.href = "../Customer Dashboard/customer-dashboard.html";
+          window.location.href = "../index.html";
         }
       } else {
         alert(result.message || "Error creating account");
