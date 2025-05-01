@@ -578,6 +578,7 @@
             const orderId = `ORD-${timestamp}-${random}`;
             return orderId;
         }
+    
         function createOrder() {
             const orderId = generateOrderId();
             const productsData = getProductsFromStorage();
@@ -640,40 +641,45 @@
             saveOrderToStorage(order);
             return order;
         }
-
+    
         function getProductsFromStorage() {
-            const cartData = localStorage.getItem('Cart');
+            // Only read from checkout data, not Cart
             const checkoutData = localStorage.getItem('checkout');
+            console.log("Raw checkout data:", checkoutData);
             
-            let parsedCartData = null;
-            if (cartData) {
-                try {
-                    parsedCartData = JSON.parse(cartData);
-                    console.log("Using Cart data");
-                } catch (e) {
-                    console.error("Failed to parse Cart data:", e);
-                }
-            }
-            
-            let parsedCheckoutData = null;
-            if (checkoutData && !parsedCartData) {
+            let parsedCheckoutData = [];
+            if (checkoutData) {
                 try {
                     parsedCheckoutData = JSON.parse(checkoutData);
-                    console.log("Using checkout data");
+                    console.log("Parsed checkout data:", parsedCheckoutData);
+                    
+                    // Handle case where the data might be wrapped in another object
+                    if (parsedCheckoutData.products && Array.isArray(parsedCheckoutData.products)) {
+                        console.log("Found products array inside checkout data");
+                        parsedCheckoutData = parsedCheckoutData.products;
+                    }
+                    
+                    // Make sure we have an array
+                    if (!Array.isArray(parsedCheckoutData)) {
+                        console.log("Converting non-array checkout data to array");
+                        parsedCheckoutData = [parsedCheckoutData];
+                    }
                 } catch (e) {
                     console.error("Failed to parse checkout data:", e);
                 }
+            } else {
+                console.log("No checkout data found in localStorage");
             }
             
-            return parsedCartData || parsedCheckoutData || [];
+            return parsedCheckoutData;
         }
-
+    
         function saveOrderToStorage(order) {
             const existingOrders = JSON.parse(localStorage.getItem('Orders')) || [];
             existingOrders.push(order);
             localStorage.setItem('Orders', JSON.stringify(existingOrders));
         }
-
+    
         // Display products when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             const products = getProductsFromStorage();
@@ -712,7 +718,7 @@
                 }
             });
         });
-
+    
         function displayProducts(productsData) {
             const productList = document.getElementById('productList');
             productList.innerHTML = '';
@@ -725,21 +731,32 @@
                 updateOrderSummary(0, shipping);
                 return;
             }
+    
+            console.log("Displaying products:", productsData);
             
             productsData.forEach(productContainer => {
                 let product;
                 let quantity;
                 let price;
                 
+                // Log the structure of each product container for debugging
+                console.log("Processing product container:", productContainer);
+                
                 if (productContainer.product) {
+                    // Structure: { product: {...} }
                     product = productContainer.product;
-                    quantity = parseInt(product.quantity_in_cart || 1);
+                    quantity = parseInt(product.quantity_in_cart || product.quantity || 1);
                     price = parseFloat(product.price || 0);
                 } else {
+                    // Direct product object
                     product = productContainer;
-                    quantity = parseInt(product.quantity || 1);
+                    quantity = parseInt(product.quantity_in_cart || product.quantity || 1);
                     price = parseFloat(product.price || 0);
                 }
+                
+                // Additional check for valid price and quantity
+                if (isNaN(price)) price = 0;
+                if (isNaN(quantity)) quantity = 1;
                 
                 const itemTotal = price * quantity;
                 subtotal += itemTotal;
@@ -754,8 +771,8 @@
                     <div class="product-details">
                         <h6>${name}</h6>
                         <div class="d-flex justify-content-between">
-                            <span class="text-muted">Qty: ${quantity} × $${price.toFixed(2)}</span>
-                            <strong class="text-primary">$${itemTotal.toFixed(2)}</strong>
+                            <span class="text-muted">Qty: ${quantity} × ${price.toFixed(2)}</span>
+                            <strong class="text-primary">${itemTotal.toFixed(2)}</strong>
                         </div>
                     </div>
                 `;
@@ -764,7 +781,7 @@
             
             updateOrderSummary(subtotal, shipping);
         }
-
+    
         function updateOrderSummary(subtotal, shipping) {
             const total = subtotal + shipping;
             
