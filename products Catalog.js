@@ -7,6 +7,7 @@ window.addEventListener('load', ()=>{
   const allProducts = JSON.parse(loadProd);  */
 
  const storageManager = new LocalStorageManager();
+  
 /*  const sampleProducts = [{
   "id": 1,
   "name": "Analog Watch International",

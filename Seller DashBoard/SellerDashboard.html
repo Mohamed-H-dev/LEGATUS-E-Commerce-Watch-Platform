@@ -13,12 +13,17 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-
+     <!-- FontAwesome -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+     <!--FontAwesome  -->
+     <!-- Nav css -->
+      <link rel="stylesheet" href="../nav.css">
 
     <!-- JS -->
     <script src="./js/all.min.js"></script>
-  
-    <link
+    <!-- special navAndFooter js-->
+     <script src="../navFoterManager.js" type="module"></script>
+    <link 
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
@@ -1775,21 +1780,21 @@ new Chart(mobileStockCtx, {
 
   </head>
   <body>
+    <special-nav></special-nav>
     <!-- Desktop Design -->
     <div class="m-0 p-0 dashboard-item-desktop">
       <div class="row fixed-top">
         <!-- dashboard section -->
-        <div class="col-2 dashboard-Desctop-style">
+        <div class="col-2 dashboard-Desctop-style" >
           <div class="d-flex flex-column">
             <!--Logo Img-->
             <div class="box">
-              <a href="#" class="text-decoration-none d-flex align-items-end">
-                <img
-                  src="./img/logo.png"
-                  class="img-fluid w-100 mx-auto"
-                  alt=""
-                />
-              </a>
+              <div class="logo text-center py-4">
+                <h1 class="d-flex align-items-center justify-content-center gap-2 text-white fs-3 m-0">
+                  <i class="fa-solid fa-shop"></i>
+                  <span>Seller</span>
+                </h1>
+              </div>
             </div>
             <!--End Logo Img-->
             <!-- Dashboard content -->
@@ -2845,5 +2850,6 @@ new Chart(mobileStockCtx, {
       <!--  End Mobile body Design -->
     </div>
     <!-- End Mobile Design -->
+     <special-footer></special-footer>
   </body>
 </html>

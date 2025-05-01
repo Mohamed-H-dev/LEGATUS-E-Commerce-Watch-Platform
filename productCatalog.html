@@ -12,6 +12,8 @@
       <!-- FontAwesome -->
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
        <!--FontAwesome  -->
+       <!-- Nav css -->
+        <link rel="stylesheet" href="nav.css">
     <style>
         *{
             margin: 0;
@@ -43,41 +45,7 @@
       color: #002f5f;
       font-size: 0.9rem;
     }
-        .navbar{
-          background-color:var(--nav_color) ;
-          color: white !important;
-        }
-        .navbar-brand{
-          color: white !important;
-          font-size: 42px;
-        }
-        .nav-link{
-          
-          color: white !important;
-        }
-        #search_input{
-          border: 0;
-          
-        }
-        .navbar-toggler {
-        border: none !important;
-        box-shadow: none !important;
-        }
-        #search_input:focus{
-          border: 0 !important;
-          box-shadow: none;
-        }
-        .search_icon{
-          color: #002f5f;
-        }
-
-        .dropdown-menu .dropdown-item:hover{
-          background-color: #dae5ef;
-        }
-        .dropdown-menu .dropdown-item:focus {
-        background-color: #002f5f; 
-        color: #fff;               
-        }
+        
 
         .banner_img{
           width: 100%;
@@ -174,7 +142,8 @@
            transform: rotate(-90deg); 
         }
         .card{
-          width: 18rem;
+/*           border: 1px solid #002f5f !important;
+ */          width: 18rem;
           align-items: center;
           border: none;
           transition: all 1s;
@@ -199,69 +168,13 @@
       <div>Fast & Secure Shopping | Professional Packaging</div>
     </div>
   </div>
+  
+  <special-nav></special-nav>
+  
+
     <!-- Start Nav Bar -->
 
-    <nav class="navbar navbar-expand-lg px-4 ">
-      <div class="container-fluid d-flex px-5 gap-3">
-        <a class="navbar-brand  fw-bolder m-0" href="index.html">Legatus
-          <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-4">
-            <!-- Shopping Bag Icon -->
-            <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
-          
-            <!-- User Icon with Dropdown Toggle -->
-            <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa-solid fa-user fs-4"></i>
-            </a>
-          
-            <!-- Dropdown Menu -->
-            <ul class="dropdown-menu">
-              <li><span class="dropdown-header">Role</span></li>
-              <li><h1 class="dropdown-item-text h1 fs-6">Name</h1></li>
-              <li><a class="dropdown-item" href="#">Account</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Logout</a></li>
-            </ul>
-          </div></a></a>
-          <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fa-solid fa-bars text-light fs-1"></i>
-          </button>
-          <div class="collapse navbar-collapse gap-2" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto fs-5 mb-2 gap-4  mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="productCatalog.html">Shop</a>
-              </li> 
-              <li class="nav-item">
-                <a class="nav-link" href="#">Contact Us</a>
-              </li>
-            </ul>
-            <form class="d-flex align-items-center rounded  bg-white flex-grow-1" role="search">
-              <input id="search_input" class="form-control border-0 me-2" type="search" placeholder="Search" aria-label="Search">
-              <i class="fa-solid search_icon fs-5 me-2 fa-magnifying-glass"></i>
-            </form>
-        </div>
-        <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-4">
-          <!-- Shopping Bag Icon -->
-          <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
-        
-          <!-- User Icon with Dropdown Toggle -->
-          <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-user fs-4"></i>
-          </a>
-        
-          <!-- Dropdown Menu -->
-          <ul class="dropdown-menu">
-            <li><span class="dropdown-header">Role</span></li>
-            <li><h1 class="dropdown-item-text h1 fs-6">Name</h1></li>
-            <li><a class="dropdown-item" href="#">Account</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Logout</a></li>
-          </ul>
-        </div>
-      </div>   
-    </nav>
+   
 
     <!-- End Nav Bar -->
 
@@ -414,7 +327,10 @@
           </div>
       
      <!-- End Product Catalog -->
+<!-- Footer -->
+<special-footer></special-footer>
 
+      <script src="navFoterManager.js" type="module"></script>
       <script src="Products Catalog.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
   </body>

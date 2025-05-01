@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
           window.location.href = '../index.html';
         } else if (user.role === 'admin') {
           window.location.href = 'AdminDashboard.html';
+          window.location.href = '../Sign/SignIn.html';
         }
       } else {
         // Show error message

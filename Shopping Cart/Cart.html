@@ -7,9 +7,14 @@
     <link rel="stylesheet" href="./css/all.min.css" />
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
     <link rel="stylesheet" href="./css/Cart.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!--FontAwesome  -->
+   <!-- nav -->
+   <link rel="stylesheet" href="../nav.css">
     <script src="./js/all.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-
+    <script src="../navFoterManager.js" type="module"></script>
     <style>
       /* Custom styles to enhance the cart layout with rgb(14, 53, 103) as base color */
       :root {
@@ -290,7 +295,7 @@
           // Go back button in history
 
           document.querySelector(".goBack").addEventListener("click", () => {
-            window.history.back();
+            window.location.href ="../productCatalog.html";
           });
         });
         // Go to the checkout page
@@ -304,6 +309,7 @@
     </script>
   </head>
   <body>
+    <special-nav></special-nav>
     <!-- Main Cart Container -->
     <div class="container cart-container">
       <!-- Header -->
@@ -311,15 +317,10 @@
         class="cart-header d-flex flex-column flex-md-row justify-content-between align-items-center"
       >
         <div class="d-flex align-items-center mb-3 mb-md-0">
-          <img
-            src="./img/logo.png"
-            alt="logo"
-            class="img-fluid me-3"
-            style="max-width: 120px"
-          />
+          
           <h1 class="cart-title">Your Shopping Cart</h1>
         </div>
-        <button class="btn btn-outline-primary continue-shopping-btn goBack">
+        <button class="btn  continue-shopping-btn goBack">
           <i class="fa-solid fa-arrow-left me-2"></i>Continue Shopping
         </button>
       </div>
@@ -446,5 +447,6 @@
         </div>
       </div>
     </div>
+    <special-footer></special-footer>
   </body>
 </html>
