@@ -137,6 +137,25 @@
         display: none;
       }
     }
+
+    /**********************************************/
+    .btn-attended {
+      background-color: #d63031;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-attended.attended {
+      background-color: #2ecc71;
+    }
   </style>
 </head>
 <body>
@@ -182,12 +201,28 @@
       localStorage.setItem("customerServiceList", JSON.stringify(data));
     }
 
+    function toggleAttendedStatus(id) {
+      let list = loadCustomerData();
+      const index = list.findIndex(entry => entry.id === id);
+      if (index !== -1) {
+        list[index].attended = !list[index].attended;
+        saveCustomerData(list);
+      }
+      return list[index]?.attended || false;
+    }
+
     function renderCustomerService() {
       let customerServiceList = loadCustomerData();
       
-      // Assign sequential IDs
+      // Assign sequential IDs if not exists
       customerServiceList.forEach((entry, idx) => {
-        entry.id = String(idx + 1).padStart(3, '0');
+        if (!entry.id) {
+          entry.id = String(idx + 1).padStart(3, '0');
+        }
+        // Initialize attended status if not exists
+        if (entry.attended === undefined) {
+          entry.attended = false;
+        }
       });
       saveCustomerData(customerServiceList);
 
@@ -203,18 +238,40 @@
         const card = document.createElement("div");
         card.className = "customer-card";
         card.innerHTML = `
-          <div class="customer-name">${entry.name}</div>
-          <div class="customer-info">ID: ${entry.id}</div>
-          <div class="customer-info">Phone: ${entry.phone}</div>
-          <div class="customer-info">Email: ${entry.email}</div>
-          <div class="customer-message">${entry.comments}</div>
-          <div class="action-buttons">
-            <button class="btn-delete" data-id="${entry.id}">
-              <i class="bi bi-trash"></i> Delete
-            </button>
-          </div>
-        `;
+        <div class="customer-name">${entry.name}</div>
+        <div class="customer-info">ID: ${entry.id}</div>
+        <div class="customer-info">Phone: ${entry.phone}</div>
+        <div class="customer-info">Email: ${entry.email}</div>
+        <div class="customer-message">${entry.comments}</div>
+        <div class="action-buttons">
+          <button class="btn-delete me-2" data-id="${entry.id}">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+          <button class="btn-attended ${entry.attended ? 'attended' : ''}" data-id="${entry.id}">
+            <i class="bi ${entry.attended ? 'bi-check-circle-fill' : 'bi-check-circle'}"></i> 
+            ${entry.attended ? 'Attended' : 'Mark as Attended'}
+          </button>
+        </div>
+      `;
+
         container.appendChild(card);
+      });
+           
+      document.querySelectorAll('.btn-attended').forEach(button => {
+        button.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          const isAttended = toggleAttendedStatus(id);
+          
+          this.classList.toggle('attended', isAttended);
+          const icon = this.querySelector('i');
+          if (isAttended) {
+            icon.className = 'bi bi-check-circle-fill';
+            this.innerHTML = '<i class="bi bi-check-circle-fill"></i> Attended';
+          } else {
+            icon.className = 'bi bi-check-circle';
+            this.innerHTML = '<i class="bi bi-check-circle"></i> Mark as Attended';
+          }
+        });
       });
 
       document.querySelectorAll('.btn-delete').forEach(button => {
@@ -229,7 +286,6 @@
       list = list.filter(entry => entry.id !== id);
       saveCustomerData(list);
       renderCustomerService();
-      // Optionally show a toast/alert here
     }
 
     function handleSearch() {
