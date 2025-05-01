@@ -180,7 +180,8 @@
       document.getElementById("mainImg").src = product.image;
       document.getElementById("watch_name").textContent = product.name;
       document.getElementById("watch_price").textContent = product.price;
-      document.getElementById("watch_description").textContent =product.description;
+      document.getElementById("watch_description").textContent =
+        product.description;
       const input = document.getElementById("quantity"); //reading the quantity
 
       function minus() {
@@ -192,9 +193,9 @@
       }
       function plus() {
         let value = parseInt(input.value); //parse into integer
-        if(value < product.stock){
-        input.value = value +1 ;
-        }else{
+        if (value < product.stock) {
+          input.value = value + 1;
+        } else {
           showMessage("You have reached the maximum stock limit.");
         }
       }
@@ -223,8 +224,6 @@
 
         let currentUserId = currentUser.id; // Get the id directly
 
-        // console.log(currentUserId); // Good for checking in Console
-
         let item = {
           userId: currentUserId,
           product: {
@@ -234,7 +233,7 @@
             price: `${product.price} $`,
             quantity_in_cart: quantity,
             max_quantity: product.stock,
-            sellerId:product.sellerId
+            sellerId: product.sellerId,
           },
         };
 
@@ -269,15 +268,15 @@
         let currentUserId = currentUser.id; // Get the id directly
         let checkoutItem = {
           userId: currentUserId,
-          product:{
-          id: product.id,
-          name: product.name,
-          price: `${product.price} $`,
-          quantity: quantity,
-          image: product.image,
-          totalPrice: product.price * quantity,
-          sellerId:product.sellerId,
-        }
+          product: {
+            id: product.id,
+            name: product.name,
+            price: `${product.price} $`,
+            quantity: quantity,
+            image: product.image,
+            totalPrice: product.price * quantity,
+            sellerId: product.sellerId,
+          },
         };
         localStorage.setItem("checkout", JSON.stringify(checkoutItem));
         window.location.href = "../checkout.html";

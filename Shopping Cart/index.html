@@ -34,6 +34,10 @@
             window.history.back();
           });
         });
+        // Go to the checkout page
+        document.querySelector(".CheckOut").addEventListener("click", () => {
+          window.location.href = "../checkout.html";
+        });
 
         // Set default shipping mode
         document.getElementById("shipping-mode-1").checked = true;
@@ -165,8 +169,10 @@
               </div>
 
               <!-- checkout button -->
-              <button class="btn btn-danger w-100 mt-3 text-uppercase py-2">
-                Proceed to Chec kout
+              <button
+                class="btn btn-danger w-100 mt-3 text-uppercase py-2 CheckOut"
+              >
+                Proceed to Checkout
               </button>
             </div>
           </div>
