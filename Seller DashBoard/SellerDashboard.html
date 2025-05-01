@@ -120,7 +120,7 @@ function processOrdersForStock(orders) {
 
 
 function renderOrders(ordersToDisplay, searchTerm = '') {
-    // Desktop View (unchanged)
+    // Desktop View 
     const desktopTable = document.querySelector('.orders-page table');
     if (desktopTable) {
         const tbody = desktopTable.querySelector('tbody') || desktopTable;
@@ -1064,54 +1064,54 @@ function searchOrders(searchTerm) {
       document.getElementById("productImageUpload").click();
     });
 
-  document
-    .getElementById("productImageUpload")
-    .addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        const allowedTypes = ["image/png", "image/jpeg"];
-    if (!allowedTypes.includes(file.type)) {
-      // alert("Only PNG and JPEG images are allowed.");
-      document.querySelector(".warningCaseNotValid").innerHTML = "Only PNG and JPEG images are allowed.";
-      document.querySelector(".warningCaseNotValid").classList.add("text-danger"); 
-      e.target.value = ""; 
-      return;
+    document
+  .getElementById("productImageUpload")
+  .addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg"];
+      if (!allowedTypes.includes(file.type)) {
+        document.querySelector(".warningCaseNotValid").innerHTML = "Only PNG and JPEG images are allowed.";
+        document.querySelector(".warningCaseNotValid").classList.add("text-danger");
+        e.target.value = "";
+        return;
+      }
+
+      const imageURL = URL.createObjectURL(file);
+      document.getElementById("productImage").value = imageURL; // stores temporary object URL
+      document.getElementById("previewImage").src = imageURL;
+      document.getElementById("imagePreview").style.display = "block";
+      document.querySelector(".warningCaseNotValid").innerHTML = ""; // Clear the warning
     }
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("productImage").value = e.target.result;
-          document.getElementById("previewImage").src = e.target.result;
-          document.getElementById("imagePreview").style.display = "block";
-      document.querySelector(".warningCaseNotValid").innerHTML = ""; // Clear the warning message
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+  });
 
   document
-    .getElementById("editProductImageBtn")
-    .addEventListener("click", function () {
-      document.getElementById("editProductImageUpload").click();
-    });
+  .getElementById("editProductImageBtn")
+  .addEventListener("click", function () {
+    document.getElementById("editProductImageUpload").click();
+  });
 
-  document
-    .getElementById("editProductImageUpload")
-    .addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("editProductImage").value =
-            e.target.result;
-          document.getElementById("editPreviewImage").src =
-            e.target.result;
-          document.getElementById("editImagePreview").style.display =
-            "block";
-        };
-        reader.readAsDataURL(file);
+document
+  .getElementById("editProductImageUpload")
+  .addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        alert("Only PNG and JPEG images are allowed.");
+        e.target.value = ""; // clear invalid file
+        return;
       }
-    });
+
+      const objectURL = URL.createObjectURL(file);
+
+      document.getElementById("editProductImage").value = objectURL;
+      document.getElementById("editPreviewImage").src = objectURL;
+      document.getElementById("editImagePreview").style.display = "block";
+
+    }
+  });
+
 
   // Mobile image upload handlers
   document
@@ -1129,51 +1129,49 @@ function searchOrders(searchTerm) {
       const fileType = file.type;
 
       if (!validTypes.includes(fileType)) {
-        // alert("Only JPG and PNG images are allowed.");
         document.querySelector(".warningCaseNotValidMobile").innerHTML = "Only PNG and JPEG images are allowed.";
-      document.querySelector(".warningCaseNotValidMobile").classList.add("text-danger"); 
+        document.querySelector(".warningCaseNotValidMobile").classList.add("text-danger");
         e.target.value = ""; // Clear the file input
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        document.getElementById("productImageMobile").value = e.target.result;
-        document.getElementById("previewImageMobile").src = e.target.result;
-        document.getElementById("imagePreviewMobile").style.display = "block";
-      document.querySelector(".warningCaseNotValidMobile").innerHTML = ""; // Clear the warning message
+      const objectURL = URL.createObjectURL(file);
 
-      };
-      reader.readAsDataURL(file);
+      document.getElementById("productImageMobile").value = objectURL; // temporary blob URL
+      document.getElementById("previewImageMobile").src = objectURL;
+      document.getElementById("imagePreviewMobile").style.display = "block";
+      document.querySelector(".warningCaseNotValidMobile").innerHTML = "";
+
     }
   });
 
 
   document
-    .getElementById("editProductImageBtnMobile")
-    .addEventListener("click", function () {
-      document.getElementById("editProductImageUploadMobile").click();
-    });
+  .getElementById("editProductImageBtnMobile")
+  .addEventListener("click", function () {
+    document.getElementById("editProductImageUploadMobile").click();
+  });
 
-  document
-    .getElementById("editProductImageUploadMobile")
-    .addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("editProductImageMobile").value =
-            e.target.result;
-          document.getElementById("editPreviewImageMobile").src =
-            e.target.result;
-          document.getElementById(
-            "editImagePreviewMobile"
-          ).style.display = "block";
-        };
-        reader.readAsDataURL(file);
+document
+  .getElementById("editProductImageUploadMobile")
+  .addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        alert("Only PNG and JPEG images are allowed.");
+        e.target.value = ""; // clear the invalid file
+        return;
       }
-    });
+
+      const objectURL = URL.createObjectURL(file);
+
+      document.getElementById("editProductImageMobile").value = objectURL;
+      document.getElementById("editPreviewImageMobile").src = objectURL;
+      document.getElementById("editImagePreviewMobile").style.display = "block";
+
+    }
+  });
 
   // View navigation functions
   function showProductsListView() {
@@ -1963,7 +1961,7 @@ updateAnalitics();
                 <div class="d-flex justify-content-end">
                   <div class="dropdown pe-4">
                     <button
-                      class="btn btn-secondary dropdown-toggle"
+                      class="btn btn-primary dropdown-toggle"
                       type="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
