@@ -1650,7 +1650,181 @@ function updateTotalSales() {
     
 }
 
+function createDynamicCharts() {
+    // Get orders and products for the current seller
+    const orders = storageManager.getOrders().filter(order => order.sellerId === sellerId);
+    const products = storageManager.getProducts().filter(product => product.sellerId === sellerId);
 
+    // 1. Monthly Order Status (Desktop)
+    const monthlyCtx = document.getElementById('monthlyWorkChart').getContext('2d');
+    if (monthlyCtx) {
+        // Count order statuses
+        const statusCounts = {
+            processing: 0,
+            shipped: 0,
+            cancelled: 0
+        };
+
+        orders.forEach(order => {
+            if (order.status in statusCounts) {
+                statusCounts[order.status]++;
+            }
+        });
+
+        new Chart(monthlyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Processing', 'Shipped', 'Cancelled'],
+                datasets: [{
+                    data: [statusCounts.processing, statusCounts.shipped, statusCounts.cancelled],
+                    backgroundColor: [
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(255, 99, 132, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Monthly Order Status' }
+                }
+            }
+        });
+    }
+
+    // 2. Monthly Order Status (Mobile)
+    const mobileMonthlyCtx = document.getElementById('mobileMonthlyWorkChart').getContext('2d');
+    if (mobileMonthlyCtx) {
+        // Count order statuses
+        const statusCounts = {
+            processing: 0,
+            shipped: 0,
+            cancelled: 0
+        };
+
+        orders.forEach(order => {
+            if (order.status in statusCounts) {
+                statusCounts[order.status]++;
+            }
+        });
+
+        new Chart(mobileMonthlyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Processing', 'Shipped', 'Cancelled'],
+                datasets: [{
+                    data: [statusCounts.processing, statusCounts.shipped, statusCounts.cancelled],
+                    backgroundColor: [
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(255, 99, 132, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Monthly Orders' }
+                }
+            }
+        });
+    }
+
+    // 3. Stock by Gender (Desktop)
+    const stockCtx = document.getElementById('stockByGenderChart').getContext('2d');
+    if (stockCtx) {
+        // Count stock by gender
+        const genderCounts = {
+            male: 0,
+            female: 0,
+        };
+
+        products.forEach(product => {
+            const gender = product.gender ? product.gender.toLowerCase() : 'unspecified';
+            const stock = parseInt(product.stock) || 0;
+            
+            if (gender === 'male') {
+                genderCounts.male += stock;
+            } else if (gender === 'female') {
+                genderCounts.female += stock;
+            }
+        });
+
+        new Chart(stockCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Male', 'Female'],
+                datasets: [{
+                    data: [genderCounts.male, genderCounts.female],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Stock by Gender' }
+                }
+            }
+        });
+    }
+
+    // 4. Stock by Gender (Mobile)
+    const mobileStockCtx = document.getElementById('mobileStockByGenderChart').getContext('2d');
+    if (mobileStockCtx) {
+        // Count stock by gender
+        const genderCounts = {
+            male: 0,
+            female: 0,
+            unspecified: 0
+        };
+
+        products.forEach(product => {
+            const gender = product.gender ? product.gender.toLowerCase() : 'unspecified';
+            const stock = parseInt(product.stock) || 0;
+            
+            if (gender === 'male') {
+                genderCounts.male += stock;
+            } else if (gender === 'female') {
+                genderCounts.female += stock;
+            } else {
+                genderCounts.unspecified += stock;
+            }
+        });
+
+        new Chart(mobileStockCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Male', 'Female', 'Unspecified'],
+                datasets: [{
+                    data: [genderCounts.male, genderCounts.female, genderCounts.unspecified],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(201, 203, 207, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Stock by Gender' }
+                }
+            }
+        });
+    }
+}
 
 // Update all analytics (including dashboard stats)
 function updateAnalitics() {
@@ -1658,6 +1832,8 @@ function updateAnalitics() {
     updateStockValue();
     updateOrdersToday();
     updateTotalSales();
+    createDynamicCharts();
+
 }
 
 
@@ -1673,105 +1849,6 @@ updateAnalitics();
   return product && product.stock >= requestedQuantity;
 }
 
-function createStaticCharts() {
-// 1. Monthly Order Status (Desktop)
-const monthlyCtx = document.getElementById('monthlyWorkChart').getContext('2d');
-new Chart(monthlyCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Processing', 'Shipped', 'Cancelled'],
-        datasets: [{
-            data: [8, 15, 2],
-            backgroundColor: [
-                'rgba(255, 206, 86, 0.8)',
-                'rgba(75, 192, 192, 0.8)',
-                'rgba(255, 99, 132, 0.8)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom' },
-            title: { display: true, text: 'Monthly Order Status' }
-        }
-    }
-});
-
-// 2. Monthly Order Status (Mobile)
-const mobileMonthlyCtx = document.getElementById('mobileMonthlyWorkChart').getContext('2d');
-new Chart(mobileMonthlyCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Processing', 'Shipped', 'Cancelled'],
-        datasets: [{
-            data: [8, 15, 2],
-            backgroundColor: [
-                'rgba(255, 206, 86, 0.8)',
-                'rgba(75, 192, 192, 0.8)',
-                'rgba(255, 99, 132, 0.8)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom' },
-            title: { display: true, text: 'Monthly Orders' }
-        }
-    }
-});
-
-// 4. Stock by Gender (Desktop)
-const stockCtx = document.getElementById('stockByGenderChart').getContext('2d');
-new Chart(stockCtx, {
-    type: 'pie',
-    data: {
-        labels: ['Male', 'Female', 'Unspecified'],
-        datasets: [{
-            data: [45, 32, 12],
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.8)',
-                'rgba(255, 99, 132, 0.8)',
-                'rgba(201, 203, 207, 0.8)'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-
-// 5. Stock by Gender (Mobile)
-const mobileStockCtx = document.getElementById('mobileStockByGenderChart').getContext('2d');
-new Chart(mobileStockCtx, {
-    type: 'pie',
-    data: {
-        labels: ['Male', 'Female', 'Unspecified'],
-        datasets: [{
-            data: [45, 32, 12],
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.8)',
-                'rgba(255, 99, 132, 0.8)',
-                'rgba(201, 203, 207, 0.8)'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-       
-          }
-
-        // Call the function to create charts
-        createStaticCharts();
 
 });
 </script>
