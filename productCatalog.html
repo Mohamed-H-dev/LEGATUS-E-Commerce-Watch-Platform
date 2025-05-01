@@ -144,9 +144,10 @@
         .filter{
           background-color: var(--filter_color);
           min-width: 150px;
-          height: 900px;
+          height: 100%;
           color: white;
         }
+        
         .check_style{
           border: 1px solid  !important;
           box-shadow: none !important;
@@ -166,11 +167,10 @@
         }
        
         #watch_img{
-          
+        
           transition: all 1s;
           object-fit: contain;
           aspect-ratio: 1/1;
-
            transform: rotate(-90deg); 
         }
         .card{
@@ -301,7 +301,7 @@
           <h2 class="h1 text-center">Legatus Watches</h2>
         </div>
         
-        <div class="row p-5">
+        <div class="row flex-nowrap px-5">
           <!-- Start Filter -->
           <div class="filter rounded-3 col-2  p-2 ">
             
@@ -403,10 +403,8 @@
 
           <!-- Start Products -->
           <div class="products col-10 d-flex justify-content-center p-0">
-          <div class="bg-black">
-            
-          </div>
-            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-center mt-5 p-0 m-0 w-100" id="cardswrapper">
+          
+            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-center  p-0 m-0 w-100" style="min-width: 90px;" id="cardswrapper">
                 <!-- Start Product Card -->
                 <!-- Example Card -->
                
