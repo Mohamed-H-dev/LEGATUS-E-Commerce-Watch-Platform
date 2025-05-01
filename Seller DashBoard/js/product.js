@@ -119,7 +119,80 @@ increaseStock(productId, quantity) {
     }
     return false;
 }
-}
 
+
+updateStockFromOrder(order) {
+  const products = this.getProducts();
+  let productsUpdated = false;
+  
+  order.products.forEach(orderProduct => {
+      const productIndex = products.findIndex(p => p.id === orderProduct.product.id);
+      if (productIndex !== -1) {
+          const currentStock = Number(products[productIndex].stock) || 0;
+          const orderedQuantity = Number(orderProduct.quantity_in_cart) || 0;
+          
+          products[productIndex].stock = Math.max(0, currentStock - orderedQuantity);
+          productsUpdated = true;
+      }
+  });
+  
+  if (productsUpdated) {
+      this.setProducts(products);
+  }
+}
+deductOrderedQuantities(order) {
+  const products = this.getProducts();
+  let stockAdjusted = false;
+  
+  // Validate order structure
+  if (!order || !order.products || !Array.isArray(order.products)) {
+      console.error("Invalid order structure");
+      return false;
+  }
+
+  order.products.forEach(item => {
+      // Skip if product or quantity is missing
+      if (!item.product || !item.product.id || item.quantity_in_cart === undefined) {
+          console.warn("Skipping invalid order item:", item);
+          return;
+      }
+
+      const productId = item.product.id;
+      const product = products.find(p => p.id === productId);
+      
+      // Skip if product not found or stock is null/undefined
+      if (!product || product.stock == null) {
+          console.warn(`Skipping product ${productId} - stock not managed`);
+          return;
+      }
+
+      // Convert to numbers safely
+      const currentStock = Number(product.stock) || 0;
+      const orderedQty = Number(item.quantity_in_cart) || 0;
+      
+      // Validate stock availability
+      if (orderedQty <= 0) {
+          console.warn(`Invalid quantity for ${productId}:`, orderedQty);
+          return;
+      }
+
+      if (currentStock < orderedQty) {
+          console.error(`Insufficient stock for ${productId} (${currentStock} < ${orderedQty})`);
+          return;
+      }
+
+      // Update stock
+      product.stock = currentStock - orderedQty;
+      stockAdjusted = true;
+      console.log(`Adjusted stock for ${productId}: ${currentStock} → ${product.stock}`);
+  });
+
+  if (stockAdjusted) {
+      this.setProducts(products);
+  }
+  
+  return stockAdjusted;
+}
+}
 
 

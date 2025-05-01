@@ -1,5 +1,5 @@
 :root {
-  --dashboard-color: rgb(45, 52, 59);
+  --dashboard-color: rgb(19, 55, 106);
   --dashboard-icon-color: rgb(196, 198, 204);
   --dashboard-content-color-hovor: rgb(151, 155, 168);
   --dashboard-header-color: rgb(254, 254, 254);
@@ -61,7 +61,25 @@ body {
   background-color: white; /* Match your table header background */
   z-index: 10;
 }
+.chart-container {
+  position: relative;
+  margin: auto;
+}
 
+/* Responsive chart sizing */
+canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+
+/* Dashboard card styling for charts */
+.dashboard-chart-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 20px;
+}
 .orders-page .container {
   max-height: calc(100vh - 200px); /* Adjust based on your header height */
   overflow-y: auto;
@@ -85,12 +103,16 @@ body {
 .dashboard-item-mobile {
   display: none;
 }
+
 @media (max-width: 840px) {
   .dashboard-item-desktop {
     display: none;
   }
   .dashboard-item-mobile {
     display: block;
+  }
+  .dashboard-chart-card {
+    padding: 10px;
   }
 }
 
@@ -117,4 +139,32 @@ body {
 
 .clear-search-btn {
   margin-top: 1rem;
+}
+
+/* For Desktop */
+.dashboard-page {
+  min-height: 100vh; /* Full viewport height */
+  padding-bottom: 2rem; /* Optional: Add padding if needed */
+}
+
+/* For Mobile */
+.mobile-layout .dashboard-page {
+  min-height: calc(100vh - 70px); /* Adjust for fixed header */
+}
+
+/* Remove any forced overflow restrictions */
+.dashboard-bg-color,
+.dashboard-item-desktop,
+.dashboard-item-mobile {
+  overflow: visible !important; /* Override any existing overflow */
+}
+
+/* Desktop charts */
+.chart-container {
+  height: 300px; /* Fixed height for consistency */
+}
+
+/* Mobile charts */
+.mobile-chart-container {
+  height: 250px;
 }
