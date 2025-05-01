@@ -23,13 +23,17 @@
       rel="stylesheet"
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-</head>
 
 <script>
   window.addEventListener("DOMContentLoaded", async function () {
   const { LocalStorageManager } = await import("./js/product.js");
   const storageManager = new LocalStorageManager();
+
+
+  
 
   let hasReloaded = false;
 
@@ -1666,6 +1670,106 @@ updateAnalitics();
   return product && product.stock >= requestedQuantity;
 }
 
+function createStaticCharts() {
+// 1. Monthly Order Status (Desktop)
+const monthlyCtx = document.getElementById('monthlyWorkChart').getContext('2d');
+new Chart(monthlyCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Processing', 'Shipped', 'Cancelled'],
+        datasets: [{
+            data: [8, 15, 2],
+            backgroundColor: [
+                'rgba(255, 206, 86, 0.8)',
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(255, 99, 132, 0.8)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: 'Monthly Order Status' }
+        }
+    }
+});
+
+// 2. Monthly Order Status (Mobile)
+const mobileMonthlyCtx = document.getElementById('mobileMonthlyWorkChart').getContext('2d');
+new Chart(mobileMonthlyCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Processing', 'Shipped', 'Cancelled'],
+        datasets: [{
+            data: [8, 15, 2],
+            backgroundColor: [
+                'rgba(255, 206, 86, 0.8)',
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(255, 99, 132, 0.8)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: 'Monthly Orders' }
+        }
+    }
+});
+
+// 4. Stock by Gender (Desktop)
+const stockCtx = document.getElementById('stockByGenderChart').getContext('2d');
+new Chart(stockCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Male', 'Female', 'Unspecified'],
+        datasets: [{
+            data: [45, 32, 12],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(201, 203, 207, 0.8)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+// 5. Stock by Gender (Mobile)
+const mobileStockCtx = document.getElementById('mobileStockByGenderChart').getContext('2d');
+new Chart(mobileStockCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Male', 'Female', 'Unspecified'],
+        datasets: [{
+            data: [45, 32, 12],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(201, 203, 207, 0.8)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+       
+          }
+
+        // Call the function to create charts
+        createStaticCharts();
+
 });
 </script>
 
@@ -1847,116 +1951,29 @@ updateAnalitics();
               <!-- End body four (4) content -->
 
               <!-- body two (2) content -->
-              <div class="row d-flex justify-content-evenly my-5">
-                <div class="col-6">
-                  <!-- stockByGender -->
-                  <div
-                    class="row d-flex justify-content-between bg-light rounded-2"
-                  >
-                    <h5 class="fw-bold">Stock By Gender</h5>
-                    <div id="donut-chart-container" class="donut-chart"></div>
-                  </div>
-
-                  <!-- Top Selling Products -->
-                  <div
-                    class="row d-flex justify-content-between bg-light rounded-2 mt-4"
-                  >
-                    <h5 class="fw-bold">Top Selling Products</h5>
-                    <table class="table table-hover bg-light">
-                      <tr>
-                        <td></td>
-                        <td>Product</td>
-                        <td class="text-end">Quantity (units)</td>
-                      </tr>
-                      <tr>
-                        <td><i class="fa-solid fa-basket-shopping"></i></td>
-                        <td>Product-A</td>
-                        <td class="text-end">350 units</td>
-                      </tr>
-                    </table>
-                  </div>
-                  <!-- Low Stock Products -->
-                  <div
-                    class="row d-flex justify-content-between bg-light rounded-2 my-5"
-                  >
-                    <h5 class="fw-bold">Low Stock Products</h5>
-                    <table class="table table-hover bg-light">
-                      <tr>
-                        <td></td>
-                        <td>Product</td>
-                        <td class="text-end">
-                          <i class="fa-solid fa-sort-down"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><i class="fa-solid fa-arrow-trend-down"></i></td>
-                        <td>Product-A</td>
-                        <td class="text-end">3</td>
-                      </tr>
-                    </table>
-                  </div>
+              <div class="row mt-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Monthly Order Status</h5>
+                            <div class="chart-container">
+                                <canvas id="monthlyWorkChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-4">
-                  <!-- Recent Orders -->
-                  <div
-                    class="row d-flex justify-content-between bg-light rounded-2"
-                  >
-                    <h5 class="fw-bold">Recent Orders</h5>
-                    <table class="table table-hover bg-light">
-                      <tr>
-                        <td>Order ID</td>
-                        <td>Customer</td>
-                        <td class="text-end">Total</td>
-                      </tr>
-                      <tr>
-                        <td>#123</td>
-                        <td>Altex Brown</td>
-                        <td class="text-end">
-                          <span>999</span>
-                          <i class="fa-solid fa-dollar-sign"></i>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                  <!-- Low Stock -->
-                  <div
-                    class="row d-flex justify-content-between bg-light rounded-2 my-5"
-                  >
-                    <table class="table table-hover bg-light mt-1">
-                      <tr>
-                        <td>Low Stock</td>
-                        <td class="text-end">Restock</td>
-                      </tr>
-                      <tr>
-                        <td>Product X</td>
-                        <td class="text-end">
-                          <span>0</span>
-                          <i class="fa-solid fa-dollar-sign"></i>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                  <!-- Restock -->
-                  <div
-                    class="row d-flex justify-content-between bg-light rounded-2 my-5"
-                  >
-                    <table class="table table-hover bg-light mt-1">
-                      <tr>
-                        <td>Low Stock</td>
-                        <td class="text-end">Restock</td>
-                      </tr>
-                      <tr>
-                        <td>Product X</td>
-                        <td class="text-end">
-                          <button class="btn btn-outline-secondary">
-                            Restock
-                          </button>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Stock by Gender</h5>
+                            <div class="chart-container">
+                                <canvas id="stockByGenderChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+            </div>
+        </div>
             </div>
             <!-- End dashboard-body-page -->
 
@@ -2491,116 +2508,30 @@ updateAnalitics();
             <!-- End Mobile body four (2) content -->
 
             <!--  Mobile body two (1) content -->
-            <div class="row d-flex justify-content-evenly my-5">
-              <div class="col-10">
-                <!-- stockByGender -->
-                <div
-                  class="row d-flex justify-content-between bg-light rounded-2"
-                >
-                  <h5 class="fw-bold">Stock By Gender</h5>
-                  <div
-                    id="mobile-donut-chart-container"
-                    class="donut-chart-mobile"
-                  ></div>
-                </div>
-                <!-- top-selling-products -->
-                <div
-                  class="row d-flex justify-content-between bg-light rounded-2 mt-4"
-                >
-                  <h5 class="fw-bold">Top Selling Products</h5>
-                  <table class="table table-hover bg-light">
-                    <tr>
-                      <td></td>
-                      <td>Product</td>
-                      <td class="text-end">Quantity (units)</td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa-solid fa-basket-shopping"></i></td>
-                      <td>Product-A</td>
-                      <td class="text-end">350 units</td>
-                    </tr>
-                  </table>
-                </div>
-                <!-- Low Stock Products -->
-                <div
-                  class="row d-flex justify-content-between bg-light rounded-2 my-5"
-                >
-                  <h5 class="fw-bold">Low Stock Products</h5>
-                  <table class="table table-hover bg-light">
-                    <tr>
-                      <td></td>
-                      <td>Product</td>
-                      <td class="text-end">
-                        <i class="fa-solid fa-sort-down"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa-solid fa-arrow-trend-down"></i></td>
-                      <td>Product-A</td>
-                      <td class="text-end">3</td>
-                    </tr>
-                  </table>
-                </div>
+            <div class="row">
+              <div class="col-12 mb-3">
+                  <div class="card">
+                      <div class="card-body">
+                          <h5 class="card-title">Monthly Orders</h5>
+                          <div class="mobile-chart-container">
+                              <canvas id="mobileMonthlyWorkChart"></canvas>
+                          </div>
+                      </div>
+                  </div>
               </div>
-              <div class="col-10">
-                <!-- Recent Orders -->
-                <div
-                  class="row d-flex justify-content-between bg-light rounded-2"
-                >
-                  <h5 class="fw-bold">Recent Orders</h5>
-                  <table class="table table-hover bg-light">
-                    <tr>
-                      <td>Order ID</td>
-                      <td>Customer</td>
-                      <td class="text-end">Total</td>
-                    </tr>
-                    <tr>
-                      <td>#123</td>
-                      <td>Altex Brown</td>
-                      <td class="text-end">
-                        <span>999</span> <i class="fa-solid fa-dollar-sign"></i>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <!-- Low Stock -->
-                <div
-                  class="row d-flex justify-content-between bg-light rounded-2 my-5"
-                >
-                  <table class="table table-hover bg-light mt-1">
-                    <tr>
-                      <td>Low Stock</td>
-                      <td class="text-end">Restock</td>
-                    </tr>
-                    <tr>
-                      <td>Product X</td>
-                      <td class="text-end">
-                        <span>0</span> <i class="fa-solid fa-dollar-sign"></i>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <!-- Restock -->
-                <div
-                  class="row d-flex justify-content-between bg-light rounded-2 my-5"
-                >
-                  <table class="table table-hover bg-light mt-1">
-                    <tr>
-                      <td>Low Stock</td>
-                      <td class="text-end">Restock</td>
-                    </tr>
-                    <tr>
-                      <td>Product X</td>
-                      <td class="text-end">
-                        <button class="btn btn-outline-secondary">
-                          Restock
-                        </button>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
+              <div class="col-12 mb-3">
+                  <div class="card">
+                      <div class="card-body">
+                          <h5 class="card-title">Stock by Gender</h5>
+                          <div class="mobile-chart-container">
+                              <canvas id="mobileStockByGenderChart"></canvas>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
+          </div>
+      </div>
+  
             <!-- End  Mobile body two (1) content -->
           </div>
           <!-- orders-body-page -->
