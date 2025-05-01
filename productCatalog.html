@@ -19,7 +19,7 @@
             box-sizing: border-box;
         }
         :root{
-          --filter_color : #002f5f;
+          --filter_color : #dae5ef;
           --card_color : #002f5f;
           --nav_color : #002f5f;
         }
@@ -70,7 +70,15 @@
         .search_icon{
           color: #002f5f;
         }
-        
+
+        .dropdown-menu .dropdown-item:hover{
+          background-color: #dae5ef;
+        }
+        .dropdown-menu .dropdown-item:focus {
+        background-color: #002f5f; 
+        color: #fff;               
+        }
+
         .banner_img{
           width: 100%;
           height: 400px;
@@ -140,11 +148,11 @@
           color: white;
         }
         .check_style{
-          border: 1px solid black !important;
+          border: 1px solid  !important;
           box-shadow: none !important;
         }
         .check_style:checked{
-          background-color: #000000 ;
+          background-color: #4c88c4 ;
           
         }
         .radio_style{
@@ -153,7 +161,7 @@
           accent-color: #232323 !important;
         }
         .radio_style:checked{
-          background-color: #000000 ;
+          background-color: #4c88c4 ;
           
         }
        
@@ -192,50 +200,13 @@
     </div>
   </div>
     <!-- Start Nav Bar -->
-    <!-- <nav class="navbar navbar-expand-lg ">
-      <div class="container-fluid">
-        <a class="navbar-brand h1  fw-bolder ps-5" href="#">Legatus</a>
-        
-        <div class="icon d-flex gap-3 px-3 d-sm-none">
-          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
-          <i class="fa-solid fa-user fs-4 me-2 "></i>
-        </div>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse  " id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Shop</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-            
-          </ul>
-          <form class="d-flex flex-grow-1" role="search">
-            <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-light " type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-          </form>
-          
-        </div>
-        <div class="icon d-flex gap-3 px-3 d-lg-none ">
-          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
-          <i class="fa-solid fa-user fs-4 me-2 "></i>
-        </div>
-      </div>
-    </nav> -->
 
     <nav class="navbar navbar-expand-lg px-4 ">
       <div class="container-fluid d-flex px-5 gap-3">
         <a class="navbar-brand  fw-bolder m-0" href="index.html">Legatus
           <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-4">
             <!-- Shopping Bag Icon -->
-            <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+            <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
           
             <!-- User Icon with Dropdown Toggle -->
             <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -273,7 +244,7 @@
         </div>
         <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-4">
           <!-- Shopping Bag Icon -->
-          <i class="fa-solid fa-bag-shopping fs-4 me-2"></i>
+          <a href="./Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
         
           <!-- User Icon with Dropdown Toggle -->
           <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -330,9 +301,9 @@
           <h2 class="h1 text-center">Legatus Watches</h2>
         </div>
         
-        <div class="row mx-auto bg-danger  ">
+        <div class="row">
           <!-- Start Filter -->
-         <!--  <div class="filter position-sticky top-0 z-1 col-2 p-2 ">
+          <div class="filter rounded-3 col-2  p-2 ">
             
             <div class="accordion " id="accordionPanelsStayOpenExample">
               <div class="accordion-item">
@@ -426,25 +397,22 @@
                 </div>
               </div>
             </div>
-          </div> -->
+          </div>
           <!-- End Filter -->
 
 
           <!-- Start Products -->
-        <div></div>
-           <div class="products col-10 bg-primary  ">
-            <div class="d-flex flex-wrap accordion row-cols-1 row-cols-md-3 row-cols-lg-5 justify-content-center justify-content-md-start  m-0 gap-2  bg-warning"  id="cardswrapper">
-            <!-- Start Product Card -->
-           
-             <!-- End Product Card -->
+          <div class="products col-10 d-flex justify-content-center">
+            <div class="bg-warning p-4 rounded" style="display: inline-block; max-width: 100%;">
+              <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4 justify-content-start" id="cardswrapper">
+                <!-- Start Product Card -->
+                <!-- Example Card -->
+               
+                <!-- Repeat dynamically via JavaScript if needed -->
+              </div>
             </div>
-            
-           
-           </div>
-          <!-- End Products -->
-        </div>
-        </div>
-      </div>
+          </div>
+      
      <!-- End Product Catalog -->
 
       <script src="Products Catalog.js" type="module"></script>
