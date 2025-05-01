@@ -73,7 +73,7 @@ connectedCallback(){
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
                <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/Sign.html">Logout</a></li>
            </ul>
          </div>
        </div>   
@@ -100,7 +100,7 @@ connectedCallback(){
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
                <li><a class="dropdown-item" href="${prefix}Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/Sign.html">Logout</a></li>
              </ul>
            </div></a></a>
            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,7 +138,7 @@ connectedCallback(){
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
                <li><a class="dropdown-item" href="${prefix}Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/Sign.html">Logout</a></li>
            </ul>
          </div>
        </div>   
@@ -165,7 +165,7 @@ connectedCallback(){
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
                <li><a class="dropdown-item" href="${prefix}AdminDashboard.html">My Dashboard</a></li>
                <li><hr class="dropdown-divider"></li>
-               <li><a class="dropdown-item" href="${prefix}Sign/SignIn.html">Logout</a></li>
+               <li><a class="dropdown-item" href="${prefix}Sign/Sign.html">Logout</a></li>
              </ul>
            </div></a></a>
            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -225,7 +225,14 @@ if(logOut){
 }
 
 class SpecialFooter extends HTMLElement{
+  
     connectedCallback(){
+      
+  const currentPath = window.location.pathname;
+  const depth = currentPath.split('/').filter(segment => segment && !segment.includes('.html')).length;
+  // 2. Set the correct path prefix (./ or ../)
+  const prefix = depth > 0 ? '../'.repeat(depth) : './';
+
         this.innerHTML=`
         <footer class="footer text-white pt-5 pb-3 mt-5" style="  background-color: #002f5f;">
   <div class="container">
