@@ -2,9 +2,11 @@
 <html lang="en">
 
 <head>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard</title>
+    <title>Customer Page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -23,10 +25,11 @@
     <link rel="stylesheet" href="../nav.css">
     <script src="../navFoterManager.js" type="module"></script>
     <style>
-    *{
-    margin: 0;
-    padding: 0;
-    }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
         :root {
             --SwampTime-color: #002f5f;
             --primary-color: #dae5ef;
@@ -34,10 +37,10 @@
             --dark-color: #001f3f;
         }
 
-        body{
+        body {
             background-image: linear-gradient(135deg, #dae5ef 0%, #ffffff 100%);
             height: 100%;
-            
+
         }
 
         .btn-submit {
@@ -78,8 +81,6 @@
             background-color: var(--SwampTime-color) !important;
             color: white !important;
         }
-
-
     </style>
 </head>
 
@@ -109,15 +110,17 @@
                 </div>
             </div>
 
-            <!-- sign out and manage Buttons -->
+            <!--  manage Buttons -->
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="d-flex flex-column flex-md-row gap-2 justify-content-md-end">
                     <button id="toggleViewBtn" class="btn btn-secondary rounded-pill">
                         <i class="fas fa-user-cog me-2"></i>Manage Account
                     </button>
-                    <button id="signOutBtn" class="btn btn-secondary rounded-pill">
+
+                    <!-- <button id="signOutBtn" class="btn btn-secondary rounded-pill">
                         <i class="fas fa-sign-out-alt me-2"></i>Sign Out
-                    </button>
+                    </button> -->
+
                 </div>
             </div>
         </div>
@@ -125,11 +128,12 @@
 
     <div class="container mt-4">
         <div class="row">
-            <div class="col-12 col-lg-8 offset-lg-2">
+            <!-- <div class="col-12 col-lg-8 offset-lg-2"> -->
+            <div class="col-12">
                 <!-- the Orders Table  -->
                 <div id="ordersTable" class="card shadow-sm rounded-4">
                     <div class="card-header rounded-top-4">
-                        <h5 class="mb-0">Purchase History</h5>
+                        <h5 class="mb-0">Order History</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive" style="max-height: 400px;">
@@ -157,6 +161,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Account Management Form hidden by default until it got pressed -->
 
                 <div id="accountForm" class="card shadow-sm rounded-4" style="display: none;">
@@ -168,18 +173,31 @@
                             <div class="mb-3">
                                 <label for="fullName" class="form-label">Full name</label>
                                 <input type="text" class="form-control rounded-pill" id="fullName">
+                                <!-- <div class="form-text">Leave unchanged if you don't want to update your name.</div> -->
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control rounded-pill" id="email">
+                                <!-- <div class="form-text">Leave unchanged if you don't want to update your email.</div> -->
                             </div>
 
-                            <div class="mb-4">
-                                <label for="password" class="form-label">Password</label>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">New Password</label>
                                 <div class="position-relative">
                                     <input type="password" class="form-control rounded-pill" id="password">
                                 </div>
+                                <!-- <div class="form-text">Leave blank if you don't want to change your password.</div> -->
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="currentPassword" class="form-label">Current Password <span
+                                        class="text-danger">*</span></label>
+                                <div class="position-relative">
+                                    <input type="password" class="form-control rounded-pill" id="currentPassword"
+                                        required>
+                                </div>
+                                <div class="form-text">Required to verify your identity before making changes.</div>
                             </div>
 
                             <div class="d-flex justify-content-between">
@@ -206,29 +224,34 @@
                     <!-- Order details  -->
                 </div>
                 <div class="modal-footer">
+
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a id="confirmationPageLink" href="#" class="btn btn-primary">
+                        <i class="fas fa-receipt me-2"></i>View Confirmation Page
+                    </a>
+
                 </div>
             </div>
         </div>
     </div>
 
     <style>
-         body {
+        body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-        } 
-         
-        .container {
+        }
+
+        /* .container {
             flex: 1 0 auto;
         }
-        
+         */
         special-footer {
             flex-shrink: 0;
             margin-top: auto;
         }
     </style>
-    
+
     <script type="module">
         import { FormValidator } from "../Sign/Validation.js";
         import { UserManager } from "../Sign/UserManager.js";
@@ -241,17 +264,33 @@
                 let Product;
 
                 try {
-                    const productModule = await import("./js/product.js");
+                    const productModule = await import("../JS/product.js");
                     LocalStorageManager = productModule.LocalStorageManager;
+                    console.log("LocalStorageManager successfully imported");
                 } catch (error) {
-                    console.warn("LocalStorageManager not found, using localStorage directly");
+                    console.warn("LocalStorageManager not found, using localStorage directly", error);
+                    // Create a basic compatibility wrapper for localStorage
+                    LocalStorageManager = class {
+                        constructor() {}
+                        getOrders() {
+                            const ordersString = localStorage.getItem('Orders');
+                            return ordersString ? JSON.parse(ordersString) : [];
+                        }
+                    };
                 }
 
                 try {
-                    const sellerProductModule = await import("../sellerdashboard/js/product.js");
+                    const sellerProductModule = await import("../JS/product.js");
                     Product = sellerProductModule.Product;
+                    console.log("Product class successfully imported");
                 } catch (error) {
-                    console.warn("Product class not found, some features may be limited");
+                    console.warn("Product class not found, some features may be limited", error);
+                    // Create a minimal Product placeholder if needed
+                    Product = class {
+                        constructor(data) {
+                            Object.assign(this, data);
+                        }
+                    };
                 }
 
                 // Check if UserManager is properly initialized
@@ -273,8 +312,8 @@
                     const defaultUser = {
                         id: "default-user",
                         name: "Demo User",
-                        email: "demo@example.com",
-                        password: "demo123",
+                        email: "demo@yahoo.com",
+                        password: "password123",
                         role: "customer"
                     };
 
@@ -307,27 +346,44 @@
 
         function initializeDashboard(storageManager, validator, Product) {
             try {
-                // Get current customer info using static method omar storage manager 
+                console.log("Starting dashboard initialization...");
+                
+                // Get current customer info using static method
                 const currentUser = UserManager.getCurrentUser();
+                console.log("Current user retrieved:", currentUser ? "Found user" : "No user found");
 
                 if (!currentUser) {
                     // If no user is logged in, redirect to login page
-                    window.location.href = "../Sign.html";
+                    console.warn("No current user found, redirecting to Sign.html");
+                    window.location.href = "../Sign/SignIn.html";
                     return;
                 }
 
+                // Load customer information to display
                 loadCustomerInfo(currentUser);
+                console.log("Customer info loaded successfully");
 
                 // Load customer orders
                 loadCustomerOrders(currentUser.id, storageManager, Product);
+                console.log("Customer orders loaded successfully");
 
-                setupSignOutButton();
+                // Initialize account management functionality
+                // setupSignOutButton();
+
 
                 setupAccountManagement(validator);
+                console.log("Dashboard initialization completed successfully");
+                
             } catch (error) {
                 console.error("Error in dashboard initialization:", error);
                 alert("Failed to initialize dashboard. Please try again.");
-                window.location.href = "../Sign.html";
+                // Try to provide more helpful error message to users
+                if (error.message && error.message.includes("UserManager")) {
+                    console.error("UserManager initialization issue detected");
+                    window.location.href = "../Sign/SignIn.html";
+                } else {
+                    window.location.href = "../index.html";
+                }
             }
         }
 
@@ -353,28 +409,42 @@
                 // Get orders from localStorage
                 let allOrders = [];
 
+                // First try to get orders from the storageManager
                 if (storageManager && typeof storageManager.getOrders === 'function') {
                     allOrders = storageManager.getOrders();
                 } else {
-                    // Fallback if method doesn't exist or storageManager is not available
+                    // Check for Orders from checkout process
+                    const ordersString = localStorage.getItem('Orders');
+                    if (ordersString) {
+                        const checkoutOrders = JSON.parse(ordersString);
+                        allOrders = allOrders.concat(checkoutOrders);
+                    }
 
-                    const ordersString = localStorage.getItem('orders');
-                    allOrders = ordersString ? JSON.parse(ordersString) : [];
+                    // Also check for traditional orders
+                    const traditionalOrdersString = localStorage.getItem('orders');
+                    if (traditionalOrdersString) {
+                        const traditionalOrders = JSON.parse(traditionalOrdersString);
+                        allOrders = allOrders.concat(traditionalOrders);
+                    }
                 }
 
-                // Filters orders by customer ID
+                console.log("All orders found:", allOrders);
+
+                // Filters orders by customer ID - checking both customerId and userId fields
                 const customerOrders = Array.isArray(allOrders) ?
-                    allOrders.filter(order => order.customerId === customerId) : [];
+                    allOrders.filter(order => {
+                        return (order.customerId === customerId) ||
+                            (order.userId === customerId);
+                    }) : [];
+
+                console.log("Filtered customer orders:", customerOrders);
 
                 // Get reference to the table body
                 const ordersTableBody = document.getElementById('ordersTableBody');
                 if (!ordersTableBody) return;
 
                 // Clear existing old rows
-
                 ordersTableBody.innerHTML = '';
-
-
 
                 if (customerOrders.length === 0)  // If no orders found
                 {
@@ -388,31 +458,102 @@
                     return;
                 }
 
-                //could remove this if it didn't work 
                 // Sort orders by date, most recent first 
                 customerOrders.sort((a, b) => {
-                    const dateA = a.date ? new Date(a.date) : new Date(0);
-                    const dateB = b.date ? new Date(b.date) : new Date(0);
+                    const dateA = a.date ? new Date(a.date) : (a.orderDate ? new Date(a.orderDate) : new Date(0));
+                    const dateB = b.date ? new Date(b.date) : (b.orderDate ? new Date(b.orderDate) : new Date(0));
                     return dateB - dateA;
                 });
 
+
+
+
+
+
+
+
+
+
+
                 // Add orders to the table line by line 
                 customerOrders.forEach(order => {
+                    // Determine order ID  
+                    const orderId = order.id || order.orderId || 'N/A';
+
+                    // Determine date 
+                    const orderDate = order.date || order.orderDate;
+
+                    // Determine status
+                    const status = order.status || 'Processing';
+
+                    // Determine product ID for details link
+                    let productId = 'unknown';
+                    if (order.items && order.items.length > 0) {
+                        productId = order.items[0].id;
+                    } else if (order.products && order.products.length > 0) {
+                        const product = order.products[0].product || order.products[0];
+                        productId = product.id || 'unknown';
+                    }
+
+
+
+
+
+
+
+
+
+
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${order.id || 'N/A'}</td>
-                        <td>${formatDate(order.date)}</td>
+                        <td>${orderId}</td>
+                        <td>${formatDate(orderDate)}</td>
                         <td>
-                            <span class="badge ${getStatusBadgeClass(order.status)}">${order.status || 'Unknown'}</span>
+                            <span class="badge ${getStatusBadgeClass(status)}">${status || 'Unknown'}</span>
                         </td>
                         <td>
-                            <a href="../product-details.html?id=${order.items[0].id}" class="btn btn-sm btn-primary rounded-pill">
+                            <button class="btn btn-sm btn-primary rounded-pill view-details" data-order-id="${orderId}">
                                 View Details
-                            </a>
+                            </button>
                         </td>
                     `;
                     ordersTableBody.appendChild(row);
                 });
+
+
+
+
+
+
+
+
+
+
+
+
+                // Add event listeners to view detail buttons => will view the modal 
+                document.querySelectorAll('.view-details').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = this.getAttribute('data-order-id');
+                        const order = customerOrders.find(o => (o.id === orderId) || (o.orderId === orderId));
+                        if (order) {
+                            showOrderDetails(order);
+                        }
+                    });
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
             } catch (error) {
                 console.error("Error loading customer orders:", error);
                 const ordersTableBody = document.getElementById('ordersTableBody');
@@ -431,7 +572,7 @@
         // Helper function to get badge class based on status
         function getStatusBadgeClass(status) {
             switch (status?.toLowerCase()) {
-                case 'delivered':
+                case 'paid':
                     return 'bg-success';
                 case 'processing':
                     return 'bg-warning text-dark';
@@ -442,22 +583,20 @@
             }
         }
 
-        //  sign out button
 
-        function setupSignOutButton() {
-            const signOutBtn = document.getElementById('signOutBtn');
-            if (signOutBtn) {
-                signOutBtn.addEventListener('click', function () {
-                    try {
-                        UserManager.logoutUser();
-                        window.location.href = "../index.html";
-                    } catch (error) {
-                        console.error("Error during sign out:", error);
-                        alert("Could not sign out. Please try again.");
-                    }
-                });
-            }
-        }
+
+
+
+
+
+
+        //  sign out button : not used for now 
+        //no need to sign out from the customer page while its in navbar 
+        // function setupSignOutButton() {
+            // This function is intentionally empty as sign out is handled by the navbar
+            // Keeping the function to maintain the initialization flow
+            // console.log("Sign out button setup skipped - using navbar sign out instead");
+        // }
 
         //format date function to ensure all dates are in the same format and to avoid errors and to make it more readable
         function formatDate(dateString) {
@@ -480,7 +619,7 @@
             const updateAccountForm = document.getElementById('updateAccountForm');
             const ordersTable = document.getElementById('ordersTable');
             const accountForm = document.getElementById('accountForm');
-            //switch between the two views and to show the account form and to hide the orders table and to load the current user data into the form and to initialize the validator for the form
+
             if (toggleViewBtn) {
                 toggleViewBtn.addEventListener('click', function () {
                     if (ordersTable.style.display === 'none') {
@@ -490,21 +629,19 @@
                         toggleViewBtn.innerHTML = '<i class="fas fa-user-cog me-2"></i>Manage Account';
                     } else {
                         // Switch to Account Management view
-
                         ordersTable.style.display = 'none';
                         accountForm.style.display = 'block';
-                        toggleViewBtn.innerHTML = '<i class="fas fa-history me-2"></i>Purchase History';
-                        //from font awesome 
-                        // Load current user data into form
+                        toggleViewBtn.innerHTML = '<i class="fas fa-history me-2"></i>Order History';
 
+                        // Load current user data into form
                         const currentUser = UserManager.getCurrentUser();
                         if (currentUser) {
                             document.getElementById('fullName').value = currentUser.name || '';
                             document.getElementById('email').value = currentUser.email || '';
+                            // Clear password fields for security
+                            document.getElementById('password').value = '';
+                            document.getElementById('currentPassword').value = '';
                         }
-
-                        // Initialize validator for the form
-                        validator.init();
                     }
                 });
             }
@@ -517,65 +654,324 @@
                     toggleViewBtn.innerHTML = '<i class="fas fa-user-cog me-2"></i>Manage Account';
                 });
             }
+            
+            //u can edit your name and email and password 
+            // but u have to put your old password to make sure its you 
+            
 
             if (updateAccountForm) {
                 updateAccountForm.addEventListener('submit', function (event) {
                     event.preventDefault();
 
-                    // Validate form fields from validation.js just like sign up page
-                    validator.validateName({ target: document.getElementById('fullName') });
-                    validator.validateEmailField({ target: document.getElementById('email') });
-                    validator.validatePasswordField({ target: document.getElementById('password') });
+                    // Get current user
+                    const currentUser = UserManager.getCurrentUser();
+                    if (!currentUser) {
+                        alert("No user logged in");
+                        return;
+                    }
+
+                    // Get form fields -same like the one in the sign up page
+                    const nameField = document.getElementById('fullName');
+                    const emailField = document.getElementById('email');
+                    const passwordField = document.getElementById('password');
+                    const currentPasswordField = document.getElementById('currentPassword');
+
+                    // First, verify the current password
+                    const currentPasswordValue = currentPasswordField.value.trim();
+                    if (!currentPasswordValue) {
+                        alert("Please enter your current password to make changes");
+                        currentPasswordField.classList.add('is-invalid');
+                        return;
+                    }
+
+                    // Verify that the current password is correct
+                    if (currentPasswordValue !== currentUser.password) {
+                        alert("Current password is incorrect");
+                        //flag to prevent the form from being submitted
+                        currentPasswordField.classList.add('is-invalid');
+                        return;
+                    } else {
+                        currentPasswordField.classList.remove('is-invalid');
+                        currentPasswordField.classList.add('is-valid');
+                    }
+
+                    // Initialize validation flags
+                    let isNameValid = true;
+                    let isEmailValid = true;
+                    let isPasswordValid = true;
+                    let errorMessage = '';
+                    let isFormChanged = false;
+
+                    // Create updated user object with current values
+                    const updatedUser = { ...currentUser };
+//name validation
+                    if (nameField.value.trim() !== currentUser.name) {
+                        isFormChanged = true;
+                        const name = nameField.value.trim();
+                        if (name.length < 3) {
+                            isNameValid = false;
+                            errorMessage += "Name must be at least 3 characters.\n";
+                            nameField.classList.add('is-invalid');
+                        } else if (name.length > 50) {
+                            isNameValid = false;
+                            errorMessage += "Name must be less than 50 characters.\n";
+                            nameField.classList.add('is-invalid');
+                        } else {
+                            nameField.classList.remove('is-invalid');
+                            nameField.classList.add('is-valid');
+                            updatedUser.name = name;
+                        }
+                    }
+//email validation
+                    if (emailField.value.trim() !== currentUser.email) {
+                        isFormChanged = true;
+                        const email = emailField.value.trim();
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email)) {
+                            isEmailValid = false;
+                            errorMessage += "Please enter a valid email address.\n";
+                            emailField.classList.add('is-invalid');
+                        } else {
+                            emailField.classList.remove('is-invalid');
+                            emailField.classList.add('is-valid');
+                            updatedUser.email = email;
+                        }
+                    }
+
+//password validation
+                    if (passwordField.value.trim() !== '') {
+                        isFormChanged = true;
+                        const password = passwordField.value.trim();
+                        if (password.length < 6) {
+                            isPasswordValid = false;
+                            errorMessage += "New password must be at least 6 characters.\n";
+                            passwordField.classList.add('is-invalid');
+                        } else {
+                            passwordField.classList.remove('is-invalid');
+                            passwordField.classList.add('is-valid');
+                            updatedUser.password = password;
+                        }
+                    }
+
+                    // Check if any changes were made
+                    if (!isFormChanged) {
+                        alert("No changes were made to your account information.");
+                        return;
+                    }
+
+                    // Display error message if validation failed
+                    if (!isNameValid || !isEmailValid || !isPasswordValid) {
+                        alert(errorMessage);
+                        return;
+                    }
 
                     // Only proceed if all validations pass
-                    if (validator.isNameValid && validator.isEmailValid && validator.isPasswordValid) {
-                        try {
-                            // Get current user from UserManager [omar gallo storage manager]
-                            const currentUser = UserManager.getCurrentUser();
-                            if (!currentUser) {
-                                throw new Error("No user logged in");
-                            }
+                    try {
+                        // Update user in localStorage
+                        const users = StorageManager.load('users') || [];
+                        const userIndex = users.findIndex(u => u.id === currentUser.id);
 
-                            // to Get form values
-                            const updatedUser = {
-                                ...currentUser, // Keep existing user data :just known this today btw 
-                                name: document.getElementById('fullName').value.trim(),
-                                email: document.getElementById('email').value.trim(),
-                                password: document.getElementById('password').value
-                            };
+                        if (userIndex !== -1) {
+                            users[userIndex] = updatedUser;
+                            StorageManager.save('users', users);
 
-                            // Update user in localStorage
-                            const users = StorageManager.load('users') || [];
-                            const userIndex = users.findIndex(u => u.id === currentUser.id);
+                            // Update current user in localStorage
+                            StorageManager.save('currentUser', updatedUser);
 
-                            if (userIndex !== -1) {
-                                users[userIndex] = updatedUser;
-                                StorageManager.save('users', users);
+                            // Show success message
+                            alert('Account updated successfully!');
 
-                                // Update current user in localStorage
-                                StorageManager.save('currentUser', updatedUser);
+                            // Clear validation classes
+                            nameField.classList.remove('is-valid', 'is-invalid');
+                            emailField.classList.remove('is-valid', 'is-invalid');
+                            passwordField.classList.remove('is-valid', 'is-invalid');
+                            currentPasswordField.classList.remove('is-valid', 'is-invalid');
 
-                                // Show success message
+                            // Reset password fields
+                            passwordField.value = '';
+                            currentPasswordField.value = '';
 
-                                alert('Account updated successfully!');
+                            // Hide form and show table
+                            accountForm.style.display = 'none';
+                            ordersTable.style.display = 'block';
+                            toggleViewBtn.innerHTML = '<i class="fas fa-user-cog me-2"></i>Manage Account';
 
-                                // Hide form and show table
-                                accountForm.style.display = 'none';
-                                ordersTable.style.display = 'block';
-
-                                // Update displayed user info
-                                loadCustomerInfo(updatedUser);
-                            } else {
-                                throw new Error("User not found in database");
-                            }
-                        } catch (error) {
-                            console.error("Error updating account:", error);
-                            alert("Failed to update account. Please try again.");
+                            // Update displayed user info
+                            loadCustomerInfo(updatedUser);
+                        } else {
+                            throw new Error("User not found in database");
                         }
+                    } catch (error) {
+                        console.error("Error updating account:", error);
+                        alert("Failed to update account. Please try again.");
                     }
                 });
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Function to show order details in a modal => i could remove it 
+        function showOrderDetails(order) {
+            try {
+                const modalContent = document.getElementById('orderDetailsContent');
+                const modalTitle = document.getElementById('orderDetailsModalLabel');
+                const confirmationPageLink = document.getElementById('confirmationPageLink');
+
+                if (!modalContent || !modalTitle) return;
+
+                // Set modal title with order ID
+                const orderId = order.id || order.orderId || 'N/A';
+                modalTitle.textContent = `Order Details: ${orderId}`;
+
+                // Set up the confirmation page link
+                if (confirmationPageLink) {
+                    confirmationPageLink.setAttribute('data-order-id', orderId);
+                    confirmationPageLink.addEventListener('click', function () {
+                        // Save the current order to localStorage so the confirmation page can access it
+                        localStorage.setItem('currentViewedOrder', JSON.stringify(order));
+                        // Redirect to the confirmation page
+                        window.location.href = '../Confirmation.html?orderId=' + orderId;
+                    });
+                }
+
+                // Start building the content
+                let productsHtml = '';
+                let totalAmount = 0;
+
+                // Handle different order formats
+                if (order.products && order.products.length > 0) {
+                    // Handle checkout format (from checkout.html)
+                    order.products.forEach(productContainer => {
+                        let product;
+                        let quantity;
+                        let price;
+
+                        if (productContainer.product) {
+                            product = productContainer.product;
+                            quantity = parseInt(product.quantity_in_cart || 1);
+                            price = parseFloat(product.price || 0);
+                        } else {
+                            product = productContainer;
+                            quantity = parseInt(product.quantity || product.quantity_in_cart || 1);
+                            price = parseFloat(product.price || 0);
+                        }
+
+                        const itemTotal = price * quantity;
+                        totalAmount += itemTotal;
+
+                        const name = product.name || 'Product';
+                        const imageUrl = product.image || "../images/1.jpg";
+
+                        productsHtml += `
+                            <div class="d-flex mb-3 border-bottom pb-3">
+                                <img src="${imageUrl}" alt="${name}" class="rounded" width="60" height="60" style="object-fit: cover;">
+                                <div class="ms-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0">${name}</h6>
+                                        <span class="fw-bold">$${itemTotal.toFixed(2)}</span>
+                                    </div>
+                                    <p class="text-muted small mb-0">Quantity: ${quantity} × $${price.toFixed(2)}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else if (order.items && order.items.length > 0) {
+                    // Handle traditional order format
+                    order.items.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        totalAmount += itemTotal;
+
+                        productsHtml += `
+                            <div class="d-flex mb-3 border-bottom pb-3">
+                                <img src="${item.image || "../images/1.jpg"}" alt="${item.name}" class="rounded" width="60" height="60" style="object-fit: cover;">
+                                <div class="ms-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0">${item.name}</h6>
+                                        <span class="fw-bold">$${itemTotal.toFixed(2)}</span>
+                                    </div>
+                                    <p class="text-muted small mb-0">Quantity: ${item.quantity} × $${item.price.toFixed(2)}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // Get shipping and total from order (pending - done)
+                const shipping = parseFloat(order.shipping || 50).toFixed(2);
+                const grandTotal = order.totalAmount || (totalAmount + parseFloat(shipping)).toFixed(2);
+
+                // Create customer info section
+                let customerInfo = '';
+                if (order.customer) {
+                    customerInfo = `
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2">Customer Information</h6>
+                            <p class="mb-1"><strong>Name:</strong> ${order.customer.fullName}</p>
+                            <p class="mb-1"><strong>Contact:</strong> ${order.customer.phoneNumber}</p>
+                            <p class="mb-1"><strong>Address:</strong> ${order.customer.address}, ${order.customer.city}, ${order.customer.country}</p>
+                        </div>
+                    `;
+                }
+
+                // Set the content
+                modalContent.innerHTML = `
+                    <div class="card border-0">
+                        <div class="card-body p-0">
+                            ${customerInfo}
+                            
+                            <div class="mb-4">
+                                <h6 class="border-bottom pb-2">Order Information</h6>
+                                <p class="mb-1"><strong>Order ID:</strong> ${orderId}</p>
+                                <p class="mb-1"><strong>Date:</strong> ${formatDate(order.date || order.orderDate)}</p>
+                                <p class="mb-1"><strong>Status:</strong> <span class="badge ${getStatusBadgeClass(order.status)}">${order.status || 'Processing'}</span></p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="border-bottom pb-2">Items</h6>
+                                ${productsHtml}
+                            </div>
+                            
+                            <div class="mb-0">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <span>$${totalAmount.toFixed(2)}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Shipping:</span>
+                                    <span>$${shipping}</span>
+                                </div>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total:</span>
+                                    <span>$${grandTotal}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Show the modal
+                const orderDetailsModal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+                orderDetailsModal.show();
+            } catch (error) {
+                console.error("Error showing order details:", error);
+                alert("Could not display order details. Please try again.");
+            }
+        }
+
+
     </script>
     <special-footer></special-footer>
 </body>
