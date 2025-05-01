@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHG879m7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css">
     <style>
         :root {
             --primary-color: #4361ee;
@@ -20,6 +20,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f7fa;
             color: var(--text-color);
+            font-size: 16px;
         }
         
         .card {
@@ -60,21 +61,41 @@
         }
         
         .product-image {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-right: 15px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .product-card {
             transition: transform 0.2s ease;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
         
         .product-card:hover {
             transform: translateY(-3px);
+        }
+        
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .product-quantity {
+            font-size: 1rem;
+            color: #666;
         }
         
         .summary-card {
@@ -83,10 +104,11 @@
         }
         
         .summary-row {
-            padding: 10px 15px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             border-bottom: 1px solid #eee;
+            font-size: 1.1rem;
         }
         
         .summary-row:last-child {
@@ -97,14 +119,17 @@
             background-color: #f0f7ff;
             font-weight: bold;
             color: var(--primary-color);
-            font-size: 1.1rem;
+            font-size: 1.3rem;
+            padding: 18px 20px;
         }
         
         .status-badge {
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 500;
+            background-color: #4cc9f0;
+            color: white;
         }
         
         .customer-info-card {
@@ -114,7 +139,7 @@
         }
         
         .info-section {
-            padding: 15px;
+            padding: 18px;
             border-bottom: 1px solid #eee;
         }
         
@@ -125,39 +150,61 @@
         .info-section h6 {
             color: #666;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            margin-bottom: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
             letter-spacing: 0.5px;
         }
         
         .info-section p {
-            margin-bottom: 4px;
+            margin-bottom: 5px;
+            font-size: 1.05rem;
         }
 
+        /* Enhanced Next Steps Section */
         .next-steps {
             background-color: white;
             border-radius: var(--border-radius);
-            padding: 20px;
+            padding: 25px;
             margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .next-steps h5 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
         }
         
         .step-item {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e9ecef;
+        }
+        
+        .step-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
         }
         
         .step-icon {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             background-color: var(--light-bg);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
+            margin-right: 15px;
             color: var(--primary-color);
             flex-shrink: 0;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 5px rgba(67, 97, 238, 0.15);
         }
         
         .step-content {
@@ -165,25 +212,51 @@
         }
         
         .step-content h6 {
-            margin-bottom: 4px;
+            margin-bottom: 8px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
         }
         
         .step-content p {
-            color: #666;
-            font-size: 0.9rem;
+            color: #555;
+            font-size: 1.1rem;
             margin-bottom: 0;
+            line-height: 1.5;
         }
         
-        @media (max-width: 576px) {
+        /* Enhanced Order Details Section */
+        .order-details-section h5 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
             .confirmation-header {
-                padding: 20px 10px;
+                padding: 25px 15px;
             }
             
             .confirmation-badge {
-                width: 50px;
-                height: 50px;
-                font-size: 24px;
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
             }
+            
+            .step-content h6 {
+                font-size: 1.2rem;
+            }
+            
+            .step-content p {
+                font-size: 1rem;
+            }
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
         }
     </style>
 </head>
@@ -205,19 +278,43 @@
                     <div class="card-body p-4">
                         <!-- Order ID and Date -->
                         <div id="orderInfo" class="order-header">
-                            <!-- Order ID and date will be inserted here -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Order #ORD12345678</h5>
+                                    <p class="mb-0 text-muted">Placed on May 1, 2025</p>
+                                </div>
+                                <span class="status-badge">
+                                    Confirmed
+                                </span>
+                            </div>
                         </div>
                         
                         <div class="row">
                             <!-- Left Column: Customer Info -->
                             <div class="col-md-5 mb-4 mb-md-0">
                                 <div id="customerInfo" class="customer-info-card">
-                                    <!-- Customer info will be inserted here -->
+                                    <div class="info-section">
+                                        <h6>Shipping Address</h6>
+                                        <p><strong>John Smith</strong></p>
+                                        <p>123 Main Street</p>
+                                        <p>Apt 4B</p>
+                                        <p>New York, NY 10001</p>
+                                        <p>United States</p>
+                                    </div>
+                                    <div class="info-section">
+                                        <h6>Contact Information</h6>
+                                        <p>john.smith@example.com</p>
+                                        <p>(555) 123-4567</p>
+                                    </div>
+                                    <div class="info-section">
+                                        <h6>Payment Method</h6>
+                                        <p><i class="far fa-credit-card mr-2"></i> Visa ending in 4321</p>
+                                    </div>
                                 </div>
                                 
-                                <!-- Order Timeline -->
+                                <!-- Order Timeline - Enhanced -->
                                 <div class="next-steps">
-                                    <h5 class="mb-3">What's Next</h5>
+                                    <h5>What's Next</h5>
                                     <div class="step-item">
                                         <div class="step-icon">
                                             <i class="fas fa-box"></i>
@@ -248,52 +345,38 @@
                                 </div>
                             </div>
                             
-                            <!-- Right Column: Products and Summary -->
-                            <div class="col-md-7">
-                                <h5 class="mb-3">Order Details</h5>
+                            <!-- Right Column: Products and Summary - Enhanced -->
+                            <div class="col-md-7 order-details-section">
+                                <h5>Order Details</h5>
                                 <div id="productList">
-                                    <!-- Products will be inserted here -->
+                                    <!-- Products will be populated by JavaScript -->
                                 </div>
                                 
-                                <!-- Order Summary -->
-                                <div class="summary-card mt-3">
+                                <!-- Order Summary - Enhanced -->
+                                <div class="summary-card mt-4">
                                     <div class="summary-row">
                                         <span>Subtotal</span>
-                                        <span id="subtotal"></span>
+                                        <span id="subtotal">$0.00</span>
                                     </div>
                                     <div class="summary-row">
                                         <span>Shipping</span>
-                                        <span id="shipping"></span>
+                                        <span id="shipping">$0.00</span>
                                     </div>
                                     <div class="summary-row total-row">
                                         <span>Total</span>
-                                        <span id="total"></span>
+                                        <span id="total">$0.00</span>
                                     </div>
-                                </div>
-                                
-                                <!-- Contact Support -->
-                                <div class="mt-4 text-center">
-                                    <p class="mb-2">Need help with your order?</p>
-                                    <a href="#" class="btn btn-outline-primary">Contact Support</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Additional Info -->
-                <div class="text-center mb-4">
-                    <a href="#" class="btn btn-primary me-2">
-                        <i class="fas fa-shopping-bag me-1"></i> Continue Shopping
-                    </a>
-                    <a href="#" class="btn btn-outline-secondary">
-                        <i class="fas fa-history me-1"></i> View Order History
-                    </a>
-                </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get orders from localStorage
@@ -303,7 +386,8 @@
             const lastOrder = orders.length > 0 ? orders[orders.length - 1] : null;
             
             if (!lastOrder) {
-                document.body.innerHTML = '<div class="container mt-5"><div class="alert alert-warning">No order information found.</div></div>';
+                // Display sample data if no orders found
+                console.log("No order information found. Showing sample data.");
                 return;
             }
             
@@ -318,14 +402,14 @@
             // Display order information
             const orderInfoDiv = document.getElementById('orderInfo');
             orderInfoDiv.innerHTML = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="mb-1"><i class="fas fa-receipt me-2"></i><strong>Order ID:</strong> #${lastOrder.orderId}</p>
-                        <p class="mb-0"><i class="fas fa-calendar-alt me-2"></i><strong>Date:</strong> ${formatDate(lastOrder.orderDate)}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">Order #${lastOrder.orderId}</h5>
+                        <p class="mb-0 text-muted">Placed on ${formatDate(lastOrder.orderDate)}</p>
                     </div>
-                    <div class="col-md-6 text-md-end">
-                        <p class="mb-0"><strong>Status:</strong> <span class="status-badge bg-success text-white">${lastOrder.status || 'Confirmed'}</span></p>
-                    </div>
+                    <span class="status-badge">
+                        ${lastOrder.status || 'Confirmed'}
+                    </span>
                 </div>
             `;
             
@@ -337,27 +421,26 @@
             if (formData.customer) {
                 customerInfoDiv.innerHTML = `
                     <div class="info-section">
-                        <h6><i class="fas fa-user me-2"></i>Customer</h6>
+                        <h6>Customer</h6>
                         <p class="mb-1"><strong>${formData.customer.fullName}</strong></p>
-                        <p class="mb-0 text-muted">${formData.customer.phoneNumber}</p>
+                        <p class="mb-0">${formData.customer.phoneNumber}</p>
                     </div>
                     <div class="info-section">
-                        <h6><i class="fas fa-map-marker-alt me-2"></i>Shipping Address</h6>
+                        <h6>Shipping Address</h6>
                         <p class="mb-0">${formData.customer.address}, ${formData.customer.city}, ${formData.customer.country}</p>
                     </div>
                     ${formData.customer.orderNotes ? `
                     <div class="info-section">
-                        <h6><i class="fas fa-sticky-note me-2"></i>Notes</h6>
+                        <h6>Notes</h6>
                         <p class="mb-0">${formData.customer.orderNotes}</p>
                     </div>` : ''}
-                `;
-            } else {
-                customerInfoDiv.innerHTML = `
                     <div class="info-section">
-                        <h6><i class="fas fa-user me-2"></i>Customer</h6>
-                        <p class="mb-0"><strong>User ID:</strong> ${lastOrder.userId}</p>
+                        <h6>Payment Method</h6>
+                        <p><i class="far fa-credit-card mr-2"></i> ${formData.customer.paymentMethod || 'Credit Card'}</p>
                     </div>
                 `;
+            } else {
+                // Keep default content if no customer data
             }
             
             // Display products
@@ -373,31 +456,58 @@
                     const itemTotal = price * quantity;
                     
                     // Use product image if available, otherwise use placeholder
-                    const imageUrl = product.image || "/api/placeholder/60/60";
+                    const imageUrl = product.image || "/api/placeholder/80/80";
                     
                     const productItem = document.createElement('div');
-                    productItem.className = 'card product-card';
+                    productItem.className = 'product-card d-flex align-items-center';
                     productItem.innerHTML = `
-                        <div class="card-body p-3">
-                            <div class="d-flex align-items-center">
-                                <img src="${imageUrl}" alt="${product.name}" class="product-image">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">${product.name}</h6>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-muted">Qty: ${quantity} × $${price.toFixed(2)}</span>
-                                        <strong class="text-primary">$${itemTotal.toFixed(2)}</strong>
-                                    </div>
+                        <img src="${imageUrl}" alt="${product.name}" class="product-image">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="product-title mb-1">${product.name}</h5>
+                                    <p class="product-quantity mb-0">Quantity: ${quantity}</p>
                                 </div>
+                                <span class="product-price">$${itemTotal.toFixed(2)}</span>
                             </div>
                         </div>
                     `;
                     productListDiv.appendChild(productItem);
                 });
+            } else {
+                // If no products found, keep the sample products
+                productListDiv.innerHTML = `
+                    <div class="product-card d-flex align-items-center">
+                        <img src="/api/placeholder/80/80" alt="Product" class="product-image">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="product-title mb-1">Wireless Headphones</h5>
+                                    <p class="product-quantity mb-0">Quantity: 1</p>
+                                </div>
+                                <span class="product-price">$129.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card d-flex align-items-center">
+                        <img src="/api/placeholder/80/80" alt="Product" class="product-image">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="product-title mb-1">Smart Watch</h5>
+                                    <p class="product-quantity mb-0">Quantity: 1</p>
+                                </div>
+                                <span class="product-price">$199.99</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
             
             // Update order summary
             const subtotal = parseFloat(lastOrder.subtotal || lastOrder.total || 0);
-            const shipping = parseFloat(lastOrder.shipping || 50);
+            const shipping = parseFloat(lastOrder.shipping || 5.99);
             const total = parseFloat(lastOrder.totalAmount || (subtotal + shipping));
             
             document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
@@ -405,6 +515,5 @@
             document.getElementById('total').textContent = `$${total.toFixed(2)}`;
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 </body>
 </html>
