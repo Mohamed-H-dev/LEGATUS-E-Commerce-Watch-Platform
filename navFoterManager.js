@@ -25,7 +25,7 @@ connectedCallback(){
       
       <nav class="navbar  navbar-expand-lg  ">
      <div class="container-fluid d-flex px-4 ">
-       <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+       <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
          <a> <div class=" d-flex d-lg-none align-items-center gap-4">
               <a  href="${prefix}Sign/Sign.html"> <button type="button" class="btn text-white" style="background-color: #3d5a8a; border: 1px solid white;">Login</button></a>
               <a  href="${prefix}Sign/SignUp.html"> <button type="button" class="btn " style="background-color: #ffffff;color: #002f5f; border: 1px solid #184a79;">Sign up</button> </a>
@@ -60,7 +60,7 @@ connectedCallback(){
     
     <nav class="navbar navbar-expand-lg  ">
      <div class="container-fluid d-flex px-4 gap-3">
-       <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+       <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
          <a> <div class=" d-flex d-lg-none align-items-center gap-3">
               <a  href="${prefix}Sign/Sign.html"> <button type="button" class="btn text-white" style="background-color: #3d5a8a; border: 1px solid white;">Login</button></a>
               <a  href="${prefix}Sign/SignUp.html"> <button type="button" class="btn " style="background-color: #ffffff;color: #002f5f; border: 1px solid #184a79;">Sign up</button> </a>
@@ -106,7 +106,7 @@ connectedCallback(){
         
         <nav class="navbar navbar-expand-lg px-5">
          <div class="container-fluid d-flex px-4 ">
-           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-3">
                <!-- Shopping Bag Icon -->
                <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
@@ -168,7 +168,7 @@ connectedCallback(){
     
         <nav class="navbar navbar-expand-lg px-5 ">
          <div class="container-fluid d-flex px-4 gap-4">
-           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
                <!-- Shopping Bag Icon -->
                <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
@@ -237,7 +237,7 @@ connectedCallback(){
         
         <nav class="navbar navbar-expand-lg px-5">
          <div class="container-fluid d-flex px-4 ">
-           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-3">
                <!-- Shopping Bag Icon -->
                <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
@@ -302,7 +302,7 @@ connectedCallback(){
     
       <nav class="navbar navbar-expand-lg px-5 ">
          <div class="container-fluid d-flex px-4 gap-4">
-           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
              <!-- Shopping Bag Icon -->
              <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
@@ -372,7 +372,7 @@ connectedCallback(){
         
         <nav class="navbar navbar-expand-lg px-5">
          <div class="container-fluid d-flex px-4 ">
-           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-3">
                <!-- Shopping Bag Icon -->
                <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
@@ -437,7 +437,7 @@ connectedCallback(){
     
      <nav class="navbar navbar-expand-lg px-5 ">
          <div class="container-fluid d-flex px-4 gap-4">
-           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">Legatus
+           <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
              <!-- Shopping Bag Icon -->
              <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
