@@ -1,11 +1,13 @@
 // SignIn.js
 import { UserManager } from './UserManager.js';
+import { StorageManager } from './StorageManager.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
   const emailInput = document.getElementById('loginEmail');
   const passwordInput = document.getElementById('loginPassword');
   const errorElement = document.getElementById('loginError');
+  const guestButton = document.getElementById('guestButton');
   
   // Helper function to validate email format
   const validateEmail = (email) => {
@@ -34,6 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
       errorElement.style.display = 'none';
     }
   };
+
+  //guest button 
+  if (guestButton) {
+    guestButton.addEventListener('click', () => {
+      // Clear any existing user session -just removes the current user from storage
+      StorageManager.remove("currentUser");
+      console.log("Continuing as guest");
+      window.location.href = '../index.html';
+    });
+  }
 
   if (form) {
     // Add input event listeners for real-time validation

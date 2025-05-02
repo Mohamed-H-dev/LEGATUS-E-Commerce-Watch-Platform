@@ -79,9 +79,22 @@
             padding: 10px;
         }
         .btn-submit:hover {
-        background-color: var(--secondry-color);
+            background-color: var(--secondry-color);
+        }
         
-      }
+        .btn-guest {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 25px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-guest:hover {
+            background-color: rgba(0, 47, 95, 0.1);
+        }
+        
         .position-relative {
             position: relative;
         }
@@ -151,7 +164,7 @@
                 <div class="d-flex align-items-center">
                     <div class="logo" style="font-size: 2.7rem; letter-spacing: 1px;">Legatus</div>
                 </div>
-                <h2 id="page_title" class="mb-2">Create an account</h2>
+                <h2 class="mb-2">Create an account</h2>
 
                 <form>
                     <div class="mb-3">
@@ -201,6 +214,9 @@
                     <div class="mb-3">
                         <button type="submit" class="btn btn-submit text-light w-100">Submit</button>
                     </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-guest w-100">Continue as Guest</button>
+                    </div>
                 </form>
 
                 <div class="mt-4 text-center">
@@ -214,7 +230,7 @@
 
             <div class="col-md-7 p-0 preview-side d-none d-md-block">
                 <div class="team-preview">
-                    <img id="sign_image" src="../images/15.png" alt="Team working together" class="img-fluid w-100 h-100 object-fit-cover"
+                    <img src="1.webp" alt="Team working together" class="img-fluid w-100 h-100 object-fit-cover"
                         style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;">
                 </div>
             </div>
