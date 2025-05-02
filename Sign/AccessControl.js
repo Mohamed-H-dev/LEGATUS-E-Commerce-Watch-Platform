@@ -17,6 +17,7 @@ export class AccessControl {
         currentHref.includes("Seller") && currentHref.includes("Dashboard");
       const isAdminDashboard =
         currentHref.includes("Admin") && currentHref.includes("Dashboard");
+      const isSellerManageAccount = currentPath.includes("SellerManageAccount.html");
 
       // If user is logged in and accessing the correct dashboard for their role, allow immediately
       if (currentUser) {
@@ -28,11 +29,14 @@ export class AccessControl {
           return; // Allow access immediately
         }
 
-        // Handle seller and admin dashboards
-        if (
-          (role === "seller" && isSellerDashboard) ||
-          (role === "admin" && isAdminDashboard)
-        ) {
+        // Handle seller dashboard and seller manage account
+        if (role === "seller" && (isSellerDashboard || isSellerManageAccount)) {
+          console.log(`${role} accessing their dashboard or account management - access granted`);
+          return; // Allow access immediately
+        }
+
+        // Handle admin dashboard
+        if (role === "admin" && isAdminDashboard) {
           console.log(`${role} accessing their dashboard - access granted`);
           return; // Allow access immediately
         }
@@ -44,8 +48,8 @@ export class AccessControl {
           return;
         }
 
-        if (role !== "seller" && isSellerDashboard) {
-          console.log("Non-seller trying to access seller dashboard");
+        if (role !== "seller" && (isSellerDashboard || isSellerManageAccount)) {
+          console.log("Non-seller trying to access seller dashboard or account management");
           redirectToCorrectDashboard(role);
           return;
         }
@@ -57,7 +61,7 @@ export class AccessControl {
         }
       } else {
         // Guests trying to access any dashboard
-        if (isCustomerDashboard || isSellerDashboard || isAdminDashboard) {
+        if (isCustomerDashboard || isSellerDashboard || isAdminDashboard || isSellerManageAccount) {
           console.log(
             "Guest trying to access dashboard - redirecting to login"
           );
