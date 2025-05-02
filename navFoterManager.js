@@ -535,7 +535,7 @@ class SpecialFooter extends HTMLElement{
       
       <!-- Brand / About -->
       <div class="flex-fill px-3 mb-4 mb-md-0">
-        <h5 class="text-uppercase text-center text-md-start">Lgatus</h5>
+        <h5 class="text-uppercase text-center text-md-start">Legatus</h5>
         <p class="small text-white">Discover timeless elegance with our curated <br> selection of luxury watches from top global brands.</p>
       </div>
 
