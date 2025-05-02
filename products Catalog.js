@@ -246,16 +246,80 @@ storageManager.setProducts(sampleProducts)  */
               gender.forEach(radio => radio.addEventListener('change', productFilter));
               brand.forEach(checkbox => checkbox.addEventListener('change', productFilter));
               productFilter();
-
-              const itemsPerPage = 12;
-              function updatePagination() {
-    const totalPages = getTotalPages(allprod.length);
-    console.log("Total Pages:", totalPages);
-    // Call the function to update pagination controls (buttons, etc.)
-    updatePaginationControls(totalPages);
-}
-
-});// end of load
+          });// end of load
           
 
+    /*     //Filter by gnder
+       
+        gender.forEach(radio=>{
+          radio.addEventListener('change', ()=>{
+            const selectedValue = radio.value.toLowerCase()
+            prodcutCard.forEach((card, index) => {
+                  const productGender = allprod[index].gender.toLowerCase();
+                  card.style.display = (selectedValue === "all" || selectedValue === productGender) 
+                    ? "block" 
+                    : "none";
+                
+            })
+            
+
+//Filter by brand 
+        
+        brand.forEach(check=>{
+          check.addEventListener('change', ()=>{
+            const checkedBrands = Array.from(brand)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value.toLowerCase());
+          
+          // If nothing is checked, show all products
+          if (checkedBrands.length === 0) {
+            prodcutCard.forEach(card => {
+              card.style.display = 'block';
+            });
+            return;
+          }
+          console.log(checkedBrands)
+          // Filter products
+          
+          prodcutCard.forEach((card ,index) => {
+            if (allprod[index]) {
+              const productBrand = allprod[index].brand.toLowerCase();
+              card.style.display = checkedBrands.includes(productBrand) ? 'block' : 'none';
+            } else {
+              card.style.display = 'none'; // Hide if no matching product
+            }
+          });
+        });
+         
+          })//end of checked change
+          
+          })//end of change
+        })//end of for */
+
+   
+    
+
+   /*  let container = document.getElementById('cardswrapper');
+     async function loadAllProducts(){
+        let products = await fetch('./products.json')
+        let allProducts = await products.json();
+        let htmlContent = "";
+        allProducts.forEach(data =>{
+            htmlContent +=` 
+          <!-- Start Product Card -->
+            <div class="card col text-center">
+              <img id="watch_img" src="${data.image}" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title fw-normal">${data.name}</h5>
+                <p class="h5 ">EGP ${data.price}</p>
+              </div>
+            </div>
+             <!-- End Product Card -->`
+        });
+        container.innerHTML = htmlContent;
+    } 
+ */
+/*     loadAllProducts();
+});
+ */
 
