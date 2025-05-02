@@ -72,6 +72,7 @@ export class AccessControl {
         "productCatalog.html",
         "productDetails.html",
         "ContactUs.html",
+        
       ];
 
       // Check if current page is public
