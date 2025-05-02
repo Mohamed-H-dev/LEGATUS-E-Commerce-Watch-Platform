@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Legatus Products</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 
     <!-- remix icon -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
      <!-- remix icon -->
 
       <!-- FontAwesome -->
@@ -70,7 +70,6 @@
         }
         
         .carousel-inner{
-          
           z-index: 1; 
         }
         .carousel-item{
@@ -113,7 +112,6 @@
         .filter{
           background-color: var(--filter_color);
           min-width: 150px;
-          height: 100%;
           color: white;
         }
         
@@ -136,31 +134,61 @@
         }
        
         #watch_img{
-        
           transition: all 1s;
           object-fit: contain;
           aspect-ratio: 1/1;
            transform: rotate(-90deg); 
         }
         .card{
-/*        border: 1px solid #002f5f !important;
- */       width: 18rem;
-          
+          width: 18rem;
           align-items: center;
           border: none;
           transition: all 1s;
-          
         }
         .card:hover{
           cursor: pointer;
           background-color: #002f5f;
           color: white;
-        
-          
         }
         .card:hover #watch_img{
             transform: scale(1.2) translateY(-10px) rotate(0deg);
+        }
+
+        /* Fixes for horizontal scroll */
+        html, body {
+          overflow-x: hidden;
+        }
+        
+        .products {
+          overflow: hidden;
+        }
+
+        /* Mobile filter toggle styles */
+        .filter-toggle {
+          display: none;
+          background-color: var(--filter_color);
+          color: white;
+          border: none;
+          padding: 10px 15px;
+          border-radius: 5px;
+          margin-bottom: 15px;
+        }
+        
+        @media (max-width: 992px) {
+          .filter-toggle {
+            display: block;
           }
+          .filter-col {
+            display: none;
+          }
+          .filter-col.show {
+            display: block;
+            margin-bottom: 20px;
+          }
+          .products {
+            width: 100%;
+          }
+        }
     </style>
   </head>
   <body>
@@ -172,17 +200,8 @@
   </div>
   
   <special-nav></special-nav>
-  
-
-    <!-- Start Nav Bar -->
-
-   
-
-    <!-- End Nav Bar -->
 
     <!-- Start Banner -->
-     <!-- <div class="banner_img container-fluid "> -->
-
       <div id="carouselExampleAutoplaying" class="carousel slide fixed-caruosel p-0 m-0" data-bs-ride="carousel">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -196,8 +215,6 @@
           <div class="carousel-item">
             <img src="images/4.png" class="carsl_img d-block w-100" alt="...">
           </div>
-          
-         
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -208,129 +225,104 @@
           <span class="visually-hidden">Next</span>
         </button>
       </div>
-      <!-- <img class="banner_img" src="images/1.jpg" alt=""> -->
-     </div>
      <!-- End Banner -->
 
      <!-- Start Product Catalog -->
-     
-      <div class="container-fluid p-0" >
+      <div class="container-fluid p-0">
         <div class="container-fluid d-flex align-items-center justify-content-center watchstxt_bg position-sticky top-0 mb-4 z-1">
           <h2 class="h1 text-center">Legatus Watches</h2>
         </div>
         
-        <div class="row flex-nowrap px-5">
-          <!-- Start Filter -->
-          <div class="filter rounded-3 col-2  p-2 ">
-            
-            <div class="accordion " id="accordionPanelsStayOpenExample">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                    Category
-                  </button>
-                </h2>
-                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
-                  <div class="accordion-body">
-                    <div class="form-check">
-                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault2" checked value="All">
-                      <label class="form-check-label" for="radioDefault2">
-                        All
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1" value="male">
-                      <label class="form-check-label" for="radioDefault1">
-                        Men
-                      </label>
-                    </div>
-                    <div class="form-check ">
-                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1" value="female">
-                      <label class="form-check-label" for="radioDefault1">
-                        Women
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="accordion-item mt-3">
-                <h2 class="accordion-header">
-                  <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-                    Brand
-                  </button>
-                </h2>
-                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
-            
-                  <div class="accordion-body">
-                    <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="Rolex" id="checkRolex" >
-                      <label class="form-check-label" for="checkRolex">
-                        Rolex
-                      </label>
-                    </div>
-                    <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="Rado" id="checkRado">
-                      <label class="form-check-label" for="checkRado">
-                        Rado
-                      </label>
-                    </div>
-                    <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="Casio " id="checkCasio">
-                      <label class="form-check-label" for="checkCasio">
-                        Casio 
-                      </label>
-                    </div>
-                    <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="Montblanc" id="checkMontbalnc">
-                      <label class="form-check-label" for="checkMontbalnc">
-                        Montblanc 
-                      </label>
-                    </div>
-                   
-                  </div>
-                </div>
-              </div>
-              <div class="accordion-item mt-3">
-                <h2 class="accordion-header">
-                  <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">
-                    Price
-                  </button>
-                </h2>
-                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
-            
-                  <div class="accordion-body">
-                    <div class="form-check">
-                      <input class="form-check-input check_style" type="checkbox" value="" id="checkChecked" >
-                      <label class="form-check-label" for="checkChecked">
-                        Men
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input check_style" type="checkbox" value="" id="checkDefault">
-                      <label class="form-check-label" for="checkDefault">
-                        Default checkbox
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- End Filter -->
-
-
-          <!-- Start Products -->
-          <div class="products col-10 d-flex justify-content-center p-0">
+        <div class="container-fluid px-4">
+          <!-- Filter Toggle Button (visible only on mobile) -->
+          <button class="filter-toggle" type="button" id="filterToggle">
+            <i class="ri-filter-line me-2"></i> Filter Options
+          </button>
           
-            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-sm-start  ms-3 p-0 m-0 w-100" style="min-width: 90px;" id="cardswrapper">
-                <!-- Start Product Card -->
-                <!-- Example Card -->
-               
-                <!-- Repeat dynamically via JavaScript if needed -->
+          <div class="row mx-0">
+            <!-- Start Filter Column -->
+            <div class="filter-col col-lg-2 p-0" id="filterColumn">
+              <div class="filter rounded-3 p-2">
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        Category
+                      </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                      <div class="accordion-body">
+                        <div class="form-check">
+                          <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault2" checked value="All">
+                          <label class="form-check-label" for="radioDefault2">
+                            All
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1" value="male">
+                          <label class="form-check-label" for="radioDefault1">
+                            Men
+                          </label>
+                        </div>
+                        <div class="form-check ">
+                          <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1" value="female">
+                          <label class="form-check-label" for="radioDefault1">
+                            Women
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item mt-3">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button fw-medium fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+                        Brand
+                      </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+                      <div class="accordion-body">
+                        <div class="form-check mt-2">
+                          <input class="form-check-input check_style" type="checkbox" value="Rolex" id="checkRolex" >
+                          <label class="form-check-label" for="checkRolex">
+                            Rolex
+                          </label>
+                        </div>
+                        <div class="form-check mt-2">
+                          <input class="form-check-input check_style" type="checkbox" value="Rado" id="checkRado">
+                          <label class="form-check-label" for="checkRado">
+                            Rado
+                          </label>
+                        </div>
+                        <div class="form-check mt-2">
+                          <input class="form-check-input check_style" type="checkbox" value="Casio " id="checkCasio">
+                          <label class="form-check-label" for="checkCasio">
+                            Casio 
+                          </label>
+                        </div>
+                        <div class="form-check mt-2">
+                          <input class="form-check-input check_style" type="checkbox" value="Montblanc" id="checkMontbalnc">
+                          <label class="form-check-label" for="checkMontbalnc">
+                            Montblanc 
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            <!-- End Filter Column -->
+
+            <!-- Start Products -->
+            <div class="products col-lg-10 d-flex justify-content-center justify-content-lg-start p-0">
+              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 ms-3 gap-3 g-3 p-0 m-0 w-100 justify-content-center justify-content-lg-start" id="cardswrapper">
+                  <!-- Product cards will go here -->
               </div>
             </div>
           </div>
-      
+        </div>
+      </div>
      <!-- End Product Catalog -->
 <!-- Footer -->
 <special-footer></special-footer>
@@ -338,5 +330,23 @@
       <script src="navFoterManager.js" type="module"></script>
       <script src="Products Catalog.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    
+    <script>
+      // Toggle filter visibility on mobile
+      document.getElementById('filterToggle').addEventListener('click', function() {
+        const filterColumn = document.getElementById('filterColumn');
+        filterColumn.classList.toggle('show');
+        
+        // Change icon based on state
+        const icon = this.querySelector('i');
+        if (filterColumn.classList.contains('show')) {
+          icon.classList.remove('ri-filter-line');
+          icon.classList.add('ri-close-line');
+        } else {
+          icon.classList.remove('ri-close-line');
+          icon.classList.add('ri-filter-line');
+        }
+      });
+    </script> 
   </body>
 </html>
