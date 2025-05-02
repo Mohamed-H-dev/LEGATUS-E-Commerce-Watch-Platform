@@ -1112,14 +1112,15 @@ document
       }
 
       const reader = new FileReader();
-reader.onload = function (e) {
-  const base64Image = e.target.result;
-  document.getElementById("productImage").value = base64Image; // safe to store
-  document.getElementById("previewImage").src = base64Image;
-  document.getElementById("imagePreview").style.display = "block";
-  document.querySelector(".warningCaseNotValid").innerHTML = "";
-};
-reader.readAsDataURL(file);
+        reader.onload = function (e) {
+          document.getElementById("editProductImage").value =
+            e.target.result;
+          document.getElementById("editPreviewImage").src =
+            e.target.result;
+          document.getElementById("editImagePreview").style.display =
+            "block";
+        };
+        reader.readAsDataURL(file);
 
 
     }
@@ -1182,14 +1183,15 @@ document
       }
 
       const reader = new FileReader();
-reader.onload = function (e) {
-  const base64Image = e.target.result;
-  document.getElementById("productImage").value = base64Image; // safe to store
-  document.getElementById("previewImage").src = base64Image;
-  document.getElementById("imagePreview").style.display = "block";
-  document.querySelector(".warningCaseNotValid").innerHTML = "";
-};
-reader.readAsDataURL(file);
+        reader.onload = function (e) {
+          document.getElementById("editProductImage").value =
+            e.target.result;
+          document.getElementById("editPreviewImage").src =
+            e.target.result;
+          document.getElementById("editImagePreview").style.display =
+            "block";
+        };
+        reader.readAsDataURL(file);
 
 
     }
