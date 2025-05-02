@@ -529,6 +529,7 @@
                 </div>                
             </div>
         </div>
+        
     </div>
 
     <!-- Footer -->
@@ -711,7 +712,6 @@
                     };
                     
                     localStorage.setItem('orderData', JSON.stringify(formData));
-                    alert('Order #' + order.orderId + ' has been created successfully!');
                     window.location.href = 'confirmation.html';
                     localStorage.removeItem('checkout');
                     localStorage.removeItem('Cart');

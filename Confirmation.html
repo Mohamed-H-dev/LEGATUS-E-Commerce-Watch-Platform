@@ -234,6 +234,21 @@
             border-bottom: 2px solid #eaeaea;
             padding-bottom: 10px;
         }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 20px;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         
         @media (max-width: 768px) {
             .confirmation-header {
@@ -373,6 +388,11 @@
                 </div>
             </div>
         </div>
+        <div class="my-4 d-flex justify-content-center">
+            <button type="button" class="btn btn-primary btn-lg w-25" onclick="end()">
+                <i class="fas fa-home me-2"></i> Continue Shopping
+            </button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -398,6 +418,7 @@
                 const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
                 return new Date(dateString).toLocaleDateString(undefined, options);
             }
+           
             
             // Display order information
             const orderInfoDiv = document.getElementById('orderInfo');
@@ -514,6 +535,9 @@
             document.getElementById('shipping').textContent = `$${shipping.toFixed(2)}`;
             document.getElementById('total').textContent = `$${total.toFixed(2)}`;
         });
+        function end(){
+                window.location.href = '/index.html';
+            }
     </script>
 </body>
 </html>
