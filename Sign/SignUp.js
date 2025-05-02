@@ -3,6 +3,12 @@ import { UserManager } from "./UserManager.js";
 import { FormValidator } from "./Validation.js";
 import { StorageManager } from "./StorageManager.js";
 
+
+//title and image 
+const signImage = document.getElementById("sign_image")
+const pageTitle = document.getElementById("page_title");
+
+
 // Create a single validator instance
 const validator = new FormValidator();
 
@@ -38,8 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // Show store name field only if seller is selected
       if (this.value === "seller") {
         storeNameContainer.style.display = "block";
+        pageTitle.innerText="Create a seller account"
+        signImage.src = "../images/partener.png"
       } else {
         storeNameContainer.style.display = "none";
+        pageTitle.innerText="Create an account"
+        signImage.src = "../images/15.png"
       }
     });
   });
