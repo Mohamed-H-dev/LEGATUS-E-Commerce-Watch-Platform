@@ -58,6 +58,7 @@ function runOnceReload() {
 
       // If dashboard is shown, initialize the chart
       if (pageToShow.toLowerCase() === "dashboard") {
+        window.location.reload();
         showDashboardPage();
       }
       // If orders page is shown, load orders
@@ -541,7 +542,6 @@ function showOrdersPage() {
 
   function showDashboardPage() {
     updateDashboardStats();
-    createDynamicCharts();
   }
 
   // Pagination variables
@@ -1078,11 +1078,16 @@ function searchOrders(searchTerm) {
         return;
       }
 
-      const imageURL = URL.createObjectURL(file);
-      document.getElementById("productImage").value = imageURL; // stores temporary object URL
-      document.getElementById("previewImage").src = imageURL;
-      document.getElementById("imagePreview").style.display = "block";
-      document.querySelector(".warningCaseNotValid").innerHTML = ""; // Clear the warning
+      const reader = new FileReader();
+reader.onload = function (e) {
+  const base64Image = e.target.result;
+  document.getElementById("productImage").value = base64Image; // safe to store
+  document.getElementById("previewImage").src = base64Image;
+  document.getElementById("imagePreview").style.display = "block";
+  document.querySelector(".warningCaseNotValid").innerHTML = "";
+};
+reader.readAsDataURL(file);
+
     }
   });
 
@@ -1104,11 +1109,16 @@ document
         return;
       }
 
-      const objectURL = URL.createObjectURL(file);
+      const reader = new FileReader();
+reader.onload = function (e) {
+  const base64Image = e.target.result;
+  document.getElementById("productImage").value = base64Image; // safe to store
+  document.getElementById("previewImage").src = base64Image;
+  document.getElementById("imagePreview").style.display = "block";
+  document.querySelector(".warningCaseNotValid").innerHTML = "";
+};
+reader.readAsDataURL(file);
 
-      document.getElementById("editProductImage").value = objectURL;
-      document.getElementById("editPreviewImage").src = objectURL;
-      document.getElementById("editImagePreview").style.display = "block";
 
     }
   });
@@ -1136,12 +1146,16 @@ document
         return;
       }
 
-      const objectURL = URL.createObjectURL(file);
+      const reader = new FileReader();
+reader.onload = function (e) {
+  const base64Image = e.target.result;
+  document.getElementById("productImage").value = base64Image; // safe to store
+  document.getElementById("previewImage").src = base64Image;
+  document.getElementById("imagePreview").style.display = "block";
+  document.querySelector(".warningCaseNotValid").innerHTML = "";
+};
+reader.readAsDataURL(file);
 
-      document.getElementById("productImageMobile").value = objectURL; // temporary blob URL
-      document.getElementById("previewImageMobile").src = objectURL;
-      document.getElementById("imagePreviewMobile").style.display = "block";
-      document.querySelector(".warningCaseNotValidMobile").innerHTML = "";
 
     }
   });
@@ -1165,11 +1179,16 @@ document
         return;
       }
 
-      const objectURL = URL.createObjectURL(file);
+      const reader = new FileReader();
+reader.onload = function (e) {
+  const base64Image = e.target.result;
+  document.getElementById("productImage").value = base64Image; // safe to store
+  document.getElementById("previewImage").src = base64Image;
+  document.getElementById("imagePreview").style.display = "block";
+  document.querySelector(".warningCaseNotValid").innerHTML = "";
+};
+reader.readAsDataURL(file);
 
-      document.getElementById("editProductImageMobile").value = objectURL;
-      document.getElementById("editPreviewImageMobile").src = objectURL;
-      document.getElementById("editImagePreviewMobile").style.display = "block";
 
     }
   });
