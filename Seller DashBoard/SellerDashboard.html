@@ -99,17 +99,18 @@ function processOrdersForStock(orders) {
     orders.forEach(order => {
         // Check if this order has already been processed
         if (!processedOrderIds.includes(order.orderId)) {
-            order.products.forEach(orderProduct => {
-                const productIndex = products.findIndex(p => p.id === orderProduct.product.id);
-                if (productIndex !== -1) {
-                    const currentStock = Number(products[productIndex].stock) || 0;
-                    const orderedQuantity = Number(orderProduct.product.quantity_in_cart) || 0;
-
-                    products[productIndex].stock = Math.max(0, currentStock - orderedQuantity);
-                    productsUpdated = true;
-                } 
-            });
-
+          order.products.forEach(orderProduct => {
+    // Check if orderProduct and its product property exist
+    if (orderProduct && orderProduct.product && orderProduct.product.id) {
+        const productIndex = products.findIndex(p => p.id === orderProduct.product.id);
+        if (productIndex !== -1) {
+            const currentStock = Number(products[productIndex].stock) || 0;
+            const orderedQuantity = Number(orderProduct.product.quantity_in_cart) || 0;
+            products[productIndex].stock = Math.max(0, currentStock - orderedQuantity);
+            productsUpdated = true;
+        }
+    }
+});
             // Mark this order as processed by adding its ID to the list
             processedOrderIds.push(order.orderId);
         } 
