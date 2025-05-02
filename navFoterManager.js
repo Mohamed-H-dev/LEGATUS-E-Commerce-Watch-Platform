@@ -251,6 +251,7 @@ connectedCallback(){
                <ul class="dropdown-menu">
                  <li><span class="dropdown-header">${data.role}</span></li>
                  <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
+                 <li><a class="dropdown-item" href="${prefix}Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
                  <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
                  <li><hr class="dropdown-divider"></li>
                  <li><a class="dropdown-item logout_option" href="${prefix}Sign/Sign.html">Logout</a></li>
@@ -286,7 +287,9 @@ connectedCallback(){
              <ul class="dropdown-menu">
               <li><span class="dropdown-header">${data.role}</span></li>
                  <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
-                 <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
+                 <li><a class="dropdown-item" href="${prefix}Seller DashBoard/SellerDashboard.html">My Dashboard</a></li>
+                 <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</
+                 a></li>
                  <li><hr class="dropdown-divider"></li>
                  <li><a class="dropdown-item logout_option" href="">Logout</a></li>
              </ul>
@@ -383,7 +386,9 @@ connectedCallback(){
                <ul class="dropdown-menu">
                  <li><span class="dropdown-header">${data.role}</span></li>
                  <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
+                 <li><a class="dropdown-item" href="${prefix}AdminDashboard.html">My Dashboard</a></li>
                  <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
+
                  <li><hr class="dropdown-divider"></li>
                  <li><a class="dropdown-item logout_option" href="${prefix}Sign/Sign.html">Logout</a></li>
                </ul>
@@ -418,6 +423,7 @@ connectedCallback(){
              <ul class="dropdown-menu">
               <li><span class="dropdown-header">${data.role}</span></li>
                  <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
+                 <li><a class="dropdown-item" href="${prefix}AdminDashboard.html">My Dashboard</a></li>
                  <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
                  <li><hr class="dropdown-divider"></li>
                  <li><a class="dropdown-item logout_option" href="">Logout</a></li>
@@ -447,6 +453,8 @@ connectedCallback(){
                <li><h1 class="dropdown-item-text h1 fs-6">${data.name}</h1></li>
                <li><a class="dropdown-item" href="${prefix}AdminDashboard.html">My Dashboard</a></li>
                <li><a class="dropdown-item" href="${prefix}Customer Dashboard/customer-dashboard.html">My Account</a></li>
+                 <li><a class="dropdown-item" href="${prefix}AdminDashboard.html">My Dashboard</a></li>
+
                <li><hr class="dropdown-divider"></li>
                <li><a class="dropdown-item logout_option" href="${prefix}Sign/Sign.html">Logout</a></li>
              </ul>
