@@ -1,10 +1,7 @@
 // SignUp.js
 import { UserManager } from "./UserManager.js";
 import { FormValidator } from "./Validation.js";
-
-//title and image 
-const signImage = document.getElementById("sign_image")
-const pageTitle = document.getElementById("page_title");
+import { StorageManager } from "./StorageManager.js";
 
 // Create a single validator instance
 const validator = new FormValidator();
@@ -15,6 +12,19 @@ UserManager.initializeDefaultAdmin();
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize the validator when DOM is ready
   validator.init();
+
+
+
+  const guestButton = document.querySelector(".btn-guest");
+  // Add click handler for the guest button
+  if (guestButton) {
+    guestButton.addEventListener("click", () => {
+      StorageManager.remove("currentUser");
+      console.log("Continuing as guest");
+      // Redirect to homepage
+      window.location.href = "../index.html";
+    });
+  }
 
   //this is just for the store name
   const accountTypeRadios = document.querySelectorAll(
@@ -28,12 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
       // Show store name field only if seller is selected
       if (this.value === "seller") {
         storeNameContainer.style.display = "block";
-        pageTitle.innerText="Create a seller account"
-        signImage.src = "../images/partener.png"
       } else {
         storeNameContainer.style.display = "none";
-        pageTitle.innerText="Create an account"
-        signImage.src = "../images/6.png"
       }
     });
   });
@@ -61,16 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
       //   email: document.getElementById('email').value.trim(),
       //   password: document.getElementById('password').value,
       //   role: document.querySelector('input[name="accountType"]:checked').value === 'seller' ? 'seller' : 'customer'};
-
-
       
-      const isSeller = document.querySelector('input[name="accountType"]:checked').value ===
+      const isSeller =
+        document.querySelector('input[name="accountType"]:checked').value ===
         "seller";
 
       // For sellers, also validate store name
       let isStoreNameValid = true;
       if (isSeller) {
-        
         const storeNameInput = document.getElementById("storeName");
         if (!storeNameInput.value.trim()) {
           isStoreNameValid = false;
@@ -114,7 +118,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-
-
-
 });

@@ -150,6 +150,19 @@
         align-items: center;
         margin-bottom: 20px;
       }
+      
+      .btn-guest {
+        background-color: transparent;
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: 25px;
+        padding: 10px;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-guest:hover {
+        background-color: rgba(0, 47, 95, 0.1);
+      }
     </style>
   </head>
 
@@ -209,6 +222,12 @@
                 Sign In
               </button>
             </div>
+            
+            <div class="mb-3">
+              <button type="button" id="guestButton" class="btn btn-guest w-100">
+                Continue as Guest
+              </button>
+            </div>
           </form>
 
           <div class="mt-4 text-center">
@@ -232,7 +251,7 @@
         <div class="col-md-7 p-0 preview-side d-none d-md-block">
           <div class="team-preview">
             <img
-              src="../images/14.png"
+              src="1.webp"
               alt="Team working together"
               class="img-fluid w-100 h-100 object-fit-cover"
               style="position: absolute; top: 0; left: 0; bottom: 0; right: 0"

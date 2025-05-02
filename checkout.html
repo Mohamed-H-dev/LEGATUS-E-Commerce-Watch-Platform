@@ -8,6 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
+
+    
+  <!-- access control -->
+  <script type="module" src="../Sign/Initialize.js"></script>
+   
+
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <!--FontAwesome  -->
@@ -529,6 +535,10 @@
                 </div>                
             </div>
         </div>
+        <div
+        id="messageBox"
+        style="color: red; margin-top: 10px; font-weight: bold"
+    ></div>
     </div>
 
     <!-- Footer -->
@@ -693,6 +703,11 @@
                     let userId = 'guest-user';
                     if (products && products.length > 0) {
                         userId = products[0].userId || userId;
+                    }else{
+                        const messageBox = document.getElementById("messageBox");
+                        messageBox.innerText = "⚠️ Please add  items to your cart.";
+                        messageBox.style.display = "block";
+                        return;
                     }
                     
                     const order = createOrder();
@@ -711,8 +726,9 @@
                     };
                     
                     localStorage.setItem('orderData', JSON.stringify(formData));
-                    alert('Order #' + order.orderId + ' has been created successfully!');
                     window.location.href = 'confirmation.html';
+                    localStorage.removeItem('checkout');
+                    localStorage.removeItem('Cart');
                 } else {
                     this.classList.add('was-validated');
                 }
