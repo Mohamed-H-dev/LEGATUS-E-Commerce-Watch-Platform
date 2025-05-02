@@ -36,6 +36,10 @@ export class LocalStorageManager {
     getCurrentUser() {
       return JSON.parse(localStorage.getItem('currentUser')) || null;
     }
+
+    setProductToCheckCart(checkoutData){
+      localStorage.setItem("checkout", JSON.stringify(checkoutData));
+    }
   }
   
   export class CartRenderer {
@@ -288,7 +292,7 @@ export class LocalStorageManager {
       let shippingCost = 0;
       const shippingMode2 = document.getElementById('shipping-mode-2');
       if (shippingMode2.checked) {
-        shippingCost = 9.9;
+        shippingCost = 50;
       }
   
       const grandTotal = subtotal + shippingCost;

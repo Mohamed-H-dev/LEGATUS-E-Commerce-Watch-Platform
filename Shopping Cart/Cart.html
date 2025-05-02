@@ -8,10 +8,13 @@
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
     <link rel="stylesheet" href="./css/Cart.css" />
     <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
     <!--FontAwesome  -->
-   <!-- nav -->
-   <link rel="stylesheet" href="../nav.css">
+    <!-- nav -->
+    <link rel="stylesheet" href="../nav.css" />
     <script src="./js/all.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script src="../navFoterManager.js" type="module"></script>
@@ -273,7 +276,6 @@
         border: 1px solid rgba(14, 53, 103, 0.08);
       }
     </style>
-
     <script type="module">
       import { LocalStorageManager, CartRenderer } from "./js/cart.js";
 
@@ -282,10 +284,8 @@
         const cartRenderer = new CartRenderer(storageManager);
         const productCart = localStorage.getItem("Cart");
 
-        // Initial render
         cartRenderer.renderCartItems();
 
-        // Shipping mode selection
         const shippingModes = document.querySelectorAll(".shipping-mode");
         shippingModes.forEach((mode) => {
           mode.addEventListener("change", () => {
@@ -293,17 +293,47 @@
           });
 
           // Go back button in history
-
           document.querySelector(".goBack").addEventListener("click", () => {
-            window.location.href ="../productCatalog.html";
+            window.location.href = "../productCatalog.html";
           });
         });
+
         // Go to the checkout page
         document.querySelector(".CheckOut").addEventListener("click", () => {
-          window.location.href = "../checkout.html";
+          const currentUser = storageManager.getCurrentUser();
+          const cartData = storageManager.getProducts();
+
+          // Filter cart items for the current user
+          const userCartItems = cartData.filter(
+            (item) => item.userId === currentUser?.id
+          );
+
+          if (userCartItems.length > 0) {
+            // Create checkout data with all products
+            const checkoutData = {
+              userId: currentUser.id,
+              products: userCartItems.map((item) => ({
+                id: item.product.id,
+                name: item.product.name,
+                price: item.product.price,
+                quantity: item.product.quantity_in_cart,
+                image: item.product.image,
+                sellerId: item.product.sellerId,
+                totalPrice:
+                  parseFloat(item.product.price.split(" ")[0]) *
+                  item.product.quantity_in_cart,
+              })),
+            };
+
+            storageManager.setProductToCheckCart(checkoutData);
+
+            // Redirect to checkout page
+            window.location.href = "../checkout.html";
+          } else {
+            alert("Your cart is empty. Please add items before checkout.");
+          }
         });
 
-        // Set default shipping mode
         document.getElementById("shipping-mode-1").checked = true;
       });
     </script>
@@ -317,10 +347,9 @@
         class="cart-header d-flex flex-column flex-md-row justify-content-between align-items-center"
       >
         <div class="d-flex align-items-center mb-3 mb-md-0">
-          
           <h1 class="cart-title">Your Shopping Cart</h1>
         </div>
-        <button class="btn  continue-shopping-btn goBack">
+        <button class="btn continue-shopping-btn goBack">
           <i class="fa-solid fa-arrow-left me-2"></i>Continue Shopping
         </button>
       </div>
@@ -405,7 +434,7 @@
                 />
                 <label class="form-check-label" for="shipping-mode-2">
                   <span class="fw-bold">Delivery at home</span> •
-                  <span class="text-danger">9.90$</span>
+                  <span class="text-danger">$50.00</span>
                 </label>
               </div>
             </div>
