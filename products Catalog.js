@@ -146,7 +146,6 @@ storageManager.setProducts(sampleProducts)  */
   //         });
  
   
-
           let allprod = storageManager.getProducts();
           console.log(allprod)
           allprod.forEach(data =>{
@@ -165,6 +164,16 @@ storageManager.setProducts(sampleProducts)  */
   
 
         container.innerHTML = htmlContent;
+
+         //-------------------------init & Elements---------------------------------------//
+        
+         let serach = document.getElementById("search_input");
+         let prodcutCard = document.querySelectorAll(".card");
+         let gender = document.querySelectorAll('input[type="radio"]');
+         let brand = document.querySelectorAll('input[type="checkbox"]');
+         console.log("Total Products:", allprod.length, "| Total Cards:", prodcutCard.length);
+         //-------------------------init & Elements---------------------------------------//
+
         let cards =  document.getElementsByClassName("card");
         for(var i = 0; i<cards.length;i++){
           cards[i].addEventListener("click", function(){
@@ -174,12 +183,11 @@ storageManager.setProducts(sampleProducts)  */
           })//end click product card
         }
         //Search
-        let serach = document.getElementById("search_input");
-        let Prodcutcard = document.querySelectorAll(".card");
+      
 
         serach.addEventListener('input', ()=>{
           if(serach.value !==""){
-            Prodcutcard.forEach(card=>{
+            prodcutCard.forEach(card=>{
               let productHead = card.querySelector('h5');
               let productNameText = productHead.innerHTML.toLowerCase();
               let inputText = serach.value.toLowerCase(); 
@@ -192,7 +200,7 @@ storageManager.setProducts(sampleProducts)  */
               }
             })
           }else{
-            Prodcutcard.forEach(card=>{
+            prodcutCard.forEach(card=>{
               card.style.display = "block";
             })
             
@@ -200,12 +208,53 @@ storageManager.setProducts(sampleProducts)  */
 
         })//end of search input
 
-        //Filter by gnder
-        const gender = document.querySelectorAll('input[type="radio"]');
+        function productFilter(){
+          let selectedGender; // Declare here to use throughout function
+  
+  // Get selected gender (using your existing forEach)
+  gender.forEach(radio => {
+    if (radio.checked) {
+      selectedGender = radio.value.toLowerCase();
+    }
+  });
+
+  // Get checked brands (your existing code)
+  const checkedBrands = Array.from(brand)
+    .filter(checkbox => checkbox.checked)
+    .map(checkbox => checkbox.value.toLowerCase());
+
+  console.log("Selected Gender:", selectedGender);
+  console.log("Checked Brands:", checkedBrands);
+  console.log("Total Products:", allprod.length, "| Total Cards:", prodcutCard.length);
+
+  // Apply filters (your existing code with fixed typo)
+  prodcutCard.forEach((card, index) => {
+    const product = allprod[index];
+    if (!product) {
+      card.style.display = 'none';
+      return;
+    }
+
+    const genderMatch = selectedGender === 'all' || 
+                       product.gender.toLowerCase() === selectedGender;
+    const brandMatch = checkedBrands.length === 0 || 
+                      checkedBrands.includes(product.brand.toLowerCase());
+
+    card.style.display = genderMatch && brandMatch ? 'block' : 'none';
+  });
+              }
+              gender.forEach(radio => radio.addEventListener('change', productFilter));
+              brand.forEach(checkbox => checkbox.addEventListener('change', productFilter));
+              productFilter();
+          });// end of load
+          
+
+    /*     //Filter by gnder
+       
         gender.forEach(radio=>{
           radio.addEventListener('change', ()=>{
             const selectedValue = radio.value.toLowerCase()
-               Prodcutcard.forEach((card, index) => {
+            prodcutCard.forEach((card, index) => {
                   const productGender = allprod[index].gender.toLowerCase();
                   card.style.display = (selectedValue === "all" || selectedValue === productGender) 
                     ? "block" 
@@ -215,7 +264,7 @@ storageManager.setProducts(sampleProducts)  */
             
 
 //Filter by brand 
-        const brand = document.querySelectorAll('input[type="checkbox"]');
+        
         brand.forEach(check=>{
           check.addEventListener('change', ()=>{
             const checkedBrands = Array.from(brand)
@@ -224,7 +273,7 @@ storageManager.setProducts(sampleProducts)  */
           
           // If nothing is checked, show all products
           if (checkedBrands.length === 0) {
-            Prodcutcard.forEach(card => {
+            prodcutCard.forEach(card => {
               card.style.display = 'block';
             });
             return;
@@ -232,7 +281,7 @@ storageManager.setProducts(sampleProducts)  */
           console.log(checkedBrands)
           // Filter products
           
-          Prodcutcard.forEach((card ,index) => {
+          prodcutCard.forEach((card ,index) => {
             if (allprod[index]) {
               const productBrand = allprod[index].brand.toLowerCase();
               card.style.display = checkedBrands.includes(productBrand) ? 'block' : 'none';
@@ -243,16 +292,10 @@ storageManager.setProducts(sampleProducts)  */
         });
          
           })//end of checked change
-        
-             
-             
-            
-            
+          
           })//end of change
-        })//end of for
-      
-    });// end of load
-    
+        })//end of for */
+
    
     
 

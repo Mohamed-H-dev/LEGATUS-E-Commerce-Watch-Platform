@@ -1,241 +1,177 @@
 import { StorageManager } from './StorageManager.js';
 
 export class AccessControl {
-    static restrictAccess() {
-        try {
-            const currentUser = StorageManager.load("currentUser");
-            const currentPath = window.location.pathname;
-            const currentHref = window.location.href;
-            
-            console.log("Current User:", currentUser);
-            console.log("Current Path:", currentPath);
-            console.log("Current URL:", currentHref);
-            
-            // Define allowed paths for each role
-            const allowedPaths = {
-                customer: [
-                    "/index.html",
-                    "/Sign.html",
-                    "/SignUp.html",
-                    "../index.html",
-                    "/checkout.html",
-                    "../checkout.html",
-                    "/Shopping Cart/Cart.html",
-                    "../Shopping Cart/Cart.html",
-                    "/Customer Dashboard/customer-dashboard.html",
-                    "../Customer Dashboard/customer-dashboard.html",
-                    "/Productdetails/productDetails.html",
-                    "../Productdetails/productDetails.html",
-                    "/productCatalog.html",
-                    "../productCatalog.html",
-                    "/ContactUs.html",
-                    "../ContactUs.html"
-                ],
-                seller: [
-                    "/index.html",
-                    "/Sign.html",
-                    "/SignUp.html",
-                    "../index.html",
-                    "../Seller DashBoard/SellerDashboard.html",
-                    "/Seller DashBoard/SellerDashboard.html",
-                    "/Productdetails/productDetails.html",
-                    "../Productdetails/productDetails.html",
-                    "/productCatalog.html",
-                    "../productCatalog.html",
-                    "/ContactUs.html",
-                    "../ContactUs.html"
-                ],
-                admin: [
-                    "/index.html",
-                    "/Sign.html",
-                    "/SignUp.html",
-                    "../index.html",
-                    "/AdminDashboard.html",
-                    "../AdminDashboard.html",
-                    "/AdminDashboardCustomerService.html",
-                    "../AdminDashboardCustomerService.html",
-                    "/AdminProductDashboard.html",
-                    "../AdminProductDashboard.html",
-                    "/AdminSellerDashboard.html",
-                    "../AdminSellerDashboard.html",
-                    "/Productdetails/productDetails.html",
-                    "../Productdetails/productDetails.html",
-                    "/productCatalog.html",
-                    "../productCatalog.html",
-                    "/ContactUs.html",
-                    "../ContactUs.html"
-                ],
-                guest: [
-                    "/index.html",
-                    "/Sign.html",
-                    "/SignUp.html",
-                    "../index.html",
-                    "/Productdetails/productDetails.html",
-                    "../Productdetails/productDetails.html",
-                    "/productCatalog.html",
-                    "../productCatalog.html",
-                    "/ContactUs.html",
-                    "../ContactUs.html"
-                ]
-            };
+  static restrictAccess() {
+    try {
+      const currentUser = StorageManager.load("currentUser");
+      const currentPath = window.location.pathname;
+      const currentHref = window.location.href;
 
-            // First, check if we're already on Sign.html or SignUp.html - if so, no need to check further for guests
-            if (!currentUser && (currentPath.includes("Sign.html") || currentPath.includes("SignUp.html"))) {
-                console.log("Already on authentication page, no redirection needed");
-                return;
-            }
+      console.log("Current User:", currentUser);
+      console.log("Current Path:", currentPath);
+      console.log("Current URL:", currentHref);
 
-            // Guest here is restricted shopping pages (checkout and cart)
-            if (!currentUser) {
-                // Check both path and href to catch all variations
-                const isCheckoutPage = 
-                    currentPath.includes("checkout.html") || 
-                    currentHref.includes("checkout.html");
-                
-                const isCartPage = 
-                    currentPath.includes("Shopping Cart/Cart.html") || 
-                    currentHref.includes("Shopping Cart/Cart.html") ||
-                    (currentPath.includes("Cart.html") && currentPath.includes("Shopping"));
-                
-                if (isCheckoutPage || isCartPage) {
-                    console.log("Guest attempting to access restricted shopping page:", currentPath);
-                    
-                    // guest will return to sign - Determine correct redirection path to Sign.html
-                    let signPath;
-                    if (currentPath.includes("/Sign/")) {
-                        signPath = "Sign.html";
-                    } else if (currentPath.startsWith("/")) {
-                        signPath = "/Sign/Sign.html";
-                    } else {
-                        signPath = "../Sign/Sign.html";
-                    }
-                    
-                    window.location.href = signPath;
-                    return;
-                }
-            }
-            
-            // Dashboard access restrictions
-            if (!currentUser) {
-                const isDashboardPage = 
-                    currentHref.includes("Seller DashBoard") || 
-                    currentHref.includes("Customer Dashboard") || 
-                    currentHref.includes("Admin");
-                
-                if (isDashboardPage) {
-                    console.log("Guest attempting to access dashboard");
-                    
-                    // Determine correct path to Sign.html based on current location
-                    let signPath;
-                    if (currentPath.includes("/Sign/")) {
-                        signPath = "Sign.html";
-                    } else if (currentPath.startsWith("/")) {
-                        signPath = "/Sign/Sign.html";
-                    } else {
-                        signPath = "../Sign/Sign.html";
-                    }
-                    
-                    window.location.href = signPath;
-                    return;
-                }
-            }
-            
-            if (currentUser) {
-                const userRole = currentUser.role;
-                
-                // Check for cross-role dashboard access
-                // Seller Dashboard restricted to sellers only
-                
-                if (userRole !== "seller" && currentHref.includes("Seller DashBoard")) {
-                    console.log("Non-seller attempting to access seller dashboard");
-                    
-                    if (userRole === "customer") {
-                        window.location.href = "../Customer Dashboard/customer-dashboard.html";
-                    } else if (userRole === "admin") {
-                        window.location.href = "../AdminDashboard.html";
-                    }
-                    return;
-                }
-                
-                // Customer Dashboard restricted to customers only
-                
-                if (userRole !== "customer" && currentHref.includes("Customer Dashboard")) {
-                    console.log("Non-customer attempting to access customer dashboard");
-                    
-                    if (userRole === "seller") {
-                        window.location.href = "../Seller DashBoard/SellerDashboard.html";
-                    } else if (userRole === "admin") {
-                        window.location.href = "../AdminDashboard.html";
-                    }
-                    return;
-                }
-                
-                // Admin Dashboard restricted to admins only
+      // Check if this is a dashboard URL - be more specific for customer dashboard
+      const isCustomerDashboard =currentPath.includes("customer-dashboard.html");
+      const isSellerDashboard =
+        currentHref.includes("Seller") && currentHref.includes("Dashboard");
+      const isAdminDashboard =
+        currentHref.includes("Admin") && currentHref.includes("Dashboard");
 
-                if (userRole !== "admin" && currentHref.includes("Admin")) {
-                    console.log("Non-admin attempting to access admin dashboard");
-                    
-                    if (userRole === "customer") {
-                        window.location.href = "../Customer Dashboard/customer-dashboard.html";
-                    } else if (userRole === "seller") {
-                        window.location.href = "../Seller DashBoard/SellerDashboard.html";
-                    }
-                    return;
-                }
-                
-                // Block sellers from accessing checkout and cart 
-                if (userRole === "seller" && (
-                    currentPath.includes("checkout.html") || 
-                    currentHref.includes("checkout.html") ||
-                    currentPath.includes("Shopping Cart/Cart.html") ||
-                    currentHref.includes("Shopping Cart/Cart.html"))) {
-                    
-                    console.log("Seller attempting to access checkout or cart");
-                    window.location.href = "../Seller DashBoard/SellerDashboard.html";
-                    return;
-                }
-                
-                // Check if current path is allowed for the user role
-                // Redirect to appropriate page based on role
-                const isAllowed = allowedPaths[userRole].some(path => 
-                    currentPath.endsWith(path) || currentHref.includes(path)
-                );
-                
-                if (!isAllowed) {
-                    console.log("Access not allowed for current user role:", userRole);
-                    
-                    if (userRole === "customer") {
-                        window.location.href = "../Customer Dashboard/customer-dashboard.html";
-                    } else if (userRole === "seller") {
-                        window.location.href = "../Seller DashBoard/SellerDashboard.html";
-                    } else if (userRole === "admin") {
-                        window.location.href = "../AdminDashboard.html";
-                    }
-                }
-            } else {
-                // User is not logged in (guest)
-                // Determine correct path to Sign.html based on current location
-                const isAllowed = allowedPaths.guest.some(path => 
-                    currentPath.endsWith(path) || currentHref.includes(path)
-                );
-                
-                if (!isAllowed) {
-                    console.log("Access not allowed for guest, redirecting to Sign page");
-                    
-                    let signPath;
-                    if (currentPath.includes("/Sign/")) {
-                        signPath = "Sign.html";
-                    } else if (currentPath.startsWith("/")) {
-                        signPath = "/Sign/Sign.html";
-                    } else {
-                        signPath = "../Sign/Sign.html";
-                    }
-                    
-                    window.location.href = signPath;
-                }
-            }
-        } catch (error) {
-            console.error("Access control error:", error);
+      // If user is logged in and accessing the correct dashboard for their role, allow immediately
+      if (currentUser) {
+        const role = currentUser.role;
+
+        // Special handling for customer dashboard (more specific checking)
+        if (role === "customer" && isCustomerDashboard) {
+          console.log("Customer accessing customer dashboard - access granted");
+          return; // Allow access immediately
         }
+
+        // Handle seller and admin dashboards
+        if (
+          (role === "seller" && isSellerDashboard) ||
+          (role === "admin" && isAdminDashboard)
+        ) {
+          console.log(`${role} accessing their dashboard - access granted`);
+          return; // Allow access immediately
+        }
+
+        // Prevent access to wrong dashboards
+        if (role !== "customer" && isCustomerDashboard) {
+          console.log("Non-customer trying to access customer dashboard");
+          redirectToCorrectDashboard(role);
+          return;
+        }
+
+        if (role !== "seller" && isSellerDashboard) {
+          console.log("Non-seller trying to access seller dashboard");
+          redirectToCorrectDashboard(role);
+          return;
+        }
+
+        if (role !== "admin" && isAdminDashboard) {
+          console.log("Non-admin trying to access admin dashboard");
+          redirectToCorrectDashboard(role);
+          return;
+        }
+      } else {
+        // Guests trying to access any dashboard
+        if (isCustomerDashboard || isSellerDashboard || isAdminDashboard) {
+          console.log(
+            "Guest trying to access dashboard - redirecting to login"
+          );
+          redirectToSignIn();
+          return;
+        }
+      }
+
+      // Public pages accessible to everyone
+      const publicPages = [
+        "index.html",
+        "productCatalog.html",
+        "productDetails.html",
+        "ContactUs.html",
+      ];
+
+      // Check if current page is public
+      const isPublicPage = publicPages.some((page) =>
+        currentHref.includes(page)
+      );
+      if (isPublicPage) {
+        console.log("Accessing public page - access granted");
+        return;
+      }
+
+      // Authentication pages - allow access only for guests
+      const authPages = ["Sign.html", "SignUp.html"];
+      const isAuthPage = authPages.some((page) => currentHref.includes(page));
+
+      if (isAuthPage) {
+        if (currentUser) {
+          // Redirect logged-in users away from auth pages
+          console.log(
+            "Logged-in user trying to access auth page - redirecting to appropriate dashboard"
+          );
+          redirectToCorrectDashboard(currentUser.role);
+          return;
+        } else {
+          // Allow guests to access auth pages
+          console.log("Guest accessing auth page - access granted");
+          return;
+        }
+      }
+
+      // Shopping pages - accessible to customers and guests - will add it for checkout only now
+      const shoppingPages = ["Cart.html", "checkout.html"];
+      const isShoppingPage = shoppingPages.some((page) =>
+        currentHref.includes(page)
+      );
+
+      if (isShoppingPage) {
+        if (!currentUser) {
+          // Redirect guests to sign in if they try to access checkout
+          console.log(
+            "Guest trying to access shopping page - redirecting to sign in"
+          );
+          redirectToSignIn();
+          return;
+        } else if (
+          currentUser.role === "seller" ||
+          currentUser.role === "admin"
+        ) {
+          // Redirect sellers/admins away from shopping pages
+          console.log(
+            `${currentUser.role} trying to access shopping page - redirecting`
+          );
+          redirectToCorrectDashboard(currentUser.role);
+          return;
+        } else {
+          // Allow customers to access shopping pages
+          console.log("Customer accessing shopping page - access granted");
+          return;
+        }
+      }
+
+      // If we get here, default to redirecting to appropriate location
+      if (currentUser) {
+        console.log(
+          "Redirecting to appropriate dashboard for role:",
+          currentUser.role
+        );
+        redirectToCorrectDashboard(currentUser.role);
+      } else {
+        console.log("Guest accessing restricted page - redirecting to sign in");
+        redirectToSignIn();
+      }
+
+      // Helper functions
+      function redirectToCorrectDashboard(role) {
+        switch (role) {
+          case "customer":
+            window.location.href =
+              "../Customer Dashboard/customer-dashboard.html";
+            break;
+          case "seller":
+            window.location.href = "../Seller DashBoard/SellerDashboard.html";
+            break;
+          case "admin":
+            window.location.href = "../AdminDashboard.html";
+            break;
+          default:
+            window.location.href = "../index.html";
+        }
+      }
+
+      function redirectToSignIn() {
+        // Determine the correct path to Sign.html based on current location
+        const signPath = currentPath.includes("/Sign/")
+          ? "Sign.html"
+          : "../Sign/Sign.html";
+        window.location.href = signPath;
+      }
+    } catch (error) {
+      console.error("Access control error:", error);
     }
+  }
 }
