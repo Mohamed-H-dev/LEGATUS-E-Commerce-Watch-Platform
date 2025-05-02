@@ -4,9 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shopping Cart</title>
-    <link rel="stylesheet" href="./css/all.min.css" />
-    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+
     <link rel="stylesheet" href="./css/Cart.css" />
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+
     <!-- FontAwesome -->
     <link
       rel="stylesheet"
@@ -15,9 +22,8 @@
     <!--FontAwesome  -->
     <!-- nav -->
     <link rel="stylesheet" href="../nav.css" />
-    <script src="./js/all.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
     <script src="../navFoterManager.js" type="module"></script>
+
     <style>
       /* Custom styles to enhance the cart layout with rgb(14, 53, 103) as base color */
       :root {
@@ -333,8 +339,6 @@
             alert("Your cart is empty. Please add items before checkout.");
           }
         });
-
-        document.getElementById("shipping-mode-1").checked = true;
       });
     </script>
   </head>
@@ -411,33 +415,7 @@
         <div class="row">
           <!-- Shipping mode selection -->
           <div class="col-12 col-lg-7 mb-4 mb-lg-0">
-            <h2 class="shipping-title">Choose shipping mode</h2>
-            <div class="shipping-options p-3 bg-white rounded-3">
-              <div class="form-check mb-3">
-                <input
-                  class="form-check-input shipping-mode"
-                  type="radio"
-                  name="shipping-mode"
-                  id="shipping-mode-1"
-                />
-                <label class="form-check-label" for="shipping-mode-1">
-                  <span class="fw-bold">Store pickup</span> (In 20 min) •
-                  <span class="text-success">FREE</span>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input shipping-mode"
-                  type="radio"
-                  name="shipping-mode"
-                  id="shipping-mode-2"
-                />
-                <label class="form-check-label" for="shipping-mode-2">
-                  <span class="fw-bold">Delivery at home</span> •
-                  <span class="text-danger">$50.00</span>
-                </label>
-              </div>
-            </div>
+            <h2 class="shipping-title"></h2>
           </div>
 
           <!-- Order summary -->
@@ -449,12 +427,6 @@
               <div class="d-flex justify-content-between mb-2">
                 <p class="text-black-50 text-uppercase mb-0">Subtotal:</p>
                 <span class="fw-bold subtotal-amount">0.00 $</span>
-              </div>
-
-              <!-- Shipping fees -->
-              <div class="d-flex justify-content-between mb-2">
-                <p class="text-black-50 text-uppercase mb-0">Shipping:</p>
-                <span class="fw-bold shipping-amount">FREE</span>
               </div>
 
               <!-- Divider -->
@@ -477,5 +449,11 @@
       </div>
     </div>
     <special-footer></special-footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
