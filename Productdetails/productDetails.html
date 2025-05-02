@@ -369,9 +369,12 @@
       function addToCart() {
         const quantity = parseInt(document.getElementById("quantity").value);
         // Get cart and current user from localStorage
-        localStorage.getItem("Cart") || [];
+        let cart=JSON.parse( localStorage.getItem("Cart")) || [];
         let currentUser =
           localStorage.getItem("currentUser") || null;
+          if (currentUser) {
+            currentUser = JSON.parse(currentUser);
+          }
         // Check if a user is logged in
         if (!currentUser || !currentUser.id) {
           const messageBox = document.getElementById("messageBox");
@@ -421,6 +424,9 @@
         const quantity = parseInt(document.getElementById("quantity").value);
         let currentUser =
           localStorage.getItem("currentUser") || null;
+          if (currentUser) {
+            currentUser = JSON.parse(currentUser);
+          }
         // Check if a user is logged in
         if (!currentUser || !currentUser.id) {
           const messageBox = document.getElementById("messageBox");
