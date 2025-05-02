@@ -38,7 +38,7 @@ export class UserManager {
     }
     
     const newUser = {
-      id: users.length + 1,
+      id: Date.now() + 1,
       name: userData.name,
       email: userData.email,
       password: userData.password,
