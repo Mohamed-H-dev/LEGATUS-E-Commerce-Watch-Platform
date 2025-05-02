@@ -100,8 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (user.role === 'customer') {
           window.location.href = '../index.html';
         } else if (user.role === 'admin') {
-          window.location.href = 'AdminDashboard.html';
-          window.location.href = '../Sign/SignIn.html';
+          window.location.href = '../AdminDashboard.html';
         }
       } else {
         // Show error message
