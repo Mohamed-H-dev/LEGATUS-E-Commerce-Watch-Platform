@@ -4,14 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+
     <!-- remix icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"rel="stylesheet"/>
-    
      <!-- remix icon -->
+
       <!-- FontAwesome -->
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
        <!--FontAwesome  -->
+
        <!-- Nav css -->
         <link rel="stylesheet" href="nav.css">
     <style>
@@ -35,17 +38,15 @@
           --bs-accordion-btn-focus-box-shadow:none;
           --bs-accordion-border-color:none;
           --bs--accordion-active-color:#000000;
-          
+          --bs-accordion-btn-color :#ffffff;
           --bs-accordion-btn-padding-y: 10px;
           --bs-accordion-btn-padding-x:10px
           
         }
-      .top-bar {
-      background-color: #dae5ef;
-      color: #002f5f;
-      font-size: 0.9rem;
-    }
-        
+        .accordion-button:after { 
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !important;
+        }
+
 
         .banner_img{
           width: 100%;
@@ -229,19 +230,19 @@
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
                   <div class="accordion-body">
                     <div class="form-check">
-                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault2" checked>
+                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault2" checked value="All">
                       <label class="form-check-label" for="radioDefault2">
                         All
                       </label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1">
+                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1" value="male">
                       <label class="form-check-label" for="radioDefault1">
                         Men
                       </label>
                     </div>
                     <div class="form-check ">
-                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1">
+                      <input class="form-check-input radio_style" type="radio" name="radioDefault" id="radioDefault1" value="female">
                       <label class="form-check-label" for="radioDefault1">
                         Women
                       </label>
@@ -259,25 +260,25 @@
             
                   <div class="accordion-body">
                     <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="" id="checkRolex" >
+                      <input class="form-check-input check_style" type="checkbox" value="Rolex" id="checkRolex" >
                       <label class="form-check-label" for="checkRolex">
                         Rolex
                       </label>
                     </div>
                     <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="" id="checkRado">
+                      <input class="form-check-input check_style" type="checkbox" value="Rado" id="checkRado">
                       <label class="form-check-label" for="checkRado">
                         Rado
                       </label>
                     </div>
                     <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="" id="checkCasio">
+                      <input class="form-check-input check_style" type="checkbox" value="Casio " id="checkCasio">
                       <label class="form-check-label" for="checkCasio">
                         Casio 
                       </label>
                     </div>
                     <div class="form-check mt-2">
-                      <input class="form-check-input check_style" type="checkbox" value="" id="checkMontbalnc">
+                      <input class="form-check-input check_style" type="checkbox" value="Montblanc" id="checkMontbalnc">
                       <label class="form-check-label" for="checkMontbalnc">
                         Montblanc 
                       </label>
@@ -318,7 +319,7 @@
           <!-- Start Products -->
           <div class="products col-10 d-flex justify-content-center p-0">
           
-            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-center  p-0 m-0 w-100" style="min-width: 90px;" id="cardswrapper">
+            <div class="row row-cols-1 row-cols-lg-3 gap-3 d-flex justify-content-sm-start  ms-3 p-0 m-0 w-100" style="min-width: 90px;" id="cardswrapper">
                 <!-- Start Product Card -->
                 <!-- Example Card -->
                

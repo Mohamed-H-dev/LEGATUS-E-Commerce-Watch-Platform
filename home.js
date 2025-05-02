@@ -34,7 +34,7 @@ async function cardproducts(){
             <img src="${data.image}" alt="Blancpain Watch" class="img-fluid product-img">
             <div class="product-info d-flex flex-column justify-content-center flex-grow-1">
               <h5 class="product-title text-center">${data.name}</h5>
-              <p class="product-price text-center">EGP ${data.price}</p>
+              <p class="product-price  text-center">EGP ${data.price}</p>
 
             </div>
           </div>
