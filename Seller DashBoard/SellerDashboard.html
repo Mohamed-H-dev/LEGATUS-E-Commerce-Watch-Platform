@@ -254,7 +254,12 @@ document.querySelector("#HomePage").addEventListener("click", () => {
 document.querySelector("#HomePageMObile").addEventListener("click", () => {
      window.location.href = "../productCatalog.html";
  });
-
+ document.querySelector("#ManageAccountMObile").addEventListener("click", () => {
+     window.location.href = "../SellerManageAccount.html";
+ });
+ document.querySelector("#ManageAccount").addEventListener("click", () => {
+     window.location.href = "../SellerManageAccount.html";
+ });
 function showOrderDetails(orderId) {
     const orders = JSON.parse(localStorage.getItem('Orders')) || [];
     const order = orders.find(o => o.orderId === orderId);
@@ -1966,18 +1971,18 @@ updateAnalitics();
                   >
                 </li>
 
-                
                 <li class="nav-item">
                   <a
                     class="nav-link dashboard-active border-bottom border-secondary my-1"
                     aria-current="page"
                     href="#"
-                   
+                    id="ManageAccount"
                     >
                     <i class="fa-solid fa-gear"></i>
                     Manage Account</a
                   >
                 </li>
+
               </ul>
             </div>
             <!-- Dashboard content -->
@@ -2584,13 +2589,14 @@ updateAnalitics();
                   <a
                     class="nav-link dashboard-active border-bottom border-secondary my-1 collapsed"
                     data-bs-toggle="collapse"
-                    href="#"
+                    href="#ui-basic"
                     aria-expanded="false"
                   >
                   <i class="fa-solid fa-gear"></i>
-                   <span >Manage Account</span>
+                  <span id="ManageAccountMObile">Manage Account</span>
                   </a>
                 </li>
+              
 
                 <li class="nav-item">
                   <a class="nav-link dashboard-active my-1" href="#">
