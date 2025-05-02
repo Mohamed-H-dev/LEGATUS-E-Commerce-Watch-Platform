@@ -146,7 +146,6 @@ storageManager.setProducts(sampleProducts)  */
   //         });
  
   
-
           let allprod = storageManager.getProducts();
           console.log(allprod)
           allprod.forEach(data =>{
@@ -165,21 +164,30 @@ storageManager.setProducts(sampleProducts)  */
   
 
         container.innerHTML = htmlContent;
+
+         //-------------------------init & Elements---------------------------------------//
+        
+         let serach = document.getElementById("search_input");
+         let prodcutCard = document.querySelectorAll(".card");
+         let gender = document.querySelectorAll('input[type="radio"]');
+         let brand = document.querySelectorAll('input[type="checkbox"]');
+         console.log("Total Products:", allprod.length, "| Total Cards:", prodcutCard.length);
+         //-------------------------init & Elements---------------------------------------//
+
         let cards =  document.getElementsByClassName("card");
         for(var i = 0; i<cards.length;i++){
-          cards[i]  .addEventListener("click", function(){
+          cards[i].addEventListener("click", function(){
             const productId = this.getAttribute('data-product-id');
             localStorage.setItem('currentProduct', productId);
             window.location.href = './Productdetails/productDetails.html' ;
           })//end click product card
         }
-        
-        let serach = document.getElementById("search_input");
-        let Prodcutcard = document.querySelectorAll(".card");
+        //Search
+      
 
         serach.addEventListener('input', ()=>{
           if(serach.value !==""){
-            Prodcutcard.forEach(card=>{
+            prodcutCard.forEach(card=>{
               let productHead = card.querySelector('h5');
               let productNameText = productHead.innerHTML.toLowerCase();
               let inputText = serach.value.toLowerCase(); 
@@ -192,18 +200,104 @@ storageManager.setProducts(sampleProducts)  */
               }
             })
           }else{
-            Prodcutcard.forEach(card=>{
+            prodcutCard.forEach(card=>{
               card.style.display = "block";
             })
             
           }
 
         })//end of search input
-      
-    });// end of load
-    
-   
 
+        function productFilter(){
+          let selectedGender; // Declare here to use throughout function
+  
+  // Get selected gender (using your existing forEach)
+  gender.forEach(radio => {
+    if (radio.checked) {
+      selectedGender = radio.value.toLowerCase();
+    }
+  });
+
+  // Get checked brands (your existing code)
+  const checkedBrands = Array.from(brand)
+    .filter(checkbox => checkbox.checked)
+    .map(checkbox => checkbox.value.toLowerCase());
+
+  console.log("Selected Gender:", selectedGender);
+  console.log("Checked Brands:", checkedBrands);
+  console.log("Total Products:", allprod.length, "| Total Cards:", prodcutCard.length);
+
+  // Apply filters (your existing code with fixed typo)
+  prodcutCard.forEach((card, index) => {
+    const product = allprod[index];
+    if (!product) {
+      card.style.display = 'none';
+      return;
+    }
+
+    const genderMatch = selectedGender === 'all' || 
+                       product.gender.toLowerCase() === selectedGender;
+    const brandMatch = checkedBrands.length === 0 || 
+                      checkedBrands.includes(product.brand.toLowerCase());
+
+    card.style.display = genderMatch && brandMatch ? 'block' : 'none';
+  });
+              }
+              gender.forEach(radio => radio.addEventListener('change', productFilter));
+              brand.forEach(checkbox => checkbox.addEventListener('change', productFilter));
+              productFilter();
+          });// end of load
+          
+
+    /*     //Filter by gnder
+       
+        gender.forEach(radio=>{
+          radio.addEventListener('change', ()=>{
+            const selectedValue = radio.value.toLowerCase()
+            prodcutCard.forEach((card, index) => {
+                  const productGender = allprod[index].gender.toLowerCase();
+                  card.style.display = (selectedValue === "all" || selectedValue === productGender) 
+                    ? "block" 
+                    : "none";
+                
+            })
+            
+
+//Filter by brand 
+        
+        brand.forEach(check=>{
+          check.addEventListener('change', ()=>{
+            const checkedBrands = Array.from(brand)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value.toLowerCase());
+          
+          // If nothing is checked, show all products
+          if (checkedBrands.length === 0) {
+            prodcutCard.forEach(card => {
+              card.style.display = 'block';
+            });
+            return;
+          }
+          console.log(checkedBrands)
+          // Filter products
+          
+          prodcutCard.forEach((card ,index) => {
+            if (allprod[index]) {
+              const productBrand = allprod[index].brand.toLowerCase();
+              card.style.display = checkedBrands.includes(productBrand) ? 'block' : 'none';
+            } else {
+              card.style.display = 'none'; // Hide if no matching product
+            }
+          });
+        });
+         
+          })//end of checked change
+          
+          })//end of change
+        })//end of for */
+
+   
+    
 
    /*  let container = document.getElementById('cardswrapper');
      async function loadAllProducts(){

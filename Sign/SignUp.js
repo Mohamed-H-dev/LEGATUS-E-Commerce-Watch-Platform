@@ -1,6 +1,7 @@
 // SignUp.js
 import { UserManager } from "./UserManager.js";
 import { FormValidator } from "./Validation.js";
+import { StorageManager } from "./StorageManager.js";
 
 // Create a single validator instance
 const validator = new FormValidator();
@@ -11,6 +12,19 @@ UserManager.initializeDefaultAdmin();
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize the validator when DOM is ready
   validator.init();
+
+
+
+  const guestButton = document.querySelector(".btn-guest");
+  // Add click handler for the guest button
+  if (guestButton) {
+    guestButton.addEventListener("click", () => {
+      StorageManager.remove("currentUser");
+      console.log("Continuing as guest");
+      // Redirect to homepage
+      window.location.href = "../index.html";
+    });
+  }
 
   //this is just for the store name
   const accountTypeRadios = document.querySelectorAll(
@@ -104,7 +118,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-
-
-
 });

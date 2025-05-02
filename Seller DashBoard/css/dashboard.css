@@ -1,10 +1,10 @@
 :root {
   --dashboard-color: #002f5f;
-  --dashboard-icon-color: rgb(196, 198, 204);
-  --dashboard-content-color-hovor: rgb(151, 155, 168);
+  --dashboard-icon-color: rgb(255, 255, 255);
+  --dashboard-content-color-hovor: #dae5ef;
   --dashboard-header-color: rgb(254, 254, 254);
   --dashboard-bg-color: rgb(242, 242, 245);
-  --dashboard-font-hovor-color: rgb(72, 81, 56);
+  --dashboard-font-hovor-color: #002f5f;
 }
 html,
 body {
