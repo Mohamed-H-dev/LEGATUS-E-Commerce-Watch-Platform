@@ -1,9 +1,10 @@
 import { StorageManager } from "./Sign/StorageManager.js"
 
 
-const users = StorageManager.load("users") || [];
+const userData = StorageManager.load("currentUser") || [];
+const users = userData ? (Array.isArray(userData) ? userData : [userData]) : [];
+
 console.log(users);
-let accountLink = "#";
 class SpecialNav extends HTMLElement{
 connectedCallback(){
 
