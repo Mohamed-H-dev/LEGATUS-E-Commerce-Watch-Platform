@@ -23,6 +23,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+        
         :root{
           --filter_color : #002f5f;
           --card_color : #002f5f;
@@ -161,9 +162,7 @@
         .row.flex-nowrap {
           flex-wrap: wrap !important;
         }
-        .products {
-          overflow: hidden;
-        }
+        
 
         /* Mobile filter toggle styles */
         .filter-toggle {
@@ -195,7 +194,7 @@
   </head>
   <body>
      <!-- Top Bar -->
-  <div class="top-bar py-1">
+  <div class="top-bar py-1" style="background-color: #d6e7ff;">
     <div class="container d-flex justify-content-center">
       <div>Fast & Secure Shopping | Professional Packaging</div>
     </div>
@@ -318,7 +317,7 @@
 
             <!-- Start Products -->
             <div class="products col-lg-10 d-flex justify-content-center p-0">
-              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 p-0 ms-3 m-0 w-100  justify-content-center  justify-content-lg-start" id="cardswrapper">
+              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 gap-3 p-0 ms-3 m-0 w-100  justify-content-center  justify-content-lg-start" id="cardswrapper">
                   <!-- Product cards will go here -->
               </div>
             </div>
