@@ -92,36 +92,43 @@ function processOrdersForStock(orders) {
     const storageManager = new LocalStorageManager();
     const products = storageManager.getProducts();
     let productsUpdated = false;
-
-    // Load processed order IDs from localStorage or initialize as empty array
     const processedOrderIds = JSON.parse(localStorage.getItem('processedOrderIds')) || [];
-
     orders.forEach(order => {
-        // Check if this order has already been processed
         if (!processedOrderIds.includes(order.orderId)) {
             order.products.forEach(orderProduct => {
-                const productIndex = products.findIndex(p => p.id === orderProduct.product.id);
-                if (productIndex !== -1) {
-                    const currentStock = Number(products[productIndex].stock) || 0;
-                    const orderedQuantity = Number(orderProduct.product.quantity_in_cart) || 0;
 
-                    products[productIndex].stock = Math.max(0, currentStock - orderedQuantity);
-                    productsUpdated = true;
-                } 
+                const productData = orderProduct.product || orderProduct;
+                const productId = productData.id;
+                
+                // Ensure we have a valid product ID
+                if (productId) {
+                    const productIndex = products.findIndex(p => p.id === productId);
+                    if (productIndex !== -1) {
+                        // Get quantity - try multiple possible fields
+                        const quantity = productData.quantity_in_cart || 
+                        productData.quantity || 
+                        1; 
+                        const currentStock = Number(products[productIndex].stock) || 0;
+                        const orderedQuantity = Number(quantity) || 0;
+                        
+                        products[productIndex].stock = Math.max(0, currentStock - orderedQuantity);
+                        productsUpdated = true;
+                    }
+                }
             });
-
+            
             // Mark this order as processed by adding its ID to the list
             processedOrderIds.push(order.orderId);
-        } 
+        }
     });
 
     if (productsUpdated) {
         storageManager.setProducts(products);
-    } 
+    }
+    
     // Save updated list of processed order IDs
     localStorage.setItem('processedOrderIds', JSON.stringify(processedOrderIds));
 }
-
 
 function renderOrders(ordersToDisplay, searchTerm = '') {
     // Desktop View 
@@ -260,7 +267,7 @@ document.querySelector("#HomePageMObile").addEventListener("click", () => {
  document.querySelector("#ManageAccount").addEventListener("click", () => {
      window.location.href = "../SellerManageAccount.html";
  });
-function showOrderDetails(orderId) {
+ function showOrderDetails(orderId) {
     const orders = JSON.parse(localStorage.getItem('Orders')) || [];
     const order = orders.find(o => o.orderId === orderId);
     
@@ -268,25 +275,25 @@ function showOrderDetails(orderId) {
         return;
     }
 
-    // Create product details with quantity_in_cart
+    // Create product details - modified to match your actual structure
     const productDetails = order.products.map(item => {
-    // Get quantity_in_cart directly from the product object in the order
-    const quantity = item.quantity_in_cart || (item.product && item.product.quantity_in_cart) || 1;
-    
-    // Handle price (remove $ sign and convert to number)
-    const priceStr = item.product?.price?.toString() || '0';
-    const price = parseFloat(priceStr.replace(/[^\d.]/g, '')) || 0;
-    
-    return {
-        id: item.product?.id || '',
-        name: item.product?.name || 'Unknown Product',
-        brand: item.product?.brand || '',
-        price: price,
-        image: item.product?.image || 'https://via.placeholder.com/50',
-        quantity: quantity, 
-        total: (price * quantity).toFixed(2)
-    };
-});
+        // Get quantity - using the direct quantity property
+        const quantity = item.quantity || 1;
+        
+        // Handle price (remove $ sign and convert to number)
+        const priceStr = item.price?.toString() || '0';
+        const price = parseFloat(priceStr.replace(/[^\d.]/g, '')) || 0;
+        
+        return {
+            id: item.id || '',
+            name: item.name || 'Unknown Product',
+            brand: item.brand || '',
+            price: price,
+            image: item.image || 'https://via.placeholder.com/50',
+            quantity: quantity, 
+            total: (price * quantity).toFixed(2)
+        };
+    });
 
     // Calculate order summary
     const orderSummary = {
@@ -342,7 +349,7 @@ function showOrderDetails(orderId) {
                                             <td><img src="${product.image}" class="img-thumbnail" width="50" alt="${product.name}"></td>
                                             <td>${product.name}</td>
                                             <td>$${product.price.toFixed(2)}</td>
-                                            <td>${product.quantity}</td> <!-- This shows quantity_in_cart -->
+                                            <td>${product.quantity}</td>
                                             <td>$${product.total}</td>
                                         </tr>
                                     `).join('')}
@@ -392,7 +399,6 @@ function showOrderDetails(orderId) {
         modalContainer.remove();
     });
 }
-
 
 document.addEventListener('click', function(e) {
     // Handle view details buttons
@@ -444,14 +450,20 @@ function updateOrderStatus(orderId, newStatus) {
         const order = orders[orderIndex];
         const previousStatus = order.status;
         order.status = newStatus;
-        
+        console.log("1");
         // Handle stock changes based on status changes
         if (previousStatus === 'cancelled' && newStatus !== 'cancelled') {
+        console.log("2");
+
             // Order was cancelled and is now being uncancelled - reduce stock
             if (!order.stockProcessed) {
+        console.log("3");
+
                 order.products.forEach(orderProduct => {
                     const product = products.find(p => p.id === orderProduct.product.id);
                     if (product) {
+        console.log("4");
+
                         const currentStock = Number(product.stock) || 0;
                         const orderedQuantity = Number(orderProduct.quantity_in_cart) || 0;
                         product.stock = Math.max(0, currentStock - orderedQuantity);
