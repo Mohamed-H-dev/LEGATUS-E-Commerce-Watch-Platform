@@ -148,7 +148,24 @@ storageManager.setProducts(sampleProducts)  */
   
           let allprod = storageManager.getProducts();
           console.log(allprod)
+          let filterCol = document.getElementById("filterColumn")
+          let togelButton = document.getElementById('filterToggle') 
+          let productWrap = document.getElementById('productwrapere') 
+
+          if (allprod.length === 0) {
+            
+            htmlContent = `
+                <div class="col-12  mx-auto text-center py-5">
+                <i class="fa-solid   fs-1 fa-box-open" style="color: #002f5f;"></i>
+                    <h3 class="text-muted">No products available</h3>
+                </div>
+            `;
+            productWrap.classList.remove("col-lg-10");
+            filterCol.style.display = "none"
+            togelButton.style.display="none"
+        } else {
           allprod.forEach(data =>{
+
                     htmlContent +=` 
                   <!-- Start Product Card -->
                     <div class="col  card  text-center " data-product-id="${data.id}">
@@ -160,7 +177,7 @@ storageManager.setProducts(sampleProducts)  */
                     </div>
                      <!-- End Product Card -->`
                 });
-       
+              }
   
 
         container.innerHTML = htmlContent;
@@ -171,6 +188,7 @@ storageManager.setProducts(sampleProducts)  */
          let prodcutCard = document.querySelectorAll(".card");
          let gender = document.querySelectorAll('input[type="radio"]');
          let brand = document.querySelectorAll('input[type="checkbox"]');
+        
          console.log("Total Products:", allprod.length, "| Total Cards:", prodcutCard.length);
          //-------------------------init & Elements---------------------------------------//
 
