@@ -8,7 +8,7 @@
   </p>
 
   <h2>🌐 Live Preview</h2>
-  <p><em>Coming soon: hosted demo link</em></p>
+👉 <a href="https://iti-tanta-cst-team.web.app/" target="_blank" >Check it out here</a>
 
   <h2>📖 About the Project</h2>
   <p>
