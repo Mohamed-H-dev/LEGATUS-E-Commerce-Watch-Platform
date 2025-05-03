@@ -261,7 +261,7 @@ document.querySelector("#HomePageMObile").addEventListener("click", () => {
  document.querySelector("#ManageAccount").addEventListener("click", () => {
      window.location.href = "../SellerManageAccount.html";
  });
-function showOrderDetails(orderId) {
+ function showOrderDetails(orderId) {
     const orders = JSON.parse(localStorage.getItem('Orders')) || [];
     const order = orders.find(o => o.orderId === orderId);
     
@@ -269,25 +269,25 @@ function showOrderDetails(orderId) {
         return;
     }
 
-    // Create product details with quantity_in_cart
+    // Create product details - modified to match your actual structure
     const productDetails = order.products.map(item => {
-    // Get quantity_in_cart directly from the product object in the order
-    const quantity = item.quantity_in_cart || (item.product && item.product.quantity_in_cart) || 1;
-    
-    // Handle price (remove $ sign and convert to number)
-    const priceStr = item.product?.price?.toString() || '0';
-    const price = parseFloat(priceStr.replace(/[^\d.]/g, '')) || 0;
-    
-    return {
-        id: item.product?.id || '',
-        name: item.product?.name || 'Unknown Product',
-        brand: item.product?.brand || '',
-        price: price,
-        image: item.product?.image || 'https://via.placeholder.com/50',
-        quantity: quantity, 
-        total: (price * quantity).toFixed(2)
-    };
-});
+        // Get quantity - using the direct quantity property
+        const quantity = item.quantity || 1;
+        
+        // Handle price (remove $ sign and convert to number)
+        const priceStr = item.price?.toString() || '0';
+        const price = parseFloat(priceStr.replace(/[^\d.]/g, '')) || 0;
+        
+        return {
+            id: item.id || '',
+            name: item.name || 'Unknown Product',
+            brand: item.brand || '',
+            price: price,
+            image: item.image || 'https://via.placeholder.com/50',
+            quantity: quantity, 
+            total: (price * quantity).toFixed(2)
+        };
+    });
 
     // Calculate order summary
     const orderSummary = {
@@ -343,7 +343,7 @@ function showOrderDetails(orderId) {
                                             <td><img src="${product.image}" class="img-thumbnail" width="50" alt="${product.name}"></td>
                                             <td>${product.name}</td>
                                             <td>$${product.price.toFixed(2)}</td>
-                                            <td>${product.quantity}</td> <!-- This shows quantity_in_cart -->
+                                            <td>${product.quantity}</td>
                                             <td>$${product.total}</td>
                                         </tr>
                                     `).join('')}
@@ -393,7 +393,6 @@ function showOrderDetails(orderId) {
         modalContainer.remove();
     });
 }
-
 
 document.addEventListener('click', function(e) {
     // Handle view details buttons
