@@ -192,6 +192,11 @@
         font-weight: 500;
         margin-bottom: 1rem;
       }
+      .out-of-stock {
+      background-color: #ffebee;
+      color: #c62828;
+      }
+
       @media (max-width: 767.98px) {
         .product-container {
           padding: 1.5rem 1rem;
@@ -241,7 +246,7 @@
           </div>
         </div>
         <div class="col-md-6">
-          <div class="stock-status">
+          <div class="stock-status" id="stockStatus">
             <i class="fas fa-check-circle me-1"></i> In Stock
           </div>
           <h1 id="watch_name">Watch1</h1>
@@ -344,6 +349,26 @@
         <div class="toast-body">Item added to your cart successfully!</div>
       </div>
     </div>
+    <!-- New out-of-stock toast -->
+<div
+id="stockToast"
+class="toast"
+role="alert"
+aria-live="assertive"
+aria-atomic="true"
+>
+<div class="toast-header bg-danger text-white">
+  <i class="fas fa-exclamation-circle me-2"></i>
+  <strong class="me-auto">Out of Stock</strong>
+  <button
+    type="button"
+    class="btn-close btn-close-white"
+    data-bs-dismiss="toast"
+    aria-label="Close"
+  ></button>
+</div>
+<div class="toast-body" id="stockToastMessage">This product is out of stock!</div>
+</div>
     <special-footer></special-footer>
 
     <script
@@ -395,13 +420,21 @@
         }
       }
       function plus() {
-        let value = parseInt(input.value); //parse into integer
-        if (value < product.stock) {
-          input.value = value + 1;
-        } else {
-          showMessage("You have reached the maximum stock limit.");
-        }
-      }
+  let value = parseInt(input.value); //parse into integer
+  if (value < product.stock) {
+    input.value = value + 1;
+  } else {
+    showStockToast(`Out of stock.`);
+  }
+}
+function showStockToast(message) {
+  // Set the message in the toast
+  document.getElementById("stockToastMessage").textContent = message;
+  
+  // Initialize and show the toast
+  const stockToast = new bootstrap.Toast(document.getElementById("stockToast"));
+  stockToast.show();
+}
       function changeImage(el) {
         document.getElementById("mainImg").src = el.src;
         document
@@ -426,88 +459,197 @@
         imageModal.show();
       });
 
-      function addToCart() {
-        const quantity = parseInt(document.getElementById("quantity").value);
-        // Get cart and current user from localStorage
-        let cart = JSON.parse(localStorage.getItem("Cart")) || [];
-        let currentUser = localStorage.getItem("currentUser") || null;
-        if (currentUser) {
-          currentUser = JSON.parse(currentUser);
-        }
-        // Check if a user is logged in
-        if (!currentUser || !currentUser.id) {
-          const messageBox = document.getElementById("messageBox");
-          messageBox.innerText = "⚠️ Please log in to add items to your cart.";
-          messageBox.style.display = "block";
-          return;
-        }
-        let currentUserId = currentUser.id; // Get the id directly
-        let item = {
-          userId: currentUserId,
-          product: {
-            name: product.name,
-            id: product.id,
-            image: product.image,
-            price: `${product.price} $`,
-            quantity_in_cart: quantity,
-            max_quantity: product.stock,
-            sellerId: product.sellerId,
-          },
-        };
-        // Find if the same product already exists in cart for the same user
-        const existingItemIndex = cart.findIndex(
-          (cartItem) =>
-            cartItem.userId === item.userId &&
-            cartItem.product.id === item.product.id
-        );
-        if (existingItemIndex !== -1) {
-          cart[existingItemIndex].product.quantity_in_cart += quantity;
-        } else {
-          cart.push(item);
-        }
-        localStorage.setItem("Cart", JSON.stringify(cart));
-        // UI feedback
-        console.log(`Added ${quantity} item(s) to cart`);
-        cartToast.show();
+ //  updateProductStock function 
+function updateProductStock(productId, quantityToReduce) {
+  console.log("Starting updateProductStock...");
+  console.log("Product ID:", productId);
+  console.log("Quantity to reduce:", quantityToReduce);
+  
+  // Get all products from localStorage
+  let allProducts = JSON.parse(localStorage.getItem("products"));
+  console.log("All products before update:", JSON.parse(JSON.stringify(allProducts)));
+  
+  // Find the product by id
+  const productIndex = allProducts.findIndex(p => p.id === productId);
+  console.log("Product index:", productIndex);
+  
+  if (productIndex !== -1) {
+    // Ensure stock is treated as a number
+    let currentStock = Number(allProducts[productIndex].stock);
+    console.log("Current stock before update:", currentStock);
+    
+    // Convert quantity to reduce to number to ensure proper math
+    let qtyToReduce = Number(quantityToReduce);
+    console.log("Quantity to reduce (converted):", qtyToReduce);
+    
+    // Update the stock with explicit math
+    let newStock = currentStock - qtyToReduce;
+    console.log("Calculated new stock:", newStock);
+    
+    // Make sure stock doesn't go below zero
+    if (newStock < 0) {
+      newStock = 0;
+      console.log("Stock was negative, set to 0");
+    }
+    
+    // Update with new stock value
+    allProducts[productIndex].stock = newStock;
+    console.log("Updated product:", allProducts[productIndex]);
+    
+    // Save updated products back to localStorage
+    localStorage.setItem("products", JSON.stringify(allProducts));
+    console.log("Saved to localStorage");
+    
+    // Update the global product variable without reassignment
+    Object.assign(product, allProducts[productIndex]);
+    console.log("Updated global product object:", product);
+    
+    // Update the display if applicable
+    const stockElement = document.getElementById("stock_info");
+    if (stockElement) {
+      stockElement.textContent = `In Stock: ${newStock}`;
+      console.log("Updated stock display");
+    }
+  } else {
+    console.error("Product not found with ID:", productId);
+  }
+}
 
-        // Animation on button
-        addToCartBtn.classList.add("disabled");
-        setTimeout(() => {
-          addToCartBtn.classList.remove("disabled");
-        }, 1000);
+function addToCart() {
+  const quantity = parseInt(document.getElementById("quantity").value);
+  
+  // Stock validation - check if there's enough stock
+  if (product.stock <= 0) {
+    showStockToast("Sorry, this product is out of stock.");
+    return; // Stop here if out of stock
+  }
+  
+  // Check if requested quantity exceeds available stock
+  if (quantity > product.stock) {
+    showStockToast(`Sorry, only ${product.stock} items available in stock.`);
+    // Set quantity input to max available
+    document.getElementById("quantity").value = product.stock;
+    return; // Stop execution
+  }
+  
+  // Get cart and current user from localStorage
+  let cart = JSON.parse(localStorage.getItem("Cart")) || [];
+  let currentUser = localStorage.getItem("currentUser") || null;
+  if (currentUser) {
+    currentUser = JSON.parse(currentUser);
+  }
+  
+  // Check if a user is logged in
+  if (!currentUser || !currentUser.id) {
+    showStockToast("Please log in to add items to your cart.");
+    return;
+  }
+  
+  // Continue with the rest of the function as before
+  let currentUserId = currentUser.id;
+  let item = {
+    userId: currentUserId,
+    product: {
+      name: product.name,
+      id: product.id,
+      image: product.image,
+      price: `${product.price} $`,
+      quantity_in_cart: quantity,
+      max_quantity: product.stock,
+      sellerId: product.sellerId,
+    },
+  };
+  
+  // Find if the same product already exists in cart for the same user
+  const existingItemIndex = cart.findIndex(
+    (cartItem) =>
+      cartItem.userId === item.userId &&
+      cartItem.product.id === item.product.id
+  );
+  
+  // Check if adding to existing cart item would exceed stock
+  if (existingItemIndex !== -1) {
+    const newTotalQuantity = cart[existingItemIndex].product.quantity_in_cart + quantity;
+    if (newTotalQuantity > product.stock) {
+      showStockToast(`Cannot add ${quantity} more. You already have ${cart[existingItemIndex].product.quantity_in_cart} in cart and only ${product.stock} available.`);
+      return; // Stop execution
+    }
+    cart[existingItemIndex].product.quantity_in_cart += quantity;
+  } else {
+    cart.push(item);
+  }
+  
+  localStorage.setItem("Cart", JSON.stringify(cart));
+  
+  // Update product stock
+  updateProductStock(product.id, quantity);
+  
+  // UI feedback - show success toast
+  console.log(`Added ${quantity} item(s) to cart`);
+  cartToast.show();
 
-        //window.location.href = "../Shopping Cart/Cart.html";
-      }
+  // Animation on button
+  addToCartBtn.classList.add("disabled");
+  setTimeout(() => {
+    addToCartBtn.classList.remove("disabled");
+  }, 1000);
+}
+document.addEventListener('DOMContentLoaded', function () {
+  if (product.stock <= 0) {
+    stockStatus.classList.add('out-of-stock');
+    stockStatus.innerHTML = '<i class="fas fa-times-circle me-1"></i> Out of Stock';
+  }
+});
 
-      function BuyNow() {
-        const quantity = parseInt(document.getElementById("quantity").value);
-        let currentUser = localStorage.getItem("currentUser") || null;
-        if (currentUser) {
-          currentUser = JSON.parse(currentUser);
-        }
-        // Check if a user is logged in
-        if (!currentUser || !currentUser.id) {
-          const messageBox = document.getElementById("messageBox");
-          messageBox.innerText = "⚠️ Please log in to add items to your cart.";
-          messageBox.style.display = "block";
-          return;
-        }
-        let currentUserId = currentUser.id; // Get the id directly
-        let checkoutItem = {
-          userId: currentUserId,
-          product: {
-            id: product.id,
-            name: product.name,
-            price: `${product.price} $`,
-            quantity: quantity,
-            image: product.image,
-            totalPrice: product.price * quantity,
-            sellerId: product.sellerId,
-          },
-        };
-        localStorage.setItem("checkout", JSON.stringify(checkoutItem));
-        window.location.href = "../checkout.html";
-      }
+
+function BuyNow() {
+  const quantity = parseInt(document.getElementById("quantity").value);
+  
+  // Stock validation - check if there's enough stock
+  if (product.stock <= 0) {
+    showStockToast("Sorry, this product is out of stock.");
+    return; // Stop here if out of stock
+  }
+  
+  // Check if requested quantity exceeds available stock
+  if (quantity > product.stock) {
+    showStockToast(`Sorry, only ${product.stock} items available in stock.`);
+    // Set quantity input to max available
+    document.getElementById("quantity").value = product.stock;
+    return; // Stop execution
+  }
+  
+  let currentUser = localStorage.getItem("currentUser") || null;
+  if (currentUser) {
+    currentUser = JSON.parse(currentUser);
+  }
+  
+  // Check if a user is logged in
+  if (!currentUser || !currentUser.id) {
+    showStockToast("Please log in to proceed to checkout.");
+    return;
+  }
+  
+  let currentUserId = currentUser.id;
+  let checkoutItem = {
+    userId: currentUserId,
+    product: {
+      id: product.id,
+      name: product.name,
+      price: `${product.price} $`,
+      quantity: quantity,
+      image: product.image,
+      totalPrice: product.price * quantity,
+      sellerId: product.sellerId,
+    },
+  };
+  
+  // Update product stock
+  updateProductStock(product.id, quantity);
+  
+  localStorage.setItem("checkout", JSON.stringify(checkoutItem));
+  window.location.href = "../checkout.html";
+}
     </script>
     <script src="../navFoterManager.js" type="module"></script>
   </body>
