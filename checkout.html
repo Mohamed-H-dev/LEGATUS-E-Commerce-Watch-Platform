@@ -816,47 +816,12 @@
             let currentUserId = cuurentUser.id;
             // Extract userId from cart data
             let userId = "guest-user";
-            
-            /*if (cartProducts.userId) {
-              userId = cartProducts.userId;
-            } else if (cartProducts.products && cartProducts.products.length > 0) {
-              if (cartProducts.products[0].userId) {
-                userId = cartProducts.products[0].userId;
-              }
-            } else if (Array.isArray(cartProducts) && cartProducts.length > 0) {
-              if (cartProducts[0].userId) {
-                userId = cartProducts[0].userId;
-              }
-            }*/ 
             if (Array.isArray(cartProducts)) {
               const matchedItem = cartProducts.find(item => item.userId === currentUserId);
               if (matchedItem) {
                 userId = matchedItem.userId;
               }
             }
-            
-            // Store the userId separately for easier access during checkout
-            //localStorage.setItem("currentUserId", userId);
-            
-            // Make sure checkout data has the userId
-            /*if (checkoutData) {
-              if (Array.isArray(checkoutData)) {
-                // Add userId to each product
-                checkoutData.forEach(product => {
-                  product.userId = userId;
-                });
-              } else if (checkoutData.products) {
-                checkoutData.userId = userId;
-                checkoutData.products.forEach(product => {
-                  product.userId = userId;
-                });
-              } else {
-                checkoutData.userId = userId;
-              }
-              
-              // Save updated checkout data
-              localStorage.setItem("checkout", JSON.stringify(checkoutData));
-            }*/
             if (checkoutData) {
               if (Array.isArray(checkoutData)) {
                 checkoutData.forEach(product => {
@@ -870,7 +835,6 @@
               } else {
                 checkoutData.userId = userId;
               }
-
         localStorage.setItem("checkout", JSON.stringify(checkoutData));
       }
             
@@ -960,12 +924,14 @@
         // Get data from both storages
         const cartData = localStorage.getItem("Cart");
         const checkoutData = localStorage.getItem("checkout");
+        const currentUser =JSON.parse(localStorage.getItem("currentUser")||"{}");
+        const currentUserId=currentUser.id;
     
         console.log("Cart data:", cartData);
         console.log("Checkout data:", checkoutData);
     
         // If either storage is empty, just clear checkout
-        if (!cartData || !checkoutData) {
+        if (!cartData || !checkoutData||!currentUserId) {
           console.log(
             "Either Cart or checkout is empty. Clearing only checkout."
           );
@@ -1002,13 +968,12 @@
     
           console.log("Normalized cart products:", cartProducts);
           console.log("Normalized checkout products:", checkoutProducts);
-    
-          // Extract product IDs from both storages
-          const cartProductIds = extractProductIds(cartProducts);
-          const checkoutProductIds = extractProductIds(checkoutProducts);
-    
-          console.log("Cart product IDs:", cartProductIds);
-          console.log("Checkout product IDs:", checkoutProductIds);
+
+          const userCart = cartProducts.filter(p =>p.userId === currentUserId);
+          const userCheckout = checkoutProducts.filter(p=>p.userId===currentUserId);
+
+          const cartProductIds= extractProductIds(userCart);
+          const checkoutProductIds = extractProductIds(userCheckout);
     
           // Check if all products in checkout are in cart
           const areAllCheckoutProductsInCart = checkoutProductIds.every((id) =>
@@ -1026,22 +991,26 @@
             areAllCartProductsInCheckout &&
             cartProductIds.length === checkoutProductIds.length
           ) {
-            console.log(
-              "Products match in both Cart and checkout. Clearing both storages."
-            );
-            localStorage.removeItem("Cart");
+            console.log("User's cart matches checkout. Removing only their cart items.");
+
+            // Remove only current user's cart items
+            const remainingCart = cartProducts.filter(p => p.userId !== currentUserId);
+
+            if (remainingCart.length > 0) {
+              localStorage.setItem("Cart", JSON.stringify(remainingCart));
+            } else {
+              localStorage.removeItem("Cart");
+            }
+
             localStorage.removeItem("checkout");
-          } else {
-            // If they don't match, only clear checkout
-            console.log(
-              "Products don't match. Clearing only checkout storage."
-            );
+            } else {
+            console.log("Products don't match. Clearing only checkout.");
             localStorage.removeItem("checkout");
-          }
-        } catch (e) {
-          console.error("Error comparing Cart and checkout:", e);
-          // In case of error, just clear checkout to be safe
-          localStorage.removeItem("checkout");
+            }
+
+            } catch (e) {
+            console.error("Error comparing Cart and checkout:", e);
+            localStorage.removeItem("checkout");
         }
       }
     
