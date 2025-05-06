@@ -732,7 +732,9 @@
         console.log("Retrieved data:", productsData);
     
         // Try to get userId from localStorage directly first
-        let userId = localStorage.getItem("currentUserId") || "guest-user";
+        //let userId = localStorage.getItem("currentUserId") || "guest-user";
+        const currentUser = JSON.parse(localStorage.getItem("currentUser")||"{}");
+        let UserId = currentUser.id;
         let sellerId = "unknown-seller";
         let total = 0;
     
@@ -805,15 +807,17 @@
       // Function to ensure proper user ID propagation from Cart to Checkout
       function propagateUserIdToCheckout(checkoutData) {
         const cartData = localStorage.getItem("Cart");
+        const currentUserData =localStorage.getItem("currentUser");
         
-        if (cartData) {
+        if (cartData && currentUserData) {
           try {
             let cartProducts = JSON.parse(cartData);
-            
+            let cuurentUser =JSON.parse(currentUserData);
+            let currentUserId = cuurentUser.id;
             // Extract userId from cart data
             let userId = "guest-user";
             
-            if (cartProducts.userId) {
+            /*if (cartProducts.userId) {
               userId = cartProducts.userId;
             } else if (cartProducts.products && cartProducts.products.length > 0) {
               if (cartProducts.products[0].userId) {
@@ -823,13 +827,19 @@
               if (cartProducts[0].userId) {
                 userId = cartProducts[0].userId;
               }
+            }*/ 
+            if (Array.isArray(cartProducts)) {
+              const matchedItem = cartProducts.find(item => item.userId === currentUserId);
+              if (matchedItem) {
+                userId = matchedItem.userId;
+              }
             }
             
             // Store the userId separately for easier access during checkout
-            localStorage.setItem("currentUserId", userId);
+            //localStorage.setItem("currentUserId", userId);
             
             // Make sure checkout data has the userId
-            if (checkoutData) {
+            /*if (checkoutData) {
               if (Array.isArray(checkoutData)) {
                 // Add userId to each product
                 checkoutData.forEach(product => {
@@ -846,7 +856,23 @@
               
               // Save updated checkout data
               localStorage.setItem("checkout", JSON.stringify(checkoutData));
-            }
+            }*/
+            if (checkoutData) {
+              if (Array.isArray(checkoutData)) {
+                checkoutData.forEach(product => {
+                  product.userId = userId;
+                });
+              } else if (checkoutData.products && Array.isArray(checkoutData.products)) {
+                checkoutData.userId = userId;
+                checkoutData.products.forEach(product => {
+                  product.userId = userId;
+                });
+              } else {
+                checkoutData.userId = userId;
+              }
+
+        localStorage.setItem("checkout", JSON.stringify(checkoutData));
+      }
             
             return checkoutData;
           } catch (e) {
@@ -926,7 +952,7 @@
         localStorage.setItem("Orders", JSON.stringify(existingOrders));
         
         // Clear temporary userId storage
-        localStorage.removeItem("currentUserId");
+        //localStorage.removeItem("currentUserId");
       }
       
       // Function to compare Cart and checkout products and clear storage appropriately
@@ -1081,7 +1107,9 @@
             event.preventDefault();
     
             if (this.checkValidity()) {
-              let userId = localStorage.getItem("currentUserId") || "guest-user";
+              //let userId = localStorage.getItem("currentUserId") || "guest-user";
+              const currentUser = localStorage.getItem("currentUser")||"{}";
+              let userId = currentUser.id;
               const products = getProductsFromStorage();
               if (products && products.length > 0) {
                 // Use userId from products only if not already set
