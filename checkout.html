@@ -725,7 +725,104 @@
         const orderId = `ORD-${timestamp}-${random}`;
         return orderId;
       }
+      
+function manageInventory() {
+  // 1. Get checkout data from localStorage
+  const checkoutData = localStorage.getItem("checkout");
+  if (!checkoutData) {
+    console.log("No checkout data found");
+    return;
+  }
+
+  // 2. Get products inventory from localStorage
+  const productsData = localStorage.getItem("products");
+  if (!productsData) {
+    console.log("No products inventory data found");
+    return;
+  }
+
+  try {
+    // Parse the data
+    let checkoutProducts = JSON.parse(checkoutData);
+    let inventoryProducts = JSON.parse(productsData);
     
+    // Normalize checkout data structure
+    if (checkoutProducts.products && Array.isArray(checkoutProducts.products)) {
+      checkoutProducts = checkoutProducts.products;
+    }
+    
+    // Make sure we have arrays
+    if (!Array.isArray(checkoutProducts)) {
+      checkoutProducts = [checkoutProducts];
+    }
+    
+    if (!Array.isArray(inventoryProducts)) {
+      inventoryProducts = [inventoryProducts];
+    }
+    
+    console.log("Checkout products:", checkoutProducts);
+    console.log("Inventory products:", inventoryProducts);
+    
+    // 3. Compare products and update inventory
+    let updatedInventory = inventoryProducts.map(inventoryItem => {
+      const inventoryId = inventoryItem.id || inventoryItem.productId;
+      
+      // Find matching product in checkout
+      const checkoutItem = checkoutProducts.find(checkoutProduct => {
+        // Handle nested product structure
+        const product = checkoutProduct.product || checkoutProduct;
+        const checkoutId = product.id || product.productId;
+        return checkoutId === inventoryId;
+      });
+      
+      // If product found in checkout, update inventory
+      if (checkoutItem) {
+        const product = checkoutItem.product || checkoutItem;
+        const requestedQuantity = parseInt(product.quantity_in_cart || product.quantity || 1);
+        const currentStock = parseInt(inventoryItem.stock || 0);
+        
+        // 4. Check if stock > 0
+        if (currentStock > 0) {
+          // 5. Check if stock > quantity
+          if (currentStock >= requestedQuantity) {
+            // If we have enough stock, reduce it by requested quantity
+            inventoryItem.stock = currentStock - requestedQuantity;
+          } else {
+            // 6. If we don't have enough stock, set to 0 and adjust checkout quantity
+            const remainingQuantity = requestedQuantity - currentStock;
+            inventoryItem.stock = 0;
+            
+            // Update checkout item quantity
+            if (checkoutItem.product) {
+              // Handle nested product structure
+              checkoutItem.product.quantity = remainingQuantity;
+              checkoutItem.product.quantity_in_cart = remainingQuantity;
+            } else {
+              // Direct product object
+              checkoutItem.quantity = remainingQuantity;
+              checkoutItem.quantity_in_cart = remainingQuantity;
+            }
+          }
+        }
+      }
+      
+      return inventoryItem;
+    });
+    
+    // 6. Update localStorage with new inventory
+    localStorage.setItem("products", JSON.stringify(updatedInventory));
+    
+    // Also update checkout data if quantities were adjusted
+    localStorage.setItem("checkout", JSON.stringify(checkoutProducts));
+    
+    console.log("Inventory updated successfully");
+    return updatedInventory;
+  } catch (e) {
+    console.error("Error managing inventory:", e);
+  }
+}
+
+
       function createOrder() {
         const orderId = generateOrderId();
         const productsData = getProductsFromStorage();
@@ -1093,7 +1190,7 @@
                 }
                 return;
               }
-    
+              manageInventory();
               const order = createOrder();
               console.log("Order created:", order);
     

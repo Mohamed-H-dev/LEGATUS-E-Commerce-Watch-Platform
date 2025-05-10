@@ -459,62 +459,6 @@ function showStockToast(message) {
         imageModal.show();
       });
 
- //  updateProductStock function 
-function updateProductStock(productId, quantityToReduce) {
-  console.log("Starting updateProductStock...");
-  console.log("Product ID:", productId);
-  console.log("Quantity to reduce:", quantityToReduce);
-  
-  // Get all products from localStorage
-  let allProducts = JSON.parse(localStorage.getItem("products"));
-  console.log("All products before update:", JSON.parse(JSON.stringify(allProducts)));
-  
-  // Find the product by id
-  const productIndex = allProducts.findIndex(p => p.id === productId);
-  console.log("Product index:", productIndex);
-  
-  if (productIndex !== -1) {
-    // Ensure stock is treated as a number
-    let currentStock = Number(allProducts[productIndex].stock);
-    console.log("Current stock before update:", currentStock);
-    
-    // Convert quantity to reduce to number to ensure proper math
-    let qtyToReduce = Number(quantityToReduce);
-    console.log("Quantity to reduce (converted):", qtyToReduce);
-    
-    // Update the stock with explicit math
-    let newStock = currentStock - qtyToReduce;
-    console.log("Calculated new stock:", newStock);
-    
-    // Make sure stock doesn't go below zero
-    if (newStock < 0) {
-      newStock = 0;
-      console.log("Stock was negative, set to 0");
-    }
-    
-    // Update with new stock value
-    allProducts[productIndex].stock = newStock;
-    console.log("Updated product:", allProducts[productIndex]);
-    
-    // Save updated products back to localStorage
-    localStorage.setItem("products", JSON.stringify(allProducts));
-    console.log("Saved to localStorage");
-    
-    // Update the global product variable without reassignment
-    Object.assign(product, allProducts[productIndex]);
-    console.log("Updated global product object:", product);
-    
-    // Update the display if applicable
-    const stockElement = document.getElementById("stock_info");
-    if (stockElement) {
-      stockElement.textContent = `In Stock: ${newStock}`;
-      console.log("Updated stock display");
-    }
-  } else {
-    console.error("Product not found with ID:", productId);
-  }
-}
-
 function addToCart() {
   const quantity = parseInt(document.getElementById("quantity").value);
   
@@ -580,10 +524,7 @@ function addToCart() {
   }
   
   localStorage.setItem("Cart", JSON.stringify(cart));
-  
-  // Update product stock
-  updateProductStock(product.id, quantity);
-  
+    
   // UI feedback - show success toast
   console.log(`Added ${quantity} item(s) to cart`);
   cartToast.show();
@@ -643,10 +584,6 @@ function BuyNow() {
       sellerId: product.sellerId,
     },
   };
-  
-  // Update product stock
-  updateProductStock(product.id, quantity);
-  
   localStorage.setItem("checkout", JSON.stringify(checkoutItem));
   window.location.href = "../checkout.html";
 }
