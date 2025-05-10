@@ -187,7 +187,7 @@ storageManager.setProducts(sampleProducts)  */
          let serach = document.getElementById("search_input");
          let prodcutCard = document.querySelectorAll(".card");
          let gender = document.querySelectorAll('input[type="radio"]');
-         let brand = document.querySelectorAll('input[type="checkbox"]');
+         let brandChecks = document.querySelectorAll('input[type="checkbox"]');
         
          console.log("Total Products:", allprod.length, "| Total Cards:", prodcutCard.length);
          //-------------------------init & Elements---------------------------------------//
@@ -228,18 +228,20 @@ storageManager.setProducts(sampleProducts)  */
 
         function productFilter(){
           let selectedGender; // Declare here to use throughout function
+         
   
   // Get selected gender (using your existing forEach)
   gender.forEach(radio => {
     if (radio.checked) {
-      selectedGender = radio.value.toLowerCase();
+      selectedGender = radio.value.trim().toLowerCase();
     }
   });
+  console.log("Selected Gender:", selectedGender);
 
   // Get checked brands (your existing code)
-  const checkedBrands = Array.from(brand)
+  const checkedBrands = Array.from(brandChecks)
     .filter(checkbox => checkbox.checked)
-    .map(checkbox => checkbox.value.toLowerCase());
+    .map(checkbox => checkbox.value.trim().toLowerCase());
 
   console.log("Selected Gender:", selectedGender);
   console.log("Checked Brands:", checkedBrands);
@@ -249,20 +251,44 @@ storageManager.setProducts(sampleProducts)  */
   prodcutCard.forEach((card, index) => {
     const product = allprod[index];
     if (!product) {
+       htmlContent = `
+                <div class="col-12  mx-auto text-center py-5">
+                <i class="fa-solid   fs-1 fa-box-open" style="color: #002f5f;"></i>
+                    <h3 class="text-muted">No products available</h3>
+                </div>
+            `;
       card.style.display = 'none';
+      container.innerHTML = htmlContent;
       return;
     }
+    const productGender = Array.isArray(product.gender) ? product.gender : [product.gender];
+    if(productGender.length == 0){
+       htmlContent = `
+                <div class="col-12  mx-auto text-center py-5">
+                <i class="fa-solid   fs-1 fa-box-open" style="color: #002f5f;"></i>
+                    <h3 class="text-muted">No products available</h3>
+                </div>
+            `;
+      card.style.display = 'none';
+      container.innerHTML = htmlContent;
+      console.log("No Product")
+    }else{
+      const genderMatch = selectedGender === 'all' || 
+      productGender.some(grName => grName && grName.toLowerCase() === selectedGender);
 
-    const genderMatch = selectedGender === 'all' || 
-                       product.gender.toLowerCase() === selectedGender;
+      const productBrand = product.brand ? product.brand.trim().toLowerCase() : "";
+      console.log("Product Brand:", productBrand);
+
     const brandMatch = checkedBrands.length === 0 || 
-                      checkedBrands.includes(product.brand.toLowerCase());
+                      checkedBrands.includes(productBrand);
 
     card.style.display = genderMatch && brandMatch ? 'block' : 'none';
+    }
+    
   });
               }
               gender.forEach(radio => radio.addEventListener('change', productFilter));
-              brand.forEach(checkbox => checkbox.addEventListener('change', productFilter));
+              brandChecks.forEach(checkbox => checkbox.addEventListener('change', productFilter));
               productFilter();
           });// end of load
           
