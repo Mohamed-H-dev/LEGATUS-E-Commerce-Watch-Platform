@@ -155,10 +155,7 @@
             transform: scale(1.2) translateY(-10px) rotate(0deg);
         }
 
-        /* Fixes for horizontal scroll */
-        html, body {
-          overflow-x: hidden;
-        }
+       
         .row.flex-nowrap {
           flex-wrap: wrap !important;
         }
@@ -249,7 +246,7 @@
           
           <div class="row mx-0">
             <!-- Start Filter Column -->
-            <div class="filter-col col-lg-2 p-0" id="filterColumn">
+            <div class="filter-col col-lg-2 p-0 position-sticky" id="filterColumn">
               <div class="filter rounded-3 p-2">
                 <div class="accordion" id="accordionPanelsStayOpenExample">
                   <div class="accordion-item">

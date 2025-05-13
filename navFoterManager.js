@@ -23,7 +23,7 @@ connectedCallback(){
     if(currentPath ==='/index.html'){
       this.innerHTML=`
       
-      <nav class="navbar  navbar-expand-lg  ">
+      <nav class="navbar  navbar-expand-lg ">
      <div class="container-fluid d-flex px-4 ">
        <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
          <a> <div class=" d-flex d-lg-none align-items-center gap-4">
@@ -58,7 +58,7 @@ connectedCallback(){
     }else{
     this.innerHTML=`
     
-    <nav class="navbar navbar-expand-lg  ">
+    <nav class="navbar navbar-expand-lg sticky-top top-0 z-3 ">
      <div class="container-fluid d-flex px-4 gap-3">
        <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
          <a> <div class=" d-flex d-lg-none align-items-center gap-3">
@@ -166,7 +166,7 @@ connectedCallback(){
       }else{
         this.innerHTML=`
     
-        <nav class="navbar navbar-expand-lg px-2 ">
+        <nav class="navbar navbar-expand-lg px-2 sticky-top top-0 z-3">
          <div class="container-fluid d-flex px-4 gap-4">
            <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
@@ -297,7 +297,7 @@ connectedCallback(){
       }else{
       this.innerHTML=`
     
-      <nav class="navbar navbar-expand-lg px-2 ">
+      <nav class="navbar navbar-expand-lg px-2 sticky-top top-0 z-3">
          <div class="container-fluid d-flex px-4 gap-4">
            <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
@@ -427,7 +427,7 @@ connectedCallback(){
       }else{
       this.innerHTML=`
     
-     <nav class="navbar navbar-expand-lg px-2 ">
+     <nav class="navbar navbar-expand-lg px-2 sticky-top top-0 z-3">
          <div class="container-fluid d-flex px-4 gap-4">
            <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
