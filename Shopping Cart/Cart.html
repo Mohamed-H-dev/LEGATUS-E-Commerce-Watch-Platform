@@ -299,11 +299,11 @@
           mode.addEventListener("change", () => {
             cartRenderer.updateCartTotals();
           });
+        });
 
-          // Go back button in history
-          document.querySelector(".goBack").addEventListener("click", () => {
-            window.location.href = "../productCatalog.html";
-          });
+        // Go back button in history
+        document.querySelector(".goBack").addEventListener("click", () => {
+          window.history.back();
         });
 
         // Go to the checkout page
