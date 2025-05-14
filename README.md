@@ -59,22 +59,7 @@
     <tr><td>Architecture</td><td>Role-based navigation & control</td></tr>
   </table>
 
-  <h2>🗂️ Project Structure</h2>
-  <pre><code>
-├── index.html
-├── css/
-│   └── styles.css
-├── js/
-│   ├── customer.js
-│   ├── seller.js
-│   ├── admin.js
-│   └── auth.js
-├── assets/
-│   └── images/
-├── data/
-│   └── mock-data.json (optional)
-└── README.md
-  </code></pre>
+
 
   <h2>🚀 Getting Started</h2>
   <ol>
