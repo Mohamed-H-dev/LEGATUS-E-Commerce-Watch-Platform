@@ -7,6 +7,19 @@
     LEGATUS offers a premium online shopping experience focused on high-quality wristwatches, serving both direct customers and independent sellers through a role-based web platform.
   </p>
 
+<h2>📚 Table of Contents</h2>
+<ul>
+  <li><a href="#live-preview">🌐 Live Preview</a></li>
+  <li><a href="#about-the-project">📖 About the Project</a></li>
+  <li><a href="#features-by-role">🔑 Features by Role</a></li>
+  <li><a href="#technologies-used">🧰 Technologies Used</a></li>
+  <li><a href="#getting-started">🚀 Getting Started</a></li>
+  <li><a href="#team-members">👥 Team Members</a></li>
+  <li><a href="#contact">📩 Contact</a></li>
+  <li><a href="#license">📃 License</a></li>
+</ul>
+
+
   <h2>🌐 Live Preview</h2>
 👉 <a href="https://iti-tanta-cst-team.web.app/" target="_blank" >Check it out here</a>
 
