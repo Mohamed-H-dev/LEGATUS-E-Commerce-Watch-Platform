@@ -77,11 +77,11 @@
 
   <h2>👥 Team Members</h2>
   <ul>
-    <li><strong>Ibrahim Adel</strong> – <a href="https://github.com/zeyadgebril" target="_blank">GitHub</a></li>
-       <li><strong>Ahmed Osama</strong> – <a href="https://github.com/zeyadgebril" target="_blank">GitHub</a></li>
-       <li><strong>Mohamed Hamdy</strong> – <a href="https://github.com/zeyadgebril" target="_blank">GitHub</a></li>
-       <li><strong>Omar Gallo</strong> – <a href="https://github.com/zeyadgebril" target="_blank">GitHub</a></li>
        <li><strong>Zeyad Gebril</strong> – <a href="https://github.com/zeyadgebril" target="_blank">GitHub</a></li>
+    <li><strong>Ibrahim Adel</strong> – <a href="https://github.com/IbrahimAdel10" target="_blank">GitHub</a></li>
+       <li><strong>Ahmed Osama</strong> – <a href="https://github.com/AhmedOsama779" target="_blank">GitHub</a></li>
+       <li><strong>Mohamed Hamdy</strong> – <a href="https://github.com/Mohamed-H-dev" target="_blank">GitHub</a></li>
+       <li><strong>Omar Gallo</strong> – <a href="https://github.com/omargallo" target="_blank">GitHub</a></li>
   </ul>
 
   <h2>📩 Contact</h2>
