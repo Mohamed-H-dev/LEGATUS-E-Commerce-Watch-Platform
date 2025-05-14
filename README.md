@@ -9,26 +9,27 @@
 
 <h2>📚 Table of Contents</h2>
 <ul>
-  <li><a href="#🌐-live-preview">🌐 Live Preview</a></li>
-  <li><a href="#📖-about-the-project">📖 About the Project</a></li>
-  <li><a href="#🔑-features-by-role">🔑 Features by Role</a>
+  <li><a href="#live-preview">🌐 Live Preview</a></li>
+  <li><a href="#about-the-project">📖 About the Project</a></li>
+  <li><a href="#features-by-role">🔑 Features by Role</a>
     <ul>
-      <li><a href="#👤-customer">👤 Customer</a></li>
-      <li><a href="#🧑‍💼-seller">🧑‍💼 Seller</a></li>
-      <li><a href="#🛠️-admin">🛠️ Admin</a></li>
+      <li><a href="#customer">👤 Customer</a></li>
+      <li><a href="#seller">🧑‍💼 Seller</a></li>
+      <li><a href="#admin">🛠️ Admin</a></li>
     </ul>
   </li>
-  <li><a href="#🧰-technologies-used">🧰 Technologies Used</a></li>
-  <li><a href="#🚀-getting-started">🚀 Getting Started</a></li>
-  <li><a href="#👥-team-members">👥 Team Members</a></li>
-  <li><a href="#📩-contact">📩 Contact</a></li>
-  <li><a href="#📃-license">📃 License</a></li>
+  <li><a href="#technologies-used">🧰 Technologies Used</a></li>
+  <li><a href="#getting-started">🚀 Getting Started</a></li>
+  <li><a href="#team-members">👥 Team Members</a></li>
+  <li><a href="#contact">📩 Contact</a></li>
+  <li><a href="#license">📃 License</a></li>
 </ul>
 
-  <h2>🌐 Live Preview</h2>
+
+<h2 id="live-preview">🌐 Live Preview</h2>
 👉 <a href="https://iti-tanta-cst-team.web.app/" target="_blank" >Check it out here</a>
 
-  <h2>📖 About the Project</h2>
+<h2 id="about-the-project">📖 About the Project</h2>
   <p>
     LEGATUS functions as both a <strong>direct retailer</strong> and a <strong>marketplace</strong>. It supports three core user roles:
   </p>
@@ -41,9 +42,9 @@
     The system features fully responsive dashboards, streamlined navigation, and interactive data components—all with data persistence via <code>localStorage</code>.
   </p>
 
-  <h2>🔑 Features by Role</h2>
+<h2 id="features-by-role">🔑 Features by Role</h2>
 
-  <h3>👤 Customer</h3>
+<h3 id="customer">👤 Customer</h3>
   <ul>
     <li>Browse watches by brand, gender, or search.</li>
     <li>View detailed product pages.</li>
@@ -52,7 +53,7 @@
     <li>Role-based login/signup with localStorage session.</li>
   </ul>
 
-  <h3>🧑‍💼 Seller</h3>
+<h3 id="seller">🧑‍💼 Seller</h3>
   <ul>
     <li>Register and log in to manage store.</li>
     <li>Add, edit, and remove products.</li>
@@ -60,7 +61,7 @@
     <li>Update personal and store information.</li>
   </ul>
 
-  <h3>🛠️ Admin</h3>
+<h3 id="admin">🛠️ Admin</h3>
   <ul>
     <li>Hardcoded administrator access.</li>
     <li>View and delete any user, seller, or product.</li>
@@ -68,7 +69,7 @@
     <li>Manage messages from “Contact Us” form.</li>
   </ul>
 
-  <h2>🧰 Technologies Used</h2>
+<h2 id="technologies-used">🧰 Technologies Used</h2>
   <table border="1" cellpadding="5">
     <tr><th>Area</th><th>Stack</th></tr>
     <tr><td>Frontend</td><td>HTML, CSS, JavaScript</td></tr>
@@ -79,7 +80,7 @@
 
 
 
-  <h2>🚀 Getting Started</h2>
+<h2 id="getting-started">🚀 Getting Started</h2>
   <ol>
     <li><strong>Clone the repository</strong><br>
       <code>git clone https://github.com/zeyadgebril/CST-Project---team-6.git</code><br>
@@ -93,7 +94,7 @@
 
 
 
-  <h2>👥 Team Members</h2>
+<h2 id="team-members">👥 Team Members</h2>
   <ul>
        <li><strong>Zeyad Gebril</strong> – <a href="https://github.com/zeyadgebril" target="_blank">GitHub</a></li>
     <li><strong>Ibrahim Adel</strong> – <a href="https://github.com/IbrahimAdel10" target="_blank">GitHub</a></li>
@@ -102,9 +103,9 @@
        <li><strong>Omar Gallo</strong> – <a href="https://github.com/omargallo" target="_blank">GitHub</a></li>
   </ul>
 
-  <h2>📩 Contact</h2>
+<h2 id="contact">📩 Contact</h2>
   <p>For issues or suggestions, please use the Issues tab in this repository.</p>
 
-  <h2>📃 License</h2>
+<h2 id="license">📃 License</h2>
   <p>This project is open-source and licensed under the <a href="LICENSE">MIT License</a>.</p>
 </section>
