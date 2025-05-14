@@ -1,6 +1,5 @@
 import { StorageManager } from "./Sign/StorageManager.js"
 
-
 const userData = StorageManager.load("currentUser") || [];
 const users = userData ? (Array.isArray(userData) ? userData : [userData]) : [];
 
@@ -567,8 +566,8 @@ class SpecialFooter extends HTMLElement{
      //Search
      let serach = document.getElementById("search_input");
      let Prodcutcard = document.querySelectorAll(".card");
-
-     serach.addEventListener('input', ()=>{
+if(serach){
+  serach.addEventListener('input', ()=>{
        if(serach.value !==""){
          Prodcutcard.forEach(card=>{
            let productHead = card.querySelector('h5');
@@ -591,3 +590,5 @@ class SpecialFooter extends HTMLElement{
 
      })//end of search input
    
+}
+     
