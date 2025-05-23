@@ -534,7 +534,34 @@ function addToCart() {
   setTimeout(() => {
     addToCartBtn.classList.remove("disabled");
   }, 1000);
+
+  // Update cart badge
+  requestAnimationFrame(() => {
+      setTimeout(updateCartBadge, 0);
+      });    
 }
+
+//Update cart badge
+function updateCartBadge() {
+  const cart = JSON.parse(localStorage.getItem("Cart")) || [];
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+  let totalItems = 0;
+  cart.forEach(item => {
+    if (item.userId === currentUser.id) {
+      totalItems += item.product.quantity_in_cart;
+    }
+  });
+
+  document.querySelectorAll('.bag_badge').forEach(badge => {
+  badge.textContent = totalItems;
+  badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+});
+  console.log(` done Total items in cart: ${totalItems}`);
+}
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
   if (product.stock <= 0) {
     stockStatus.classList.add('out-of-stock');

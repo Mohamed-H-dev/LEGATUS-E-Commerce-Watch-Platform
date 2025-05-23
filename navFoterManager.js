@@ -108,7 +108,14 @@ connectedCallback(){
            <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center gap-3">
                <!-- Shopping Bag Icon -->
-               <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+               <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white position-relative fa-bag-shopping fs-4 me-2">
+               <span  class="bag_badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              0
+               <span class="visually-hidden">New alerts</span>
+               </span>
+               </a>
+           
+               
              
                <!-- User Icon with Dropdown Toggle -->
                <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -143,7 +150,12 @@ connectedCallback(){
            </div>
            <div class="dropdown position-relative d-none d-lg-flex align-items-center  gap-3">
              <!-- Shopping Bag Icon -->
-             <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+            <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white position-relative fa-bag-shopping fs-4 me-2">
+               <span  class="bag_badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              0
+               <span class="visually-hidden">New alerts</span>
+               </span>
+               </a>
            
              <!-- User Icon with Dropdown Toggle -->
              <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -161,22 +173,34 @@ connectedCallback(){
            </div>
          </div>   
        </nav>
-       `
+       `;
+
+      requestAnimationFrame(() => {
+      setTimeout(updateCartBadge, 0);
+      });       
       }else{
         this.innerHTML=`
     
         <nav class="navbar navbar-expand-lg px-2 sticky-top top-0 z-3">
-         <div class="container-fluid d-flex px-4 gap-4">
+         <div class="container-fluid d-flex px-4 gap-2">
            <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
-               <!-- Shopping Bag Icon -->
-               <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+             <!-- Shopping Bag Icon -->
+               <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white position-relative fa-bag-shopping fs-4 me-2">
+               <span  class="bag_badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              0
+               <span class="visually-hidden">New alerts</span>
+               </span>
+               </a>
+           
+               
              
                <!-- User Icon with Dropdown Toggle -->
                <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                  <i class="fa-solid fa-user fs-4"></i>
                </a>
              
+           
                <!-- Dropdown Menu -->
                <ul class="dropdown-menu dropdown-menu-end ">
                  <li><span class="dropdown-header">${data.role}</span></li>
@@ -208,7 +232,12 @@ connectedCallback(){
            </div>
            <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-3">
              <!-- Shopping Bag Icon -->
-             <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
+              <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white position-relative fa-bag-shopping fs-4 me-2">
+               <span    class="bag_badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              0
+               <span class="visually-hidden">New alerts</span>
+               </span>
+               </a>
            
              <!-- User Icon with Dropdown Toggle -->
              <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -226,8 +255,12 @@ connectedCallback(){
            </div>
          </div>   
        </nav>
-       `
-      }
+       `;
+        requestAnimationFrame(() => {
+      setTimeout(updateCartBadge, 0);
+      });     
+      
+    }
       
     }else if(data.role ==='seller'){
       if(currentPath ==='/index.html' || currentPath === '/Customer%20Dashboard/customer-dashboard.html'
@@ -507,6 +540,26 @@ connectedCallback(){
 }
 }
 
+
+// Update Cart Badge
+export function updateCartBadge() {
+  const cart = JSON.parse(localStorage.getItem("Cart")) || [];
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+  let totalItems = 0;
+  cart.forEach(item => {
+    if (item.userId === currentUser.id) {
+      totalItems += item.product.quantity_in_cart;
+    }
+  });
+
+  document.querySelectorAll('.bag_badge').forEach(badge => {
+    badge.textContent = totalItems;
+    badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+  });
+
+  console.log(`✅ Badge Updated: ${totalItems} item(s)`);
+}
 
 
 
