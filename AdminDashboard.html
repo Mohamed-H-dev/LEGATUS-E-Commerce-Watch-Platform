@@ -13,7 +13,6 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
       rel="stylesheet"
     />
-    <!-- Import access control -->
     <script type="module" src="Sign/Initialize.js"></script>
     <style>
       body {
@@ -65,9 +64,6 @@
         background-color: #ffffff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
-      .search-input {
-        max-width: 400px;
-      }
       .card {
         border: none;
         border-radius: 10px;
@@ -118,21 +114,16 @@
         gap: 10px;
         flex-wrap: nowrap;
       }
-      th:nth-child(1),
-      td:nth-child(1) {
-        width: 10%;
-      }
-      th:nth-child(2),
-      td:nth-child(2) {
-        width: 30%;
-      }
-      th:nth-child(3),
-      td:nth-child(3) {
-        width: 30%;
-      }
-      th:nth-child(4),
-      td:nth-child(4) {
-        width: 30%;
+
+      /* Success message */
+      #passwordSuccess {
+        display: none;
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 5px;
+        padding: 8px;
+        font-size: 0.9rem;
       }
     </style>
   </head>
@@ -147,12 +138,9 @@
           <span>Admin</span>
         </h1>
       </div>
-
       <a href="#" class="active"><i class="bi bi-person"></i> Customer</a>
       <a href="AdminSellerDashboard.html"><i class="bi bi-shop"></i> Seller</a>
-      <a href="AdminProductDashboard.html"
-        ><i class="bi bi-bag"></i> Products</a
-      >
+      <a href="AdminProductDashboard.html"><i class="bi bi-bag"></i> Products</a>
       <a href="AdminDashboardCustomerService.html"
         ><i class="bi bi-people"></i> Customer Service</a
       >
@@ -161,22 +149,6 @@
 
     <!-- Main Content -->
     <div class="main-content">
-      <!-- Top Navbar -->
-      <nav class="navbar navbar-light mb-4">
-        <div class="container-fluid">
-          <div class="input-group search-input">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input
-              id="searchInput"
-              class="form-control"
-              type="search"
-              placeholder="Search by Name"
-              aria-label="Search"
-            />
-          </div>
-        </div>
-      </nav>
-
       <h2 class="mb-4">Customers Data</h2>
 
       <div class="card p-4">
@@ -196,6 +168,103 @@
       </div>
     </div>
 
+    <!-- Reset Password Modal -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="modal-header" style="background-color: #002f5f; color: white;">
+            <h5 class="modal-title">Reset Password</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="password"
+              id="newPasswordInput"
+              class="form-control mb-2"
+              placeholder="Enter new password"
+            />
+            <input type="hidden" id="resetUserId" />
+            <div
+              id="passwordError"
+              class="text-danger small mb-2"
+              style="display: none;"
+            >
+              Please enter a new password.
+            </div>
+            <div id="passwordSuccess" class="text-success small"></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn"
+              style="background-color: #002f5f; color: white;"
+              onclick="confirmResetPassword()"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+      class="modal fade"
+      id="deleteConfirmModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+          <div
+            class="modal-header"
+            style="background-color: #002f5f; color: white;"
+          >
+            <h5 class="modal-title">Confirm Delete</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete this customer?</p>
+            <input type="hidden" id="deleteUserId" />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn"
+              style="background-color: #002f5f; color: white;"
+              onclick="confirmDeleteCustomer()"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       if (!localStorage.getItem("users")) {
         localStorage.setItem("users", JSON.stringify([]));
@@ -210,9 +279,7 @@
 
         if (customers.length === 0) {
           const row = document.createElement("tr");
-          row.innerHTML = `
-          <td colspan="4" style="text-align:center; color: gray;">No Data Available</td>
-        `;
+          row.innerHTML = `<td colspan="4" style="text-align:center; color: gray;">No Data Available</td>`;
           tbody.appendChild(row);
           return;
         }
@@ -222,71 +289,102 @@
 
           const row = document.createElement("tr");
           row.innerHTML = `
-          <td>${cust.displayId}</td>
-          <td>${cust.name || ""}</td>
-          <td>${cust.email || ""}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn btn-reset" onclick="resetCustomerPassword('${
-                cust.id
-              }')">
-                <i class="bi bi-arrow-clockwise" ></i> Reset Password
-              </button>
-              <button class="btn btn-delete" onclick="deleteCustomer('${
-                cust.id
-              }')">
-                <i class="bi bi-trash"></i> Delete
-              </button>
-            </div>
-          </td>
-        `;
+            <td>${cust.displayId}</td>
+            <td>${cust.name || ""}</td>
+            <td>${cust.email || ""}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn btn-reset" onclick="openResetModal('${cust.id}')">
+                  <i class="bi bi-arrow-clockwise"></i> Reset Password
+                </button>
+                <button class="btn btn-delete" onclick="openDeleteModal('${cust.id}')">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </div>
+            </td>
+          `;
           tbody.appendChild(row);
         });
       }
 
-      function deleteCustomer(id) {
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        users = users.filter(
-          (user) =>
-            !(user.role === "customer" && String(user.id) === String(id))
+      function openResetModal(id) {
+        document.getElementById("resetUserId").value = id;
+        document.getElementById("newPasswordInput").value = "";
+        document.getElementById("passwordError").style.display = "none";
+        document.getElementById("passwordSuccess").style.display = "none";
+        const modal = new bootstrap.Modal(
+          document.getElementById("resetPasswordModal")
         );
-        localStorage.setItem("users", JSON.stringify(users));
-        renderCustomers();
+        modal.show();
       }
 
-      function resetCustomerPassword(id) {
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        const customerIndex = users.findIndex(
-          (user) => user.role === "customer" && String(user.id) === String(id)
-        );
-        if (customerIndex !== -1) {
-          const newPassword = prompt("Please enter the new password:");
-          if (newPassword && newPassword.trim() !== "") {
-            users[customerIndex].password = newPassword.trim();
-            localStorage.setItem("users", JSON.stringify(users));
-            renderCustomers();
-            alert("Password has been successfully updated.");
-          } else {
-            alert("No new password entered.");
-          }
+      function confirmResetPassword() {
+        const userId = document.getElementById("resetUserId").value;
+        const newPasswordInput = document.getElementById("newPasswordInput");
+        const newPassword = newPasswordInput.value.trim();
+        const errorDiv = document.getElementById("passwordError");
+        const successDiv = document.getElementById("passwordSuccess");
+
+        if (!newPassword) {
+          errorDiv.style.display = "block";
+          newPasswordInput.classList.add("is-invalid");
+          return;
         } else {
-          alert("Customer not found.");
+          errorDiv.style.display = "none";
+          newPasswordInput.classList.remove("is-invalid");
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        const index = users.findIndex(
+          (user) => user.role === "customer" && String(user.id) === String(userId)
+        );
+
+        if (index !== -1) {
+          users[index].password = newPassword;
+          localStorage.setItem("users", JSON.stringify(users));
+          renderCustomers();
+
+          // Show success message
+          successDiv.innerText = "Password reset successfully!";
+          successDiv.style.display = "block";
+
+          // Hide modal after 3 seconds
+          setTimeout(() => {
+            const modal = bootstrap.Modal.getInstance(
+              document.getElementById("resetPasswordModal")
+            );
+            modal.hide();
+          }, 3000);
         }
       }
 
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", function () {
-          const filter = this.value.trim();
-          document.querySelectorAll("#customerTableBody tr").forEach((row) => {
-            const idText = row
-              .querySelector("td:nth-child(2)")
-              .textContent.trim();
-            row.style.display = idText.includes(filter) ? "" : "none";
-          });
-        });
+      // Open delete confirmation modal
+      function openDeleteModal(id) {
+        document.getElementById("deleteUserId").value = id;
+        const modal = new bootstrap.Modal(
+          document.getElementById("deleteConfirmModal")
+        );
+        modal.show();
+      }
+
+      // Confirm and execute deletion
+      function confirmDeleteCustomer() {
+        const id = document.getElementById("deleteUserId").value;
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        users = users.filter(
+          (user) => !(user.role === "customer" && String(user.id) === String(id))
+        );
+        localStorage.setItem("users", JSON.stringify(users));
+        renderCustomers();
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("deleteConfirmModal")
+        );
+        modal.hide();
+      }
 
       window.onload = renderCustomers;
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
