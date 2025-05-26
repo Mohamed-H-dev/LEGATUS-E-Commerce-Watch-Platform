@@ -24,7 +24,7 @@ async function products(){
 
     let containerproduct = document.getElementById("card_product");
 async function cardproducts(){
-    let Product = await fetch('./products.json')
+    let Product = await fetch('./products2.json')
     
     let productsjson = await Product.json();
     let htmlCards ="";

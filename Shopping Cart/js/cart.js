@@ -189,7 +189,7 @@ export class CartRenderer {
 
   initializeQuantityControls() {
     document.querySelectorAll('.cart-item').forEach((item) => {
-      const productId = item.querySelector('img[product-image]').getAttribute('product-id');
+    const productId = parseInt(item.querySelector('img[product-image]').getAttribute('product-id'));
       
       // Get the current product data from storage
       const products = this.storageManager.getProducts();
@@ -296,6 +296,7 @@ export class CartRenderer {
         this.cartData.splice(index, 1);
         this.storageManager.setProducts(this.cartData);
         this.renderCartItems();
+        window.location.reload();
       });
     });
   }
