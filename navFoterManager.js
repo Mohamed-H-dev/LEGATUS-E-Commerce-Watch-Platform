@@ -464,7 +464,6 @@ connectedCallback(){
            <a class="navbar-brand  fw-bolder m-0" href="${prefix}index.html">LEGATUS
              <a> <div class="dropdown position-relative d-flex d-lg-none align-items-center">
              <!-- Shopping Bag Icon -->
-             <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
            
              <!-- User Icon with Dropdown Toggle -->
              <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -505,7 +504,6 @@ connectedCallback(){
          </div>
          <div class="dropdown position-relative d-none d-lg-flex align-items-center gap-3">
            <!-- Shopping Bag Icon -->
-           <a href="${prefix}Shopping Cart/Cart.html" class="fa-solid text-white  fa-bag-shopping fs-4 me-2"></a>
          
            <!-- User Icon with Dropdown Toggle -->
            <a class="nav-link dropdown p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
